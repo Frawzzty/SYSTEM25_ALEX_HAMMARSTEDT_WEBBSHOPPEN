@@ -14,6 +14,7 @@ namespace WebShop.Windows
     {
         public static void Draw()
         {
+            
             List<Product> productsOnSale = new List<Product>();
             using (var db = new WebShopContext()) 
             {
@@ -21,6 +22,7 @@ namespace WebShop.Windows
             }
 
             DrawProductWindows(productsOnSale, 10);
+            
 
         }
 

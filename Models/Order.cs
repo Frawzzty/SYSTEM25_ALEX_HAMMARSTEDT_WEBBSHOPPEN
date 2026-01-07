@@ -10,7 +10,10 @@ namespace WebShop.Modles
     internal class Order
     {
         public int Id { get; set; }
+
         public int CustomerId { get; set; }
+        public Customer Customer { get; set; }
+
         public string ShippingMethod { get; set; }  //Enum?
         public string ShippingPrice { get; set; }   //Enum?
         public string Street { get; set; }
@@ -18,7 +21,7 @@ namespace WebShop.Modles
         public string Country { get; set; }
         public DateTime OrderDate { get; set; }
 
-        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
     }
 }

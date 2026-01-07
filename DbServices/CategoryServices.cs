@@ -79,7 +79,7 @@ namespace WebShop.Services
                 Category category = GetCategory(itemId);
                 if (category != null)
                 {
-                    GenericsServices.UpdateItemName(category, newName); //Returns true if manged to update
+                    GenericServices.UpdateItemName(category, newName); //Returns true if manged to update
                 }
             }
             else
@@ -103,15 +103,17 @@ namespace WebShop.Services
                 {
                     Category selectedItem = allCategories.Where(c => c.Id == inputId).SingleOrDefault();
 
-                    Console.WriteLine($"Confirm you want to DELETE {selectedItem.Name}: Y / N");
-                    ConsoleKeyInfo key = Console.ReadKey(true);
-                    if(key.KeyChar == 'y' || key.KeyChar == 'Y')
+                    Console.WriteLine($"Confirm you want to DELETE {selectedItem.Name}: [Y] or [N]");
+                    string key = Console.ReadKey(true).KeyChar.ToString().ToUpper();
+                    Console.WriteLine(key);
+                    if(key == "Y")
                     {
                         db.Remove(selectedItem);
                         db.SaveChanges();
                         success = true;
                     }
                 }
+
                 if(!success)
                     Helpers.MessageLeavingAnyKey();
             }

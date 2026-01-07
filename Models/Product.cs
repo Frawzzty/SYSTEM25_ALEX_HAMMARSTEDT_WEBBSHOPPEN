@@ -13,8 +13,11 @@ namespace WebShop.Modles
 
         public string Name { get; set; }
         public string Description { get; set; }
+
         public int CategoryId { get; set; }
-        public string SupplierName { get; set; } //TODO: LÄGG TILL I CONSTRUCTOR
+        public Category Category { get; set; } //Navigation property
+
+        public string SupplierName { get; set; }
 
         //[Column(TypeName = "decimal(18,2")] //internet sa så - 16 heltal, 2 deciamaler = 18 (FUNGERADE EJ)
         public decimal UnitPrice { get; set; }

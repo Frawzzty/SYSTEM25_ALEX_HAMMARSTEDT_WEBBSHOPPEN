@@ -11,7 +11,7 @@ using WebShop.Modles;
 
 namespace WebShop.Services
 {
-    internal class ProductsServices
+    internal class ProductServices
     {
         public static List<Product> GetAllProducts()
         {
@@ -25,7 +25,7 @@ namespace WebShop.Services
             return products;
         }
 
-        public static Product GetProduct(int id)
+        public static Product GetProductById(int id)
         {
             Product product = null;
             using (var db = new WebShopContext())
@@ -157,10 +157,10 @@ namespace WebShop.Services
 
             if (validId && validName)
             {
-                Product product = GetProduct(itemId);
+                Product product = GetProductById(itemId);
                 if (product != null)
                 {
-                    GenericsServices.UpdateItemName(product, newName); //Returns true if manged to update
+                    GenericServices.UpdateItemName(product, newName); //Returns true if manged to update
                 }
             }
             else
@@ -178,7 +178,7 @@ namespace WebShop.Services
                 Console.Write("Enter ID: ");
                 bool validId = int.TryParse(Console.ReadLine(), out int itemId) && itemId > 0;
 
-                Product product = GetProduct(itemId);
+                Product product = db.Products.Where(p => p.Id == itemId).SingleOrDefault();
 
                 if (product != null) 
                 {
@@ -201,6 +201,7 @@ namespace WebShop.Services
                     Console.Write("Enter stock amount: ");
                     bool isValidInputStockAmount = int.TryParse(Console.ReadLine(), out int stockAmount) && stockAmount > 0;
 
+                    //Check inputs are valid
                     if (
                      !string.IsNullOrEmpty(name) &&
                      !string.IsNullOrEmpty(description) &&
@@ -251,7 +252,7 @@ namespace WebShop.Services
             Product product;
             if (validId)
             {
-                product = GetProduct(itemId);
+                product = GetProductById(itemId);
 
                 if (product != null)
                 {
@@ -274,12 +275,15 @@ namespace WebShop.Services
                         product.UnitSalePrice = 0;
                     }
 
-                    if(keyOnSale == "Y" || keyOnSale == "N")
+                    if(keyOnSale == "Y" || keyOnSale == "N") //Update if yes or no.
+                    {
                         using (var db = new WebShopContext())
                         {
                             db.Update(product);
                             db.SaveChanges();
                         }
+                    }
+ 
                     else { Helpers.MessageLeavingAnyKey(); }
 
                 }
@@ -290,17 +294,19 @@ namespace WebShop.Services
             
         public static void DeleteProduct()
         {
-            PrintProducts(GetAllProducts());
+            List<Product> products = new List<Product>();
+            products = GetAllProducts();
+            PrintProducts(products);
 
             Console.WriteLine("\n[Leave input empty to cancle] \nDelete product");
             Console.Write("Enter ID: ");
             bool validId = int.TryParse(Console.ReadLine(), out int itemId) && itemId > 0; //TODO Make inputs Methods?
             if (validId) 
-            { 
-                Product product = GetProduct(itemId);
+            {
+                Product product = products.Where(p => p.Id == itemId).SingleOrDefault();
                 if (product != null) 
                 {
-                    GenericsServices.DeleteItem(product);
+                    GenericServices.DeleteItem(product);
                 }
             }
         }

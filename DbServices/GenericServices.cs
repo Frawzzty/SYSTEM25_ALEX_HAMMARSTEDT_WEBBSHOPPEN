@@ -8,7 +8,7 @@ using WebShop.Modles;
 
 namespace WebShop.Services
 {
-    internal class GenericsServices
+    internal class GenericServices
     {
         public static bool UpdateItemName<T>(T item, string newName)
         {

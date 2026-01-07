@@ -19,8 +19,10 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Console.SetCursorPosition(0, cursorPosTop);
+                Console.SetCursorPosition(1, cursorPosTop);
                 Console.WriteLine(menuHeader);
+                Console.SetCursorPosition(1, cursorPosTop + 1);
+
                 foreach (int i in Enum.GetValues(typeof(MenuAdminMain)))
                 {
                     string menuText = "[" + i + "] " + Enum.GetName(typeof(MenuAdminMain), i).Replace('_', ' ') + "  ";
@@ -64,8 +66,6 @@ namespace WebShop.Menus
             while (loop)
             {
 
-                
-
                 Console.SetCursorPosition(0, cursorPosTop);
                 Console.WriteLine(menuHeader);
                 foreach (int i in Enum.GetValues(typeof(MenuAdminProduct)))
@@ -75,7 +75,7 @@ namespace WebShop.Menus
                 }
 
                 Console.WriteLine("\n");
-                ProductsServices.PrintProducts(ProductsServices.GetAllProducts());
+                ProductServices.PrintProducts(ProductServices.GetAllProducts());
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
@@ -85,22 +85,22 @@ namespace WebShop.Menus
                     {
                         case Enums.MenuAdminProduct.Add_Product:
                             Console.WriteLine("Add product");
-                            ProductsServices.AddProduct();
+                            ProductServices.AddProduct();
 
                             break;
 
                         case Enums.MenuAdminProduct.Update_Product:
                             Console.WriteLine("Update product");
-                            ProductsServices.UpdateProduct();
+                            ProductServices.UpdateProduct();
                             break;
 
                         case Enums.MenuAdminProduct.Set_on_sale:
                             Console.WriteLine("Set / remove product on sale");
-                            ProductsServices.SetProductOnSale();
+                            ProductServices.SetProductOnSale();
                             break;
                         case Enums.MenuAdminProduct.Delete_Product:
                             Console.WriteLine("Delete Product");
-                            ProductsServices.DeleteProduct();
+                            ProductServices.DeleteProduct();
                             break;
                             
 
