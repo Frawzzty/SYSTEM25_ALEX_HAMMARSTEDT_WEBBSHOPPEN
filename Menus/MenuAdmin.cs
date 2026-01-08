@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Modles;
 using WebShop.Services;
@@ -13,6 +14,8 @@ namespace WebShop.Menus
     { 
         private static int cursorPosTop = 0;
         private static ConsoleColor menuColor = ConsoleColor.White;
+
+        //MAIN BRANCH
         public static void MenuAdminMain()
         {
             string menuHeader = "Admin";
@@ -45,7 +48,7 @@ namespace WebShop.Menus
                             break;
 
                         case Enums.MenuAdminMain.Customers:
-
+                            MenuAdminCustomer();
 
                             break;
 
@@ -59,6 +62,7 @@ namespace WebShop.Menus
             }
         }
 
+        //SUB BRANCH
         public static void MenuAdminProduct()
         {
             string menuHeader = "Admin - Product";
@@ -113,6 +117,7 @@ namespace WebShop.Menus
             }
         }
 
+        //SUB BRANCH
         public static void MenuAdminCategory()
         {
             string menuHeader = "Admin - Category";
@@ -161,6 +166,65 @@ namespace WebShop.Menus
             }
         }
 
-        
+        //SUB BRANCH
+        public static void MenuAdminCustomer()
+        {
+            string menuHeader = "Admin - Customer";
+            bool loop = true;
+            while (loop)
+            {
+                Console.SetCursorPosition(0, cursorPosTop);
+                Console.WriteLine(menuHeader);
+                foreach (int i in Enum.GetValues(typeof(MenuAdminCustomer)))
+                {
+                    string menuText = "[" + i + "] " + Enum.GetName(typeof(MenuAdminCustomer), i).Replace('_', ' ') + "  ";
+                    Helpers.WriteInColor(menuColor, menuText);
+                }
+
+                Console.WriteLine("\n");
+                CustomerServices.PrintCustomers(CustomerServices.GetAllCustomers());
+
+                string input = Console.ReadKey(true).KeyChar.ToString();
+                Console.Clear();
+                if (int.TryParse(input, out int number))
+                {
+                    switch ((MenuAdminCustomer)number)
+                    {
+                        case Enums.MenuAdminCustomer.Add_Customer:
+                            CustomerServices.AddCustomer();
+
+                            break;
+
+                        case Enums.MenuAdminCustomer.Update_Customer:
+                            CustomerServices.UpdateCustomer();
+
+                            break;
+
+                        case Enums.MenuAdminCustomer.Order_History:
+                            
+
+                            break;
+
+                        case Enums.MenuAdminCustomer.Set_Role:
+                            CustomerServices.UpdateCusomterRole();
+
+                            break;
+
+                        case Enums.MenuAdminCustomer.Delete_Customer:
+                            CustomerServices.DeleteCustomer();
+
+                            break;
+
+                        case Enums.MenuAdminCustomer.Back:
+                            loop = false;
+
+                            break;
+                    }
+                }
+                Console.Clear();
+            }
+        }
+
+
     }
 }

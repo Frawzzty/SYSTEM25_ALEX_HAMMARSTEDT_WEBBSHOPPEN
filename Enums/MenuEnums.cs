@@ -6,22 +6,24 @@ using System.Threading.Tasks;
 
 namespace WebShop.Enums
 {
-
-    public enum MenuHome
+    //--MENU HOME--------------------------------------------------------------------------//
+    public enum MenuHomeMain
     {
         Store = 1,
-        Cart,                       // --> show product --> Shipping --> Payment
+        Cart,    // --> show product --> Shipping --> Payment
         Admin,
+
         Exit = 9
     }
-    //----------------------------------------------------------------------------------//
     
 
+    //--ADMIN MENU-----------------------------------------------------------------------------//
     public enum MenuAdminMain
     {
-        Product = 1,                //Product ändringar
-        Category,                   //Kategori ändringar
+        Product = 1,
+        Category, 
         Customers,
+
         Back = 9,
     }
 
@@ -31,6 +33,7 @@ namespace WebShop.Enums
         Update_Product,
         Set_on_sale,
         Delete_Product,
+
         Back = 9,
     }
 
@@ -39,14 +42,33 @@ namespace WebShop.Enums
         Create_Category = 1,        //Product ändringar
         Update_Category,
         Delete_Category,
+
         Back = 9,
     }
 
-    public enum MenuAdminClient
+    public enum MenuAdminCustomer
     {
-        Order_History = 1,          //Product ändringar
-        Update_Name,                //??
+        Add_Customer = 1,
+        Update_Customer,
+        Order_History,
+        Delete_Customer,
+        Set_Role,
+        
         Back = 9,
     }
+
+
+    //--STORE MENU---------------------------------------------------------------------------//
+    public enum MenuStoreMain
+    {
+        Pants = 1,
+        Shirts,
+        Shoes,
+        Hats,
+        Search_Product, //Dapper?
+
+        Back = 9,
+    }
+
 
 }

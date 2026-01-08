@@ -5,9 +5,11 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.Modles;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebShop.Services
 {
@@ -37,33 +39,45 @@ namespace WebShop.Services
 
         public static void PrintProducts(List<Product> products)
         {
-            int cellpadding = 3;
             if(!products.IsNullOrEmpty())
-            {   //Set paddings
-                int padId =             products.Max(item => item.Id.ToString().Length) + cellpadding;
-                int padName =           products.Max(item => item.Name.Length) + cellpadding;
-                int padDescription =    products.Max(item => item.Description.Length) + cellpadding;
-                int padCategoryId =     10 + cellpadding;
-                int padSupplierName =   products.Max(item => item.SupplierName.Length) + cellpadding;
-                int padUnitPrice =      9 + cellpadding; //Manual as column name is usually longer than value
-                int padUnitSalePrice =  13 + cellpadding; //Manual as column name is usually longer than value
-                int padOnSale =         6 + cellpadding; //Manual as column name is usually longer than value
-                int padStockAmount =    9 + cellpadding; //Manual as column name is usually longer than value
+            {
+                int cellpadding = 3; //Spacing between columns
 
-                //Headers
+                string headerId =           "ID";
+                string headerName =         "Name";
+                string headerDescription =  "Description";
+                string headerCategoryId =   "CategoryID";
+                string headerSupplierName = "SupplierName";
+                string headerUnitPrice =    "UnitPrice";
+                string headerUnitSalePrice = "UnitSalePrice";
+                string headerOnSale =       "OnSale";
+                string headerStockAmount =  "StockAmount";
+                //Set paddings
+                
+                int padId =             Helpers.GetHeaderMaxPadding(headerId, products.Max(item => item.Id.ToString().Length), cellpadding);
+                int padName =           Helpers.GetHeaderMaxPadding(headerName, products.Max(item => item.Name.Length), cellpadding);
+                int padDescription =    Helpers.GetHeaderMaxPadding(headerDescription, products.Max(item => item.Description.Length), cellpadding);
+                int padCategoryId =     Helpers.GetHeaderMaxPadding(headerCategoryId, products.Max(item => item.CategoryId.ToString().Length), cellpadding);
+                int padSupplierName =   Helpers.GetHeaderMaxPadding(headerSupplierName, products.Max(item => item.SupplierName.Length), cellpadding);
+                int padUnitPrice =      Helpers.GetHeaderMaxPadding(headerUnitPrice, products.Max(item => item.UnitPrice.ToString().Length), cellpadding);
+                int padUnitSalePrice =  Helpers.GetHeaderMaxPadding(headerUnitSalePrice, products.Max(item => item.UnitSalePrice.ToString().Length), cellpadding);
+                int padOnSale =         Helpers.GetHeaderMaxPadding(headerOnSale, products.Max(item => item.OnSale.ToString().Length), cellpadding);
+                int padStockAmount =    Helpers.GetHeaderMaxPadding(headerStockAmount, products.Max(item => item.StockAmount.ToString().Length), cellpadding);
+
+                //Draw Headers
                 Helpers.WriteLineInColor(ConsoleColor.Blue,
-                    "ID".PadRight(padId) +
-                    "Name".PadRight(padName) +
-                    "Description".PadRight(padDescription) +
-                    "CategoryID".PadRight(padCategoryId) +
-                    "SupplierName".PadRight(padSupplierName) +
-                    "UnitPrice".PadRight(padUnitPrice) +
-                    "UnitSalePrice".PadRight(padUnitSalePrice) +
-                    "OnSale".PadRight(padOnSale) +
-                    "StockAmount".PadRight(padStockAmount)
+                    headerId.PadRight(padId) +
+                    headerName.PadRight(padName) +
+                    headerDescription.PadRight(padDescription) +
+                    headerCategoryId.PadRight(padCategoryId) +
+                    headerSupplierName.PadRight(padSupplierName) +
+                    headerUnitPrice.PadRight(padUnitPrice) +
+                    headerUnitSalePrice.PadRight(padUnitSalePrice) +
+                    headerOnSale.PadRight(padOnSale) +
+                    headerStockAmount.PadRight(padStockAmount)
                     );
 
-                //Rows
+                //Draw Rows
                 foreach (var product in products)
                 {
                     Console.WriteLine(

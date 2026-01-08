@@ -13,12 +13,19 @@ namespace WebShop.Windows
 
         public static void Draw()
         {
-            int leftPos = 1;
-            string headerWelcome = "Clothing.com";  int welcomeTopPos = 3;
+            int leftPosWelcome = 1;
+            string headerWelcome = "The Clothing Store";  int welcomeTopPos = 3;
 
-            List<string> welcomeWindowList = new List<string> { "Welcome,", "Super cool clothes","" };
-            var windowWelcome = new Window(headerWelcome, leftPos, welcomeTopPos, welcomeWindowList);
+            List<string> welcomeWindowList = new List<string> { "Welcome 'NAME?',", "We sell the best clothes...", new string(' ', 41) };
+            var windowWelcome = new Window(headerWelcome, leftPosWelcome, welcomeTopPos, welcomeWindowList);
             windowWelcome.Draw(ConsoleColor.Blue);
+
+            int leftPosNewsFeed = 1 + 46;
+            string headerNewsFeed = "News"; int newsFeedTopPos = 3;
+
+            List<string> newsFeedWindowList = new List<string> { "* Winter Sale is now Active", "* Up to 50% off", "* Newly restocked" };
+            var windowNewsFeed = new Window(headerNewsFeed, leftPosNewsFeed, newsFeedTopPos, newsFeedWindowList);
+            windowNewsFeed.Draw(ConsoleColor.Yellow);
 
         }
     }

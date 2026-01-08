@@ -1,61 +1,64 @@
-﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Microsoft.Extensions.Primitives;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.DbServices;
 using WebShop.Enums;
+using WebShop.Modles;
 using WebShop.Services;
-using WebShop.Windows;
 
 namespace WebShop.Menus
 {
-    internal class MenuHome
-    {
+    internal class MenuStore
+    { 
         private static int cursorPosTop = 0;
         private static ConsoleColor menuColor = ConsoleColor.White;
-        public static void MenuHomeMain()
+
+        //MAIN BRANCH
+        public static void MenuStoreMain()
         {
-            
-            string menuHeader = "Home";
+            string menuHeader = "Store";
             bool loop = true;
             while (loop)
             {
-
                 Console.SetCursorPosition(1, cursorPosTop);
                 Console.WriteLine(menuHeader);
                 Console.SetCursorPosition(1, cursorPosTop + 1);
 
-                foreach (int i in Enum.GetValues(typeof(Enums.MenuHomeMain)))
+                foreach (int i in Enum.GetValues(typeof(MenuStoreMain)))
                 {
-                    string menuText = "[" + i + "] " + Enum.GetName(typeof(Enums.MenuHomeMain), i).Replace('_', ' ') + "  ";
+                    string menuText = "[" + i + "] " + Enum.GetName(typeof(MenuStoreMain), i).Replace('_', ' ') + "  ";
                     Helpers.WriteInColor(menuColor, menuText);
                 }
-
-                WindowSaleProduct.Draw();
-                WindowWelcome.Draw(); //Draw welcome window last to hide "connection lagging"
-                
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
                 if (int.TryParse(input, out int number))
                 {
-                    switch ((Enums.MenuHomeMain)number)
+                    switch ((MenuStoreMain)number)
                     {
-                        case Enums.MenuHomeMain.Store:
-                            Menus.MenuStore.MenuStoreMain();
-                            break;
-
-                        case Enums.MenuHomeMain.Cart:
+                        case Enums.MenuStoreMain.Pants:
 
                             break;
 
-                        case Enums.MenuHomeMain.Admin:
-                            Menus.MenuAdmin.MenuAdminMain();
+                        case Enums.MenuStoreMain.Shirts:
+
                             break;
 
-                        case Enums.MenuHomeMain.Exit:
+                        case Enums.MenuStoreMain.Shoes:
+                            
+                            break;
+
+                        case Enums.MenuStoreMain.Hats:
+
+                            break;
+
+                        case Enums.MenuStoreMain.Search_Product:
+
+                            break;
+
+                        case Enums.MenuStoreMain.Back:
                             loop = false;
 
                             break;
@@ -64,5 +67,6 @@ namespace WebShop.Menus
                 Console.Clear();
             }
         }
+       
     }
 }

@@ -2,17 +2,25 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.Modles;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebShop.Services
 {
     internal class GenericServices
     {
+        public static void UpdateItemName2<T>(T item, string newName, Enum myEnum)
+        {
+        }
+
         public static bool UpdateItemName<T>(T item, string newName)
         {
-            bool sucess = false;
+            bool isSucess = false;
+
+            //Transaction?
             if(item is Product product)
             {
                 product.Name = newName;
@@ -21,15 +29,25 @@ namespace WebShop.Services
             {
                 category.Name = newName;
             }
+            else if (item is Customer customer)
+            {
+                customer.Name = newName;
+            }
 
-            if(item != null && !string.IsNullOrWhiteSpace(newName))
+            if (item != null && !string.IsNullOrWhiteSpace(newName))
             using (var db = new WebShopContext())
             {
                 db.Update(item);
                 db.SaveChanges();
-                sucess = true;
+                isSucess = true;
             }
-            return sucess;
+            else
+            {
+                //Rollback?
+                Console.WriteLine("Could not find Item or invalid name. Any key to continue...");
+                Console.ReadKey(true);
+            }
+                return isSucess;
         }
 
         public static void PrintBaseClass<T>(List<T> items)
@@ -53,8 +71,8 @@ namespace WebShop.Services
                 }
                 catch (Exception ex) 
                 { 
-                    Console.WriteLine(ex.Message); 
-                    Console.ReadKey(true); 
+                    Console.WriteLine(ex.Message);
+                    Helpers.MessageLeavingAnyKey();
                 }
 
             }

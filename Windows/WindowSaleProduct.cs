@@ -23,25 +23,28 @@ namespace WebShop.Windows
 
             DrawProductWindows(productsOnSale, 10);
             
-
         }
 
         static void DrawProductWindows(List<Product> productsOnSale, int topPos)
         {
-            string windowHeader = "Special offer";
+            int maxProductWindows = 3;
+            int windowSpacing = 5; // 5 leaves " " gap.
             int leftPos = 1;
-            string[] offerKeys = { "Z", "X", "C", "V", "B", "N", "M" };
+            string windowHeader = "Special offer";
+            string[] offerKeys = { "6", "7", "8", "BAD", "BAD", "BAD", "BAD" };
+
             int i = 0;
             foreach (var product in productsOnSale)
             {
                 List<string> offerText = new List<string> { product.Name, product.Description, product.UnitSalePrice.ToString() + " SEK", $"Add to Cart [{offerKeys[i]}]" };
+                
                 var windowOffer = new Window(windowHeader, leftPos, topPos, offerText);
                 windowOffer.Draw(ConsoleColor.Red);
-                leftPos += 25;
+                leftPos += Helpers.GetProdcutWindowLeftLength(offerText) + windowSpacing; //Add current window to left pos to create spacing
 
                 i++;
-                //Dont draw more than 3x Sale windows
-                if (i > 3)
+                //Dont draw more than X sale window
+                if (i > maxProductWindows)
                     break;
 
             }

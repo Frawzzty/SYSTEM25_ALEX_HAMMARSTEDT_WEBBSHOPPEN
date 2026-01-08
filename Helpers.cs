@@ -43,5 +43,33 @@ namespace WebShop
             Console.WriteLine("Bad inputs. Any key to continue...");
             Console.ReadKey(true);
         }
+
+        public static int GetHeaderMaxPadding(string header, int textLength, int columnSpacing)
+        {
+            int padding = 0;
+            if(textLength >= header.Length)
+            {
+                padding = textLength;
+            }
+            else
+            {
+                padding = header.Length;
+            }
+            return padding + columnSpacing;
+        }
+
+        public static int GetProdcutWindowLeftLength(List<string> windowTexts)
+        {
+            int windowSize = 0;
+            foreach (string windowText in windowTexts) 
+            {
+                if (windowText.Length >= windowSize)
+                {
+                    windowSize = windowText.Length;
+                }
+            }
+            
+            return windowSize;
+        }
     }
 }
