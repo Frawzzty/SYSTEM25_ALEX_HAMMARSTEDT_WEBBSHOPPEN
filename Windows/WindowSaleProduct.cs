@@ -21,7 +21,7 @@ namespace WebShop.Windows
                 productsOnSale = db.Products.Where(p => p.OnSale == true).ToList();
             }
 
-            DrawProductWindows(productsOnSale, 10);
+            DrawProductWindows(productsOnSale, 11);
             
         }
 

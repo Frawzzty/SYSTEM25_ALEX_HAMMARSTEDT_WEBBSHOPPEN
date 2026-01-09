@@ -58,7 +58,7 @@ namespace WebShop.Services
                 }
             }
             else
-                Helpers.MessageLeavingAnyKey();
+                Helpers.MsgLeavingAnyKey();
         }
 
 
@@ -84,7 +84,7 @@ namespace WebShop.Services
             }
             else
             {
-                Helpers.MessageBadInputsAnyKey();
+                Helpers.MsgBadInputsAnyKey();
             }
         }
 
@@ -115,7 +115,7 @@ namespace WebShop.Services
                 }
 
                 if(!success)
-                    Helpers.MessageLeavingAnyKey();
+                    Helpers.MsgLeavingAnyKey();
             }
         }
 

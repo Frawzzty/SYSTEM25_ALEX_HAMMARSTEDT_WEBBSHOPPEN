@@ -7,6 +7,7 @@ using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Modles;
 using WebShop.Services;
+using WebShop.Windows;
 
 namespace WebShop.Menus
 {
@@ -22,15 +23,8 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Console.SetCursorPosition(1, cursorPosTop);
-                Console.WriteLine(menuHeader);
-                Console.SetCursorPosition(1, cursorPosTop + 1);
-
-                foreach (int i in Enum.GetValues(typeof(MenuStoreMain)))
-                {
-                    string menuText = "[" + i + "] " + Enum.GetName(typeof(MenuStoreMain), i).Replace('_', ' ') + "  ";
-                    Helpers.WriteInColor(menuColor, menuText);
-                }
+                
+                Helpers.DrawMenuWindow(new MenuStoreMain(),menuHeader);
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
@@ -39,23 +33,23 @@ namespace WebShop.Menus
                     switch ((MenuStoreMain)number)
                     {
                         case Enums.MenuStoreMain.Pants:
-
+                            CategoryPage.DrawCategoryPage(ProductServices.GetProductsByCategory("Pants"), 3);
                             break;
 
                         case Enums.MenuStoreMain.Shirts:
-
+                            CategoryPage.DrawCategoryPage(ProductServices.GetProductsByCategory("Shirts"), 3);
                             break;
 
                         case Enums.MenuStoreMain.Shoes:
-                            
+                            CategoryPage.DrawCategoryPage(ProductServices.GetProductsByCategory("Shoes"), 3);
                             break;
 
                         case Enums.MenuStoreMain.Hats:
-
+                            CategoryPage.DrawCategoryPage(ProductServices.GetProductsByCategory("Hats"), 3);
                             break;
 
                         case Enums.MenuStoreMain.Search_Product:
-
+                            //Dapper?
                             break;
 
                         case Enums.MenuStoreMain.Back:

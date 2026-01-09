@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
@@ -35,6 +36,18 @@ namespace WebShop.Services
                 product = db.Products.Where(p => p.Id == id).SingleOrDefault();
             }
             return product;
+        }
+
+        public static List<Product> GetProductsByCategory(string categoryName)
+        {
+            List<Product> products = new List<Product>();
+            using (var db = new WebShopContext())
+            {
+                //products = db.Products.Where(p => p.CategoryId == categoryId).ToList();
+                products = db.Products.Include(p => p.Category).Where(p => p.Category.Name == categoryName).ToList();
+            }
+            return products;
+            
         }
 
         public static void PrintProducts(List<Product> products)
@@ -151,9 +164,9 @@ namespace WebShop.Services
                             Console.ReadKey(true);
                         }
                     }
-                    else { Helpers.MessageLeavingAnyKey();}
+                    else { Helpers.MsgLeavingAnyKey();}
                 }
-                else { Helpers.MessageBadInputsAnyKey();}
+                else { Helpers.MsgBadInputsAnyKey();}
             }
         }
 
@@ -179,7 +192,7 @@ namespace WebShop.Services
             }
             else
             {
-                Helpers.MessageBadInputsAnyKey();
+                Helpers.MsgBadInputsAnyKey();
             }
         }
 
@@ -245,14 +258,14 @@ namespace WebShop.Services
                                 Console.ReadKey(true);
                             }
                         }
-                        else { Helpers.MessageLeavingAnyKey(); }
+                        else { Helpers.MsgLeavingAnyKey(); }
                     }
-                    else { Helpers.MessageBadInputsAnyKey(); }
+                    else { Helpers.MsgBadInputsAnyKey(); }
                 }
                 else
                 {
                     Console.WriteLine("Product ID returned NULL");
-                    Helpers.MessageLeavingAnyKey();
+                    Helpers.MsgLeavingAnyKey();
                 }
             }
         }
@@ -298,7 +311,7 @@ namespace WebShop.Services
                         }
                     }
  
-                    else { Helpers.MessageLeavingAnyKey(); }
+                    else { Helpers.MsgLeavingAnyKey(); }
 
                 }
                 else { Console.WriteLine("Products returned NULL"); } //TODO Add readkey? / HELPER MESSAGE

@@ -22,15 +22,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Console.SetCursorPosition(1, cursorPosTop);
-                Console.WriteLine(menuHeader);
-                Console.SetCursorPosition(1, cursorPosTop + 1);
-
-                foreach (int i in Enum.GetValues(typeof(MenuAdminMain)))
-                {
-                    string menuText = "[" + i + "] " + Enum.GetName(typeof(MenuAdminMain), i).Replace('_', ' ') + "  ";
-                    Helpers.WriteInColor(menuColor, menuText);
-                }
+                Helpers.DrawMenuWindow(new MenuAdminMain(), menuHeader);
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
@@ -69,14 +61,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-
-                Console.SetCursorPosition(0, cursorPosTop);
-                Console.WriteLine(menuHeader);
-                foreach (int i in Enum.GetValues(typeof(MenuAdminProduct)))
-                {
-                    string menuText = "[" + i + "] " + Enum.GetName(typeof(MenuAdminProduct), i).Replace('_', ' ') + "  ";
-                    Helpers.WriteInColor(menuColor, menuText);
-                }
+                Helpers.DrawMenuWindow(new MenuAdminProduct(), menuHeader);
 
                 Console.WriteLine("\n");
                 ProductServices.PrintProducts(ProductServices.GetAllProducts());
@@ -124,13 +109,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Console.SetCursorPosition(0, cursorPosTop);
-                Console.WriteLine(menuHeader);
-                foreach (int i in Enum.GetValues(typeof(MenuAdminCategory)))
-                {
-                    string menuText = "[" + i + "] " + Enum.GetName(typeof(MenuAdminCategory), i).Replace('_', ' ') + "  ";
-                    Helpers.WriteInColor(menuColor, menuText);
-                }
+                Helpers.DrawMenuWindow(new MenuAdminCategory(), menuHeader);
 
                 Console.WriteLine("\n");
                 CategoryServices.PrintCategories(CategoryServices.GetAllCategories());
@@ -173,13 +152,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Console.SetCursorPosition(0, cursorPosTop);
-                Console.WriteLine(menuHeader);
-                foreach (int i in Enum.GetValues(typeof(MenuAdminCustomer)))
-                {
-                    string menuText = "[" + i + "] " + Enum.GetName(typeof(MenuAdminCustomer), i).Replace('_', ' ') + "  ";
-                    Helpers.WriteInColor(menuColor, menuText);
-                }
+                Helpers.DrawMenuWindow(new MenuAdminCustomer(), menuHeader);
 
                 Console.WriteLine("\n");
                 CustomerServices.PrintCustomers(CustomerServices.GetAllCustomers());

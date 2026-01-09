@@ -23,15 +23,7 @@ namespace WebShop.Menus
             while (loop)
             {
 
-                Console.SetCursorPosition(1, cursorPosTop);
-                Console.WriteLine(menuHeader);
-                Console.SetCursorPosition(1, cursorPosTop + 1);
-
-                foreach (int i in Enum.GetValues(typeof(Enums.MenuHomeMain)))
-                {
-                    string menuText = "[" + i + "] " + Enum.GetName(typeof(Enums.MenuHomeMain), i).Replace('_', ' ') + "  ";
-                    Helpers.WriteInColor(menuColor, menuText);
-                }
+                Helpers.DrawMenuWindow(new MenuHomeMain(), menuHeader);
 
                 WindowSaleProduct.Draw();
                 WindowWelcome.Draw(); //Draw welcome window last to hide "connection lagging"

@@ -122,7 +122,7 @@ namespace WebShop.DbServices
                 }
                 else
                 {
-                    Helpers.MessageLeavingAnyKey();
+                    Helpers.MsgLeavingAnyKey();
                 }
             }
             else
@@ -167,7 +167,7 @@ namespace WebShop.DbServices
                         UpdateCustomerCountry(selectedCustomer);
                         break;
                     default:
-                        Helpers.MessageBadInputsAnyKey();
+                        Helpers.MsgBadInputsAnyKey();
                         break;
                 }
             }
@@ -235,7 +235,7 @@ namespace WebShop.DbServices
             }
             else
             {
-                Helpers.MessageBadInputsAnyKey();
+                Helpers.MsgBadInputsAnyKey();
             }
         }
 
@@ -257,7 +257,7 @@ namespace WebShop.DbServices
             }
             else
             {
-                Helpers.MessageBadInputsAnyKey();
+                Helpers.MsgBadInputsAnyKey();
             }
         }
 
@@ -279,7 +279,7 @@ namespace WebShop.DbServices
             }
             else
             {
-                Helpers.MessageBadInputsAnyKey();
+                Helpers.MsgBadInputsAnyKey();
             }
         }
 
@@ -301,7 +301,7 @@ namespace WebShop.DbServices
             }
             else
             {
-                Helpers.MessageBadInputsAnyKey();
+                Helpers.MsgBadInputsAnyKey();
             }
         }
     }

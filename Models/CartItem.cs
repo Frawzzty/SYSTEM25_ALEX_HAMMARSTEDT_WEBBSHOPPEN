@@ -17,6 +17,7 @@ namespace WebShop.Modles
         public Product Product { get; set; }
 
         public int UnitAmount { get; set; }
+        public bool IsPayed { get; set; }
 
     }
 }

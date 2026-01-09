@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.Enums;
+using WebShop.Modles;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WebShop
@@ -26,19 +29,19 @@ namespace WebShop
         }
 
         //Messages
-        public static void MessageLeavingAnyKey()
+        public static void MsgLeavingAnyKey()
         {
             Console.WriteLine("Leaving, nothing updated... Any key to continue");
             Console.ReadKey(true);
         }
 
-        public static void MessageContinueAnyKey()
+        public static void MsgContinueAnyKey()
         {
             Console.WriteLine("Any key to continue...");
             Console.ReadKey(true);
         }
 
-        public static void MessageBadInputsAnyKey()
+        public static void MsgBadInputsAnyKey()
         {
             Console.WriteLine("Bad inputs. Any key to continue...");
             Console.ReadKey(true);
@@ -70,6 +73,42 @@ namespace WebShop
             }
             
             return windowSize;
+        }
+
+        public static List<string> GetWindowProductText(Product product, string actionKey)
+        {
+            List<string> productWindowTexts = new List<string>();
+            productWindowTexts.Add(product.Name);
+            productWindowTexts.Add(product.Description);
+            productWindowTexts.Add(product.SupplierName);
+
+            if (product.UnitSalePrice > 0)
+            {
+                productWindowTexts.Add("Sale: " + product.UnitSalePrice.ToString() + " SEK");
+            }
+            else
+            {
+                productWindowTexts.Add(product.UnitPrice.ToString() + " SEK");
+            }
+            productWindowTexts.Add($"View more [{actionKey}]");
+
+            return productWindowTexts;
+        }
+
+        //Menus things
+        public static void DrawMenuWindow(Enum menuEnum, string menuHeader)
+        {
+            Type enumType = menuEnum.GetType(); //Get what enum was inserted
+            string menuText = "";
+            foreach (int i in Enum.GetValues(enumType))
+            {
+                menuText += "[" + i + "] " + Enum.GetName(enumType, i).Replace('_', ' ') + "  ";
+            }
+
+            var windowMenu = new Window(menuHeader, 1, 1, new List<string> { menuText });
+            windowMenu.Draw(ConsoleColor.Yellow);
+            Console.SetCursorPosition(0, 4);
+
         }
     }
 }
