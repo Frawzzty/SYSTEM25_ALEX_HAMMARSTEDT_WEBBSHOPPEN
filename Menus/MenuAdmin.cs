@@ -12,9 +12,6 @@ namespace WebShop.Menus
 {
     internal class MenuAdmin
     { 
-        private static int cursorPosTop = 0;
-        private static ConsoleColor menuColor = ConsoleColor.White;
-
         //MAIN BRANCH
         public static void MenuAdminMain()
         {
@@ -36,12 +33,10 @@ namespace WebShop.Menus
 
                         case Enums.MenuAdminMain.Category:
                             MenuAdminCategory();
-
                             break;
 
                         case Enums.MenuAdminMain.Customers:
                             MenuAdminCustomer();
-
                             break;
 
                         case Enums.MenuAdminMain.Back:

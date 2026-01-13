@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,18 @@ namespace WebShop.DbServices
             List<Customer> customers = new List<Customer>();
             using (var db = new WebShopContext())
             {
-                customers = db.Customers.ToList();
+                customers = db.Customers.Include(c => c.Orders).Include(c => c.CartItems).ToList();
+            }
+            return customers;
+        }
+
+        public static Customer GetCustomerById(int id)
+        {
+            Customer customers;
+            using (var db = new WebShopContext())
+            {
+                //Include customer data
+                customers = db.Customers.Include(c => c.Orders).Include(c => c.CartItems).Where(c => c.Id == id).SingleOrDefault();
             }
             return customers;
         }
@@ -73,7 +85,7 @@ namespace WebShop.DbServices
 
         }
 
-        public static void AddCustomer()
+        public static Customer AddCustomer()
         {
             Console.WriteLine("Add new Customer...");
             Console.Write("Name: ");
@@ -96,6 +108,7 @@ namespace WebShop.DbServices
                     db.SaveChanges();
                 }
             }
+            return newCustomer;
         }
 
         public static void DeleteCustomer()
@@ -304,5 +317,7 @@ namespace WebShop.DbServices
                 Helpers.MsgBadInputsAnyKey();
             }
         }
+        
+
     }
 }

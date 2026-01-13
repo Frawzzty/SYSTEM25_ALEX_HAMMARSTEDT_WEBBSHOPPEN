@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.DbServices;
 using WebShop.Enums;
+using WebShop.Modles;
 using WebShop.Services;
 using WebShop.Windows;
 
@@ -13,8 +15,6 @@ namespace WebShop.Menus
 {
     internal class MenuHome
     {
-        private static int cursorPosTop = 0;
-        private static ConsoleColor menuColor = ConsoleColor.White;
         public static void MenuHomeMain()
         {
             
@@ -22,11 +22,12 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-
+                //WindowCustomer.SelectCustomer();
                 Helpers.DrawMenuWindow(new MenuHomeMain(), menuHeader);
 
+
                 WindowSaleProduct.Draw();
-                WindowWelcome.Draw(); //Draw welcome window last to hide "connection lagging"
+                WindowHome.DrawHome(); //Draw welcome window last to hide "connection lagging"
                 
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
@@ -40,7 +41,11 @@ namespace WebShop.Menus
                             break;
 
                         case Enums.MenuHomeMain.Cart:
+                            Menus.MenuCart.MenuCartMain();
+                            break;
 
+                        case Enums.MenuHomeMain.Switch_Customer:
+                            Program.myCustomerId = WindowCustomer.SelectCustomer();
                             break;
 
                         case Enums.MenuHomeMain.Admin:
@@ -49,7 +54,6 @@ namespace WebShop.Menus
 
                         case Enums.MenuHomeMain.Exit:
                             loop = false;
-
                             break;
                     }
                 }

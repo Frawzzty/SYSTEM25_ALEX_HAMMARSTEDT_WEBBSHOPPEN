@@ -13,6 +13,7 @@ namespace WebShop
 {
     internal class Helpers
     {
+        //Console.Write with color input
         public static void WriteInColor(ConsoleColor color, string text)
         {
             ConsoleColor originalColor = Console.ForegroundColor;
@@ -20,6 +21,8 @@ namespace WebShop
             Console.Write(text);
             Console.ForegroundColor = originalColor;
         }
+
+        //Console.WriteLine with color input
         public static void WriteLineInColor(ConsoleColor color, string text)
         {
             ConsoleColor originalColor = Console.ForegroundColor;
@@ -28,7 +31,7 @@ namespace WebShop
             Console.ForegroundColor = originalColor;
         }
 
-        //Messages
+        //Message methods for commonly occuring messages
         public static void MsgLeavingAnyKey()
         {
             Console.WriteLine("Leaving, nothing updated... Any key to continue");
@@ -61,6 +64,8 @@ namespace WebShop
             return padding + columnSpacing;
         }
 
+        //Windows
+        //Gets the max text length of the windows text. Used in calculating the spacing of windows that are displayed in-line.
         public static int GetProdcutWindowLeftLength(List<string> windowTexts)
         {
             int windowSize = 0;
@@ -75,22 +80,44 @@ namespace WebShop
             return windowSize;
         }
 
-        public static List<string> GetWindowProductText(Product product, string actionKey)
+        //Returns List used when creating windows
+        public static List<string> GetProductTextShortForWindow(Product product, string actionText, string actionKey)
         {
             List<string> productWindowTexts = new List<string>();
             productWindowTexts.Add(product.Name);
-            productWindowTexts.Add(product.Description);
-            productWindowTexts.Add(product.SupplierName);
-
-            if (product.UnitSalePrice > 0)
+            productWindowTexts.Add(product.UnitPrice.ToString() + " SEK");
+            if (product.OnSale == true && product.UnitSalePrice > 0)
             {
                 productWindowTexts.Add("Sale: " + product.UnitSalePrice.ToString() + " SEK");
             }
             else
             {
-                productWindowTexts.Add(product.UnitPrice.ToString() + " SEK");
+                productWindowTexts.Add(""); //Add empty line to keep windows equal size
             }
-            productWindowTexts.Add($"View more [{actionKey}]");
+            productWindowTexts.Add($"{actionText} [{actionKey}]");
+
+            return productWindowTexts;
+        }
+
+        public static List<string> GetProductTexLongForWindow(Product product, string actionText, string actionKey)
+        {
+            List<string> productWindowTexts = new List<string>();
+            productWindowTexts.Add(product.Category.Name + " / " + product.SupplierName);
+            productWindowTexts.Add(product.Name);
+            productWindowTexts.Add(product.Description);
+            productWindowTexts.Add(" ");
+            productWindowTexts.Add("Amount in stock: " + product.StockAmount);
+            productWindowTexts.Add(product.UnitPrice.ToString() + " SEK");
+            if (product.OnSale == true && product.UnitSalePrice > 0)
+            {
+                productWindowTexts.Add("Sale: " + product.UnitSalePrice.ToString() + " SEK");
+            }
+            else
+            {
+                productWindowTexts.Add(""); //Add empty line to keep windows equal size
+            }
+            productWindowTexts.Add(" ");
+            productWindowTexts.Add($"{actionText} [{actionKey}]");
 
             return productWindowTexts;
         }
@@ -98,17 +125,18 @@ namespace WebShop
         //Menus things
         public static void DrawMenuWindow(Enum menuEnum, string menuHeader)
         {
-            Type enumType = menuEnum.GetType(); //Get what enum was inserted
+            Type myEnum = menuEnum.GetType(); //Get what enum was inserted as parameter
             string menuText = "";
-            foreach (int i in Enum.GetValues(enumType))
+            foreach (int i in Enum.GetValues(myEnum)) //Join the each enum value (button) and each enum name into one string. Used in displaying the menu window.
             {
-                menuText += "[" + i + "] " + Enum.GetName(enumType, i).Replace('_', ' ') + "  ";
+                menuText += "[" + i + "] " + Enum.GetName(myEnum, i).Replace('_', ' ') + "  ";
             }
 
             var windowMenu = new Window(menuHeader, 1, 1, new List<string> { menuText });
             windowMenu.Draw(ConsoleColor.Yellow);
-            Console.SetCursorPosition(0, 4);
+            Console.SetCursorPosition(0, 4); //Set cursor below menu window
 
         }
+
     }
 }

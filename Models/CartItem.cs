@@ -17,7 +17,14 @@ namespace WebShop.Modles
         public Product Product { get; set; }
 
         public int UnitAmount { get; set; }
-        public bool IsPayed { get; set; }
+
+        public CartItem() { }
+        public CartItem(int customerId, int productId, int unitAmount)
+        {
+            CustomerId = customerId;
+            ProductId = productId;
+            UnitAmount = unitAmount;
+        }
 
     }
 }

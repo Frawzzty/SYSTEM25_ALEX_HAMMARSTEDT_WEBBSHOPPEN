@@ -13,12 +13,10 @@ namespace WebShop.Menus
 {
     internal class MenuStore
     { 
-        private static int cursorPosTop = 0;
-        private static ConsoleColor menuColor = ConsoleColor.White;
-
         //MAIN BRANCH
         public static void MenuStoreMain()
         {
+            int productsPerPage = 3;
             string menuHeader = "Store";
             bool loop = true;
             while (loop)
@@ -33,19 +31,19 @@ namespace WebShop.Menus
                     switch ((MenuStoreMain)number)
                     {
                         case Enums.MenuStoreMain.Pants:
-                            CategoryPage.DrawCategoryPage(ProductServices.GetProductsByCategory("Pants"), 3);
+                            WindowBrowseProducts.BrowseProducts(ProductServices.GetProductsByCategory("Pants"), productsPerPage);
                             break;
 
                         case Enums.MenuStoreMain.Shirts:
-                            CategoryPage.DrawCategoryPage(ProductServices.GetProductsByCategory("Shirts"), 3);
+                            WindowBrowseProducts.BrowseProducts(ProductServices.GetProductsByCategory("Shirts"), productsPerPage);
                             break;
 
                         case Enums.MenuStoreMain.Shoes:
-                            CategoryPage.DrawCategoryPage(ProductServices.GetProductsByCategory("Shoes"), 3);
+                            WindowBrowseProducts.BrowseProducts(ProductServices.GetProductsByCategory("Shoes"), productsPerPage);
                             break;
 
                         case Enums.MenuStoreMain.Hats:
-                            CategoryPage.DrawCategoryPage(ProductServices.GetProductsByCategory("Hats"), 3);
+                            WindowBrowseProducts.BrowseProducts(ProductServices.GetProductsByCategory("Hats"), productsPerPage);
                             break;
 
                         case Enums.MenuStoreMain.Search_Product:

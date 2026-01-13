@@ -11,8 +11,8 @@ namespace WebShop.Enums
     {
         Store = 1,
         Cart,    // --> show product --> Shipping --> Payment
+        Switch_Customer,
         Admin,
-
         Exit = 9
     }
     
@@ -70,5 +70,23 @@ namespace WebShop.Enums
         Back = 9,
     }
 
+
+    //--CART MENU---------------------------------------------------------------------------//
+    public enum MenuCartMain
+    {
+        Next_Shipping = 1,
+        Edit_Cart,
+
+        Back = 9,
+    }
+    public enum MenuCartEdit
+    {
+        Previous_Item = 1,
+        Increase,
+        Decrease,
+        Next_Item,
+
+        Back = 9,
+    }
 
 }

@@ -4,25 +4,34 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.DbServices;
+using WebShop.Modles;
 
 namespace WebShop.Windows
 {
-    internal class WindowWelcome
+    internal class WindowHome
     {
 
 
-        public static void Draw()
+        public static void DrawHome()
         {
+            //Welcome window vars
             int leftPosWelcome = 1;
             string headerWelcome = "The Clothing Store";  int welcomeTopPos = 5;
+            Customer customer = CustomerServices.GetCustomerById(Program.myCustomerId); //Get current active customer
 
-            List<string> welcomeWindowList = new List<string> { "Welcome 'NAME?',", "We sell the best clothes...", new string(' ', 41) };
+            //Store welcome message
+            List<string> welcomeWindowList = new List<string> { $"Welcome {customer.Name}", "We sell the best clothes!", new string(' ', 41) }; //Also add som epmpty string to make it take up more space.
             var windowWelcome = new Window(headerWelcome, leftPosWelcome, welcomeTopPos, welcomeWindowList);
             windowWelcome.Draw(ConsoleColor.Blue);
 
-            int leftPosNewsFeed = 1 + 46;
+
+
+            //Newsfeed window vars
+            int leftPosNewsFeed = Helpers.GetProdcutWindowLeftLength(welcomeWindowList) + 6; // +6 for borders
             string headerNewsFeed = "News"; int newsFeedTopPos = 5;
 
+            //News feed
             List<string> newsFeedWindowList = new List<string> { "* Winter Sale is now Active", "* Up to 50% off", "* Newly restocked" };
             var windowNewsFeed = new Window(headerNewsFeed, leftPosNewsFeed, newsFeedTopPos, newsFeedWindowList);
             windowNewsFeed.Draw(ConsoleColor.Yellow);

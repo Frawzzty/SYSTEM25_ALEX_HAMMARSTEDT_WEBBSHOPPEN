@@ -21,7 +21,7 @@ namespace WebShop.Modles
 
         //[Column(TypeName = "decimal(18,2")] //internet sa så - 16 heltal, 2 deciamaler = 18 (FUNGERADE EJ)
         public decimal UnitPrice { get; set; }
-        public decimal? UnitSalePrice { get; set; }
+        public decimal UnitSalePrice { get; set; }
         public bool OnSale { get; set; }
         public int StockAmount { get; set; }
 

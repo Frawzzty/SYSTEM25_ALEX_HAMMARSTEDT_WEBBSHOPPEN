@@ -43,8 +43,7 @@ namespace WebShop.Services
             List<Product> products = new List<Product>();
             using (var db = new WebShopContext())
             {
-                //products = db.Products.Where(p => p.CategoryId == categoryId).ToList();
-                products = db.Products.Include(p => p.Category).Where(p => p.Category.Name == categoryName).ToList();
+                products = db.Products.Include(p => p.Category).Where(p => p.Category.Name == categoryName).ToList(); //Use .Include so we are able to access the category props
             }
             return products;
             
@@ -62,7 +61,7 @@ namespace WebShop.Services
                 string headerCategoryId =   "CategoryID";
                 string headerSupplierName = "SupplierName";
                 string headerUnitPrice =    "UnitPrice";
-                string headerUnitSalePrice = "UnitSalePrice";
+                string headerUnitSalePrice ="UnitSalePrice";
                 string headerOnSale =       "OnSale";
                 string headerStockAmount =  "StockAmount";
                 //Set paddings
@@ -78,6 +77,7 @@ namespace WebShop.Services
                 int padStockAmount =    Helpers.GetHeaderMaxPadding(headerStockAmount, products.Max(item => item.StockAmount.ToString().Length), cellpadding);
 
                 //Draw Headers
+                //Console.SetCursorPosition(1, Console.GetCursorPosition().Top);
                 Helpers.WriteLineInColor(ConsoleColor.Blue,
                     headerId.PadRight(padId) +
                     headerName.PadRight(padName) +
@@ -93,6 +93,7 @@ namespace WebShop.Services
                 //Draw Rows
                 foreach (var product in products)
                 {
+                    //Console.SetCursorPosition(1, Console.GetCursorPosition().Top);
                     Console.WriteLine(
                         product.Id.ToString().PadRight(padId) + 
                         product.Name.PadRight(padName) +
@@ -108,6 +109,7 @@ namespace WebShop.Services
             }
             else
             {
+                //Console.SetCursorPosition(1, Console.GetCursorPosition().Top);
                 Console.WriteLine("List is empty...");
             }
 

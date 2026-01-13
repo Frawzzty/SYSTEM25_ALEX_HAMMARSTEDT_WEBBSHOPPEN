@@ -21,6 +21,7 @@ namespace WebShop.Modles
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
 
+        public Customer() {}
         public Customer(string name, string email, string street, string city, string country)
         {
             Name = name;
