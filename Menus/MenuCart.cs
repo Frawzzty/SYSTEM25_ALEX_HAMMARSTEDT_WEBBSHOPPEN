@@ -21,23 +21,30 @@ namespace WebShop.Menus
             bool isActive = true;
             while (isActive)
             {
-
-                Helpers.DrawMenuWindow(new MenuCartMain(), menuHeader);
-                WindowCart.ShowCartPage(Program.myCustomerId);
+                //Graphics
+                Helpers.MenuWindow(new MenuCartMain(), menuHeader);
+                WindowCart.ShowCartWindow(Settings.GetCurrentCustomerId());
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
+                //Inputs
                 if (int.TryParse(input, out int number))
                 {
                     switch ((Enums.MenuCartMain)number)
                     {
                         case Enums.MenuCartMain.Next_Shipping:
-
+                            if (CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId()).Count > 0)
+                            {
+                                MenuCheckout.MenuCheckOutMain();
+                                isActive = false;
+                            }
                             break;
 
                         case Enums.MenuCartMain.Edit_Cart:
-                            MenuCartEditCart();
-                            
+                            if(CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId()).Count > 0)
+                            {
+                                MenuCartEditCart();
+                            }
                             break;
 
 
@@ -53,14 +60,21 @@ namespace WebShop.Menus
         //SUB Branch
         public static void MenuCartEditCart()
         {
+
+            int cartItemIndex = 0;
+            List<CartItem> cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId());
             
+
             string menuHeader = "Edit Cart";
             bool isActive = true;
             while (isActive)
             {
-;
-                Helpers.DrawMenuWindow(new MenuCartEdit(), menuHeader);
-                WindowCart.ShowEditCartPage(Program.myCustomerId);
+;               bool isProductDeleted = false;
+                int totalItemsInCart = cartItems.Count - 1; //update every loop as it can update if items are removed
+
+                Helpers.MenuWindow(new MenuCartEdit(), menuHeader);
+                WindowCart.EditCartPage(Settings.GetCurrentCustomerId(), cartItemIndex);
+
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
@@ -68,20 +82,41 @@ namespace WebShop.Menus
                 {
                     switch ((Enums.MenuCartEdit)number)
                     {
+                        //Go to previous item in cart
                         case Enums.MenuCartEdit.Previous_Item:
-
+                            cartItemIndex = Math.Clamp(cartItemIndex -= 1, 0, totalItemsInCart);
                             break;
 
-                        case Enums.MenuCartEdit.Increase:
-                            
-                            break;
-
-                        case Enums.MenuCartEdit.Decrease:
-                            
-                            break;
-
+                        //Go to next item in cart
                         case Enums.MenuCartEdit.Next_Item:
+                            cartItemIndex = Math.Clamp(cartItemIndex += 1, 0, totalItemsInCart);
+                            break;
 
+
+                        //Increase units on specific product
+                        case Enums.MenuCartEdit.Increase:
+                            if(totalItemsInCart != -1) 
+                            {
+                                isProductDeleted = CartItemServices.UpdateCartItem(cartItems[cartItemIndex], 1);
+                                cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId());
+                            }
+                            else
+                            {
+                                isActive = false;  //If cart empty, leave edit cart page
+                            }
+                            break;
+
+                        //Reduce units on specific product
+                        case Enums.MenuCartEdit.Decrease:
+                            if (totalItemsInCart != -1) 
+                            {
+                                isProductDeleted = CartItemServices.UpdateCartItem(cartItems[cartItemIndex], -1);
+                                cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId());
+                            }
+                            else
+                            {
+                                isActive = false; //If cart empty, leave edit cart page
+                            }
                             break;
 
                         case Enums.MenuCartEdit.Back:
@@ -89,6 +124,7 @@ namespace WebShop.Menus
                             break;
                     }
                 }
+
                 Console.Clear();
             }
         }

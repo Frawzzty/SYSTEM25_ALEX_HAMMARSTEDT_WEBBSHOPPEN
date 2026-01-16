@@ -19,7 +19,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Helpers.DrawMenuWindow(new MenuAdminMain(), menuHeader);
+                Helpers.MenuWindow(new MenuAdminMain(), menuHeader);
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
@@ -56,7 +56,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Helpers.DrawMenuWindow(new MenuAdminProduct(), menuHeader);
+                Helpers.MenuWindow(new MenuAdminProduct(), menuHeader);
 
                 Console.WriteLine("\n");
                 ProductServices.PrintProducts(ProductServices.GetAllProducts());
@@ -104,7 +104,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Helpers.DrawMenuWindow(new MenuAdminCategory(), menuHeader);
+                Helpers.MenuWindow(new MenuAdminCategory(), menuHeader);
 
                 Console.WriteLine("\n");
                 CategoryServices.PrintCategories(CategoryServices.GetAllCategories());
@@ -147,7 +147,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Helpers.DrawMenuWindow(new MenuAdminCustomer(), menuHeader);
+                Helpers.MenuWindow(new MenuAdminCustomer(), menuHeader);
 
                 Console.WriteLine("\n");
                 CustomerServices.PrintCustomers(CustomerServices.GetAllCustomers());

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebShop.DbServices;
 using WebShop.Modles;
+using WebShop.Services;
 
 namespace WebShop.Windows
 {
@@ -15,6 +16,7 @@ namespace WebShop.Windows
 
         public static void BrowseProducts(List<Product> products, int productsPerPage)
         {
+            
             productsPerPage = Math.Clamp(productsPerPage, 1, 8); //Clamp as inputs will be 1-8.
             
             int currentPage = 1;
@@ -59,7 +61,7 @@ namespace WebShop.Windows
                     productWindow.Draw(ConsoleColor.Red);
 
                     //Add spacing to leftPos for next window
-                    windowLeftPos += Helpers.GetProdcutWindowLeftLength(productText) + gapBetweenWindows;
+                    windowLeftPos += Helpers.GetMaxLeftLength(productText) + gapBetweenWindows;
                     interactionKey++;
                 }
 
@@ -110,10 +112,7 @@ namespace WebShop.Windows
             string key = Console.ReadKey(true).KeyChar.ToString().ToUpper();
             if(key == addToCartKey)
             {
-                CartItemServices.AddCartItem(product.Id, Program.myCustomerId);
-                Console.WriteLine("  Added to cart");
-                Helpers.MsgContinueAnyKey();
-                //Add product as cartitem
+                CartItemServices.AddCartItem(product.Id, Settings.GetCurrentCustomerId());
             }
             
         }

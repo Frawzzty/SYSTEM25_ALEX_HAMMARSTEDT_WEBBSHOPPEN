@@ -23,7 +23,7 @@ namespace WebShop.Menus
             while (loop)
             {
                 //WindowCustomer.SelectCustomer();
-                Helpers.DrawMenuWindow(new MenuHomeMain(), menuHeader);
+                Helpers.MenuWindow(new MenuHomeMain(), menuHeader);
 
 
                 WindowSaleProduct.Draw();
@@ -44,8 +44,12 @@ namespace WebShop.Menus
                             Menus.MenuCart.MenuCartMain();
                             break;
 
+                        case Enums.MenuHomeMain.Order_History:
+                            Menus.MenuOrderHistory.MenuOrderHistoryMain();
+                            break;
+
                         case Enums.MenuHomeMain.Switch_Customer:
-                            Program.myCustomerId = WindowCustomer.SelectCustomer();
+                            Settings.SetCurrentCustomer(WindowCustomer.SelectCustomer());
                             break;
 
                         case Enums.MenuHomeMain.Admin:

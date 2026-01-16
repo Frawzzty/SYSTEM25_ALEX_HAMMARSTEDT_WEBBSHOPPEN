@@ -11,11 +11,16 @@ namespace WebShop.Enums
     {
         Store = 1,
         Cart,    // --> show product --> Shipping --> Payment
+        Order_History,
         Switch_Customer,
         Admin,
         Exit = 9
     }
-    
+
+    //--MENU ORDER HISTORY--------------------------------------------------------------------------//
+
+
+
 
     //--ADMIN MENU-----------------------------------------------------------------------------//
     public enum MenuAdminMain
@@ -82,11 +87,37 @@ namespace WebShop.Enums
     public enum MenuCartEdit
     {
         Previous_Item = 1,
-        Increase,
-        Decrease,
-        Next_Item,
+        Next_Item = 2,
+        Decrease = 4,
+        Increase = 5,
+        
 
         Back = 9,
     }
 
+    //--CART MENU---------------------------------------------------------------------------//
+
+    public enum MenuCheckOutMain
+    {
+        Shipping_Info = 1,
+        Payment_Info,
+        Pay,
+
+        Back = 9,
+    }
+
+    public enum MenuCheckoutShipping
+    {
+        Enter_Manually = 1,
+        Auto_Fill,
+
+    }
+
+    public enum MenuCheckoutPayment
+    {
+        Enter_Manually = 1,
+        Auto_Fill,
+
+        Back = 9,
+    }
 }

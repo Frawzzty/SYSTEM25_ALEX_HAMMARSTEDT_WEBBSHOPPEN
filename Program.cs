@@ -9,14 +9,17 @@ namespace WebShop
 {
     internal class Program
     {
-        public static int myCustomerId;
+        //public static int myCustomerId;
 
         static void Main(string[] args)
         {
             //Console.CursorVisible = false;
 
-            myCustomerId = WindowCustomer.SelectCustomer(); //Get selected customer or create a new one. Used to keep track of what customer is "signed in"
+            //myCustomerId = WindowCustomer.SelectCustomer(); //Get selected customer or create a new one. Used to keep track of what customer is "signed in"
+            Settings.SetCurrentCustomer(WindowCustomer.SelectCustomer());
             Console.Clear();
+
+
 
             while (true)
             {

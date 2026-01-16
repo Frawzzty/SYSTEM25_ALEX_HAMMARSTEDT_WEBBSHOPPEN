@@ -271,6 +271,20 @@ namespace WebShop.Services
                 }
             }
         }
+
+        public static void UpdateProductStock(int productId, int amount)
+        {
+            Product product;
+            using (var db = new WebShopContext())
+            {
+                product = db.Products.Where(p => p.Id == productId).SingleOrDefault();
+                
+                product.StockAmount += amount;
+                
+                db.SaveChanges();
+            }
+        }
+
         public static void SetProductOnSale()
         {
             PrintProducts(GetAllProducts());
@@ -320,7 +334,8 @@ namespace WebShop.Services
             }
             else { Console.WriteLine("Invalid ID / ID input"); } //TODO Add readkey? / HELPER MESSAGE
         }
-            
+
+
         public static void DeleteProduct()
         {
             List<Product> products = new List<Product>();

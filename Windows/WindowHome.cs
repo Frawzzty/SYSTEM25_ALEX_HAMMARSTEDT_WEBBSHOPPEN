@@ -18,7 +18,7 @@ namespace WebShop.Windows
             //Welcome window vars
             int leftPosWelcome = 1;
             string headerWelcome = "The Clothing Store";  int welcomeTopPos = 5;
-            Customer customer = CustomerServices.GetCustomerById(Program.myCustomerId); //Get current active customer
+            Customer customer = CustomerServices.GetCustomerById(Settings.GetCurrentCustomerId()); //Get current active customer
 
             //Store welcome message
             List<string> welcomeWindowList = new List<string> { $"Welcome {customer.Name}", "We sell the best clothes!", new string(' ', 41) }; //Also add som epmpty string to make it take up more space.
@@ -28,7 +28,7 @@ namespace WebShop.Windows
 
 
             //Newsfeed window vars
-            int leftPosNewsFeed = Helpers.GetProdcutWindowLeftLength(welcomeWindowList) + 6; // +6 for borders
+            int leftPosNewsFeed = Helpers.GetMaxLeftLength(welcomeWindowList) + 6; // +6 for borders
             string headerNewsFeed = "News"; int newsFeedTopPos = 5;
 
             //News feed

@@ -109,7 +109,7 @@ namespace WebShop.Services
                     if(key == "Y")
                     {
                         db.Remove(selectedItem);
-                        db.SaveChanges();
+                        db.SaveChanges(); //WIll crash if deleting category with products
                         success = true;
                     }
                 }

@@ -40,7 +40,7 @@ namespace WebShop.Windows
                 
                 var windowOffer = new Window(windowHeader, leftPos, topPos, offerText);
                 windowOffer.Draw(ConsoleColor.Red);
-                leftPos += Helpers.GetProdcutWindowLeftLength(offerText) + windowSpacing; //Add current window to left pos to create spacing
+                leftPos += Helpers.GetMaxLeftLength(offerText) + windowSpacing; //Add current window to left pos to create spacing
 
                 i++;
                 //Dont draw more than X sale window

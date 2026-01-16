@@ -22,7 +22,7 @@ namespace WebShop.Menus
             while (loop)
             {
                 
-                Helpers.DrawMenuWindow(new MenuStoreMain(),menuHeader);
+                Helpers.MenuWindow(new MenuStoreMain(),menuHeader);
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();

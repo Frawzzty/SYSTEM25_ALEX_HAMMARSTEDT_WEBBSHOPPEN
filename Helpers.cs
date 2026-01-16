@@ -66,7 +66,7 @@ namespace WebShop
 
         //Windows
         //Gets the max text length of the windows text. Used in calculating the spacing of windows that are displayed in-line.
-        public static int GetProdcutWindowLeftLength(List<string> windowTexts)
+        public static int GetMaxLeftLength(List<string> windowTexts)
         {
             int windowSize = 0;
             foreach (string windowText in windowTexts) 
@@ -122,8 +122,47 @@ namespace WebShop
             return productWindowTexts;
         }
 
+        public static List<string> GetCartItmesText(List<CartItem> cartItems)
+        {
+            List<string> cartText = new List<string>();
+            int padProductName = 0;
+
+            if (cartItems.Count > 0) //Will crash if cart is empty
+            {
+                padProductName = Helpers.GetHeaderMaxPadding("", cartItems.Max(item => item.Product.Name.Length), 3); //Make price text start on the same LeftPos
+                foreach (var item in cartItems)
+                {
+                    decimal price = item.Product.OnSale == false ? (item.UnitAmount * item.Product.UnitPrice) : (item.UnitAmount * item.Product.UnitSalePrice);
+                    cartText.Add($"{item.UnitAmount}x {item.Product.Name.PadRight(padProductName)} {price} SEK");
+                }
+            }
+            else
+            {
+                cartText.Add("Cart Empty");
+            }
+
+            return cartText;
+        }
+
+        /// <summary>
+        /// Returns 1 for True, Returns 0 for False
+        /// </summary>
+        /// <returns></returns>
+        public static int ValidateString(string text)
+        {
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+
         //Menus things
-        public static void DrawMenuWindow(Enum menuEnum, string menuHeader)
+        public static void MenuWindow(Enum menuEnum, string menuHeader)
         {
             Type myEnum = menuEnum.GetType(); //Get what enum was inserted as parameter
             string menuText = "";

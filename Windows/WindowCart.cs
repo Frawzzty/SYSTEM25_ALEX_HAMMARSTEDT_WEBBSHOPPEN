@@ -13,7 +13,7 @@ namespace WebShop.Windows
 {
     internal class WindowCart
     {
-        public static void ShowCartPage(int customerId)
+        public static void ShowCartWindow(int customerId)
         {
             Customer customer = CustomerServices.GetCustomerById(customerId); //Get current active customer
             List<CartItem> cartItems = CartItemServices.GetCartItemsByCustomerId(customerId);
@@ -35,20 +35,27 @@ namespace WebShop.Windows
             windowTotal.Draw(ConsoleColor.White);
         }
 
-        public static void ShowEditCartPage(int customerId)
+        public static void EditCartPage(int customerId, int cartItemIndex)
         {
 
             List<CartItem> cartItems = CartItemServices.GetCartItemsByCustomerId(customerId);
-            int itemIndex = 0;
+            
             int windowLeftPos = 1;
             int windowTopPos = 4;
 
-            var controlsWindow = new Window($"Product {itemIndex + 1} / {cartItems.Count()}", windowLeftPos, windowTopPos, new List<string> { cartItems[itemIndex].UnitAmount + "x " + cartItems[itemIndex].Product.Name});
+            
+            Window controlsWindow;
+            // If cart not empty
+            if (cartItems.Count > 0) 
+            {
+                controlsWindow = new Window($"Product {cartItemIndex + 1} / {cartItems.Count()}", windowLeftPos, windowTopPos, new List<string> { cartItems[cartItemIndex].UnitAmount + "x " + cartItems[cartItemIndex].Product.Name  }); //Bug will crash if removeing products
+            }
+            else //If cart empty
+            {
+                controlsWindow = new Window($"Product 0 / 0", windowLeftPos, windowTopPos, new List<string> {"Cart empty"});
+            }
+
             controlsWindow.Draw(ConsoleColor.White);
-
-            Console.ReadKey(true);
- 
-
         }
 
 
@@ -80,8 +87,14 @@ namespace WebShop.Windows
 
             foreach (var item in cartItems)
             {
-                totalPrice += item.Product.OnSale == false ? item.UnitAmount * item.Product.UnitPrice : item.UnitAmount * item.Product.UnitSalePrice;
-                
+                if(item.Product.OnSale == true)
+                {
+                    totalPrice += item.UnitAmount * item.Product.UnitSalePrice;
+                }
+                else
+                {
+                    totalPrice += item.UnitAmount * item.Product.UnitPrice;
+                }
             }
             return totalPrice;
         }
