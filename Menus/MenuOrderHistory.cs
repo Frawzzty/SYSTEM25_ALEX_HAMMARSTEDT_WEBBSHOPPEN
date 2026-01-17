@@ -18,36 +18,64 @@ namespace WebShop.Menus
 
             Customer customer = Settings.GetCurrentCustomer();
 
+            
+            int orderIndex = 0;
             int orderCount = customer.Orders.Count;
-            int currentOrder = 0;
+            string menuHeader = "Order History ";
+
 
             bool loop = true;
             while (loop)
             {
                 //Draw Menu
-                string menuHeader = "Order History " + (currentOrder + 1) + " / " + (orderCount);
-                var windowMenu = new Window(menuHeader, 1, 1, new List<string> { "[1] Previous [2] Next [9] Back" });
+                string windowHeader = ""; 
+                if (orderCount == 0)
+                {
+                    windowHeader = menuHeader + (orderIndex) + " / " + (orderCount); //No orders
+                }
+                else
+                {
+                    windowHeader = menuHeader + (orderIndex + 1) + " / " + (orderCount);
+                }
+
+
+                var windowMenu = new Window(windowHeader, 1, 1, new List<string> { "[1] Previous [2] Next [9] Back" });
                 windowMenu.Draw(ConsoleColor.Yellow);
                 Console.SetCursorPosition(0, 4); //Set cursor below menu window
 
-                if(orderCount > 0)
-                OrderWindow(OrderServices.GetCustomerOrders(customer.Id)[currentOrder]);
+                
+                if(orderCount != 0) //Only Draw if there are any orders
+                {
+                    OrderWindow(OrderServices.GetCustomerOrders(customer.Id)[orderIndex]);
+                }
+                else
+                {
+                    var windowNoOrders = new Window("Order", 1, 5, new List<string> { "No order history found" });
+                    windowNoOrders.Draw(ConsoleColor.Red);
+                }
 
 
-                string input = Console.ReadKey(true).KeyChar.ToString();
+
+                    string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
                 if (int.TryParse(input, out int number))
                 {
                     switch (number)
                     {
                         case 1:
-                            currentOrder = Math.Clamp(currentOrder -= 1, 0, orderCount - 1);
-
+                            if(orderCount != 0)
+                            {
+                                orderIndex = Math.Clamp(orderIndex -= 1, 0, orderCount - 1);
+                            }
+                            
                             break;
 
                         case 2:
-                            currentOrder = Math.Clamp(currentOrder += 1, 0, orderCount -1);
 
+                            if (orderCount != 0)
+                            {
+                                orderIndex = Math.Clamp(orderIndex += 1, 0, orderCount - 1);
+                            }
                             break;
 
                         case 3:
@@ -115,28 +143,20 @@ namespace WebShop.Menus
                 "Shipping:      " + order.ShippingMethod,
                 " ",
                 "Payment:       " + order.PaymentMethod,
-                "Subtotal:      " + order.SubTotal,
+                "Subtotal:      " + order.SubTotal + " SEK",
                 " ",
-                "Products",
+                "Product Details",
             };
 
             foreach (var od in order.OrderDetails)
             {
-                orderText.Add(od.UnitAmount + "x " + od.Product.Name + " - " + od.Price);
+                orderText.Add(od.UnitAmount + "x " + od.Product.Name + " - " + od.Price + " SEK");
             }
 
-            var windowMenu = new Window("Order", 1, 6, orderText);
+            var windowMenu = new Window("Order", 1, 5, orderText);
             windowMenu.Draw(ConsoleColor.Yellow);
         }
 
-        private static List<string> GetOrderHistoryText()
-        {
-            List<string> strings = new List<string>();
-
-            
-
-            return strings;
-        }
         
     }
 

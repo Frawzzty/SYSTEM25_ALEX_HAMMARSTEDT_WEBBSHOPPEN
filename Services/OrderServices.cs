@@ -14,30 +14,15 @@ namespace WebShop.Services
     internal class OrderServices
     {
 
-        public static void PrintOderInfo(Order order)
-        {
-            
-            Console.WriteLine("ID:" + order.Id);
-            Console.WriteLine("Customer ID:" + order.CustomerId);
-            Console.WriteLine("Steet:" + order.Name);
-
-            Console.WriteLine("Payment Method:" + order.PaymentMethod);
-            Console.WriteLine("Shipping Method: " + order.ShippingMethod);
-            
-            Console.WriteLine("Steet:" + order.Street);
-            Console.WriteLine("City:" + order.City);
-            Console.WriteLine("Country:" + order.Country);
-            Console.WriteLine("Country:" + order.SubTotal);
-            Console.WriteLine("Country:" + order.OrderDate.ToString());
-
-        }
-
-
         public static List<Order> GetCustomerOrders(int customerId)
         {
             using (var db = new WebShopContext())
             {
-                List<Order> orders = db.Orders.Include(od => od.OrderDetails).ThenInclude(p => p.Product).ToList();
+                //Get obj with navigation properties available. Order by latest date
+                List<Order> orders = db.Orders
+                    .Include(od => od.OrderDetails).ThenInclude(p => p.Product)
+                    .Where(c => c.CustomerId == customerId)
+                    .OrderByDescending(o => o.OrderDate).ToList();
                 return orders;
             } 
         }
@@ -104,7 +89,7 @@ namespace WebShop.Services
 
             using (var db = new WebShopContext())
             {
-                //Add order to webshop
+                //Add order
                 try
                 {
                     db.Orders.Add(order);
@@ -120,11 +105,10 @@ namespace WebShop.Services
 
                 //Get cartItems - Create one OrderDetail per product in cart
                 var cartItems = CartItemServices.GetCartItemsByCustomerId(order.CustomerId);
+
                 //Add order details
-                try 
+                try
                 {
-                    Console.WriteLine("OrderId: " + order.Id + "\nNext key...");
-                    
                     foreach (var cartItem in cartItems)
                     {
                         OrderDetail orderDetail = new OrderDetail();
@@ -132,6 +116,7 @@ namespace WebShop.Services
                         orderDetail.OrderId = order.Id;
                         orderDetail.ProductId = cartItem.ProductId;
 
+                        //Get mormal price or sale price.
                         if (cartItem.Product.OnSale == true)
                         {
                             orderDetail.Price = cartItem.Product.UnitSalePrice * cartItem.UnitAmount;
@@ -144,11 +129,10 @@ namespace WebShop.Services
                         orderDetail.UnitAmount = cartItem.UnitAmount;
 
                         db.OrderDetails.Add(orderDetail);
-                        //OrderDetailServices.PrintOrderDetail(orderDetail);
                     }
                     await db.SaveChangesAsync();
                     
-                    //Clear cart;
+                    //Clear (delete) customer cart
                     CartItemServices.ClearCart(order.CustomerId);
                 }
                 catch (Exception ex)
@@ -161,5 +145,4 @@ namespace WebShop.Services
             }
         }
     }
-
 }
