@@ -17,8 +17,6 @@ namespace WebShop.Menus
     internal class MenuCheckout
     {
 
-
-
         //MAIN BRANCH
         public static void MenuCheckOutMain()
         {
@@ -34,8 +32,9 @@ namespace WebShop.Menus
                 order.SubTotal = cartTotalPrice + shippingPrice; //Refresh incase shipping method changed.
 
                 //Graphics
-                Helpers.MenuWindow(new MenuCheckOutMain(), menuHeader);
+                Helpers.DrawMenuEnum(new MenuCheckOutMain(), menuHeader);
                 WindowCheckout.DrawPage(order);
+
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
@@ -60,14 +59,8 @@ namespace WebShop.Menus
                             order.OrderDate = DateTime.Now;
                             if (OrderServices.ValidateForPurchase(order))
                             {
-                                OrderServices.CreateOrder(order);
+                                OrderServices.CreateOrder(order); //Will also delete customer Customer Cart Items
                             }
-                            //OrderServices.PrintOderInfo(order);
-                            Console.ReadKey(true);
-
-                            //Create Order
-                            //Create OrderDetails
-                            //If success, DeleteCartItems
                             isActive = false;
                             break;
 
@@ -87,9 +80,10 @@ namespace WebShop.Menus
 
             //Print menu
             int index = 1;
+            Console.WriteLine("Select Payment method");
             foreach (int i in Enum.GetValues(typeof(Enums.PaymentOption)))
             {
-                Console.WriteLine(index + ". " + Enum.GetName(typeof(Enums.PaymentOption), i).Replace('_', ' '));
+                Console.WriteLine("[" + index + "] " + Enum.GetName(typeof(Enums.PaymentOption), i).Replace('_', ' '));
                 index++;
             }
 
@@ -168,12 +162,22 @@ namespace WebShop.Menus
             string country =    "";    //Set inital as error
 
             Console.WriteLine("Enter Shipping Info:");
-            Console.WriteLine("[1] Enter Manually - [2] Auto Fill (Customer details) ");
+            Console.WriteLine("[1] Auto Fill (Customer details) - [2] Enter Manually");
             int key = int.Parse(Console.ReadKey(true).KeyChar.ToString());
 
             //Enter manually
             if (key == 1)
             {
+                Customer customer = Settings.GetCurrentCustomer();
+                name = customer.Name;
+                street = customer.Street;
+                city = customer.City;
+                country = customer.Country;
+            }
+            //Auto fill
+            else if (key == 2)
+            {
+                Console.WriteLine();
                 Console.Write("Name: ");
                 name = Console.ReadLine();
                 Console.Write("Street: ");
@@ -182,16 +186,6 @@ namespace WebShop.Menus
                 city = Console.ReadLine();
                 Console.Write("Country: ");
                 country = Console.ReadLine();
-
-            }
-            //Auto fill
-            else if (key == 2)
-            {
-                Customer customer = Settings.GetCurrentCustomer();
-                name = customer.Name;
-                street = customer.Street;
-                city = customer.City;
-                country = customer.Country;
             }
             else
             {

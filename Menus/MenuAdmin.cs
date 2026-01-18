@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Modles;
@@ -19,7 +20,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Helpers.MenuWindow(new MenuAdminMain(), menuHeader);
+                Helpers.DrawMenuEnum(new MenuAdminMain(), menuHeader);
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
@@ -56,7 +57,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Helpers.MenuWindow(new MenuAdminProduct(), menuHeader);
+                Helpers.DrawMenuEnum(new MenuAdminProduct(), menuHeader);
 
                 Console.WriteLine("\n");
                 ProductServices.PrintProducts(ProductServices.GetAllProducts());
@@ -78,10 +79,21 @@ namespace WebShop.Menus
                             ProductServices.UpdateProduct();
                             break;
 
-                        case Enums.MenuAdminProduct.Set_on_sale:
+                        case Enums.MenuAdminProduct.Edit_Sale:
                             Console.WriteLine("Set / remove product on sale");
                             ProductServices.SetProductOnSale();
                             break;
+
+                        case Enums.MenuAdminProduct.Update_Stock:
+                            Console.Clear();
+                            Product product = ProductServices.SelectProduct();
+                            Console.Write("Enter stock amount: ");
+                            bool isValid = int.TryParse(Console.ReadLine(), out int amount) && amount >= 0;
+
+                            if (isValid)
+                                ProductServices.SetProductStock(product, amount);
+                            break;
+
                         case Enums.MenuAdminProduct.Delete_Product:
                             Console.WriteLine("Delete Product");
                             ProductServices.DeleteProduct();
@@ -104,7 +116,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Helpers.MenuWindow(new MenuAdminCategory(), menuHeader);
+                Helpers.DrawMenuEnum(new MenuAdminCategory(), menuHeader);
 
                 Console.WriteLine("\n");
                 CategoryServices.PrintCategories(CategoryServices.GetAllCategories());
@@ -147,7 +159,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                Helpers.MenuWindow(new MenuAdminCustomer(), menuHeader);
+                Helpers.DrawMenuEnum(new MenuAdminCustomer(), menuHeader);
 
                 Console.WriteLine("\n");
                 CustomerServices.PrintCustomers(CustomerServices.GetAllCustomers());

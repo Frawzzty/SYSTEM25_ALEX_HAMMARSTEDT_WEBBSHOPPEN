@@ -21,7 +21,7 @@ namespace WebShop.Menus
             
             int orderIndex = 0;
             int orderCount = customer.Orders.Count;
-            string menuHeader = "Order History ";
+            string menuText = "Order History ";
 
 
             bool loop = true;
@@ -31,11 +31,11 @@ namespace WebShop.Menus
                 string windowHeader = ""; 
                 if (orderCount == 0)
                 {
-                    windowHeader = menuHeader + (orderIndex) + " / " + (orderCount); //No orders
+                    windowHeader = menuText + (orderIndex) + " / " + (orderCount); //No orders
                 }
                 else
                 {
-                    windowHeader = menuHeader + (orderIndex + 1) + " / " + (orderCount);
+                    windowHeader = menuText + (orderIndex + 1) + " / " + (orderCount);
                 }
 
 
@@ -56,7 +56,7 @@ namespace WebShop.Menus
 
 
 
-                    string input = Console.ReadKey(true).KeyChar.ToString();
+                string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
                 if (int.TryParse(input, out int number))
                 {

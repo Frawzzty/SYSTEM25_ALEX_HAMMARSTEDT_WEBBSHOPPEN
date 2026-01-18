@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace WebShop.Services
             Category category = null;
             using (var db = new WebShopContext())
             {
-                category = db.Categories.Where(c => c.Id == id).SingleOrDefault();
+                category = db.Categories.Where(c => c.Id == id).Include(c => c.Products).SingleOrDefault();
             }
             return category;
         }

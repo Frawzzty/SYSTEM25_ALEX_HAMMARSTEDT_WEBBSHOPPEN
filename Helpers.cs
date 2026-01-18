@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Modles;
 using static System.Net.Mime.MediaTypeNames;
@@ -66,7 +67,7 @@ namespace WebShop
 
         //Windows
         //Gets the max text length of the windows text. Used in calculating the spacing of windows that are displayed in-line.
-        public static int GetMaxLeftLength(List<string> windowTexts)
+        public static int GetMaxHorizontalLength(List<string> windowTexts)
         {
             int windowSize = 0;
             foreach (string windowText in windowTexts) 
@@ -160,9 +161,60 @@ namespace WebShop
             }
         }
 
+        public static void ViewMoreWindow(Product product)
+        {
+            string addToCartKey = "B";
+            string windowHeader = "Selected product";
+            List<string> productText = Helpers.GetProductTexLongForWindow(product, "Add To Cart", addToCartKey);
+
+            var productWindow = new Window(windowHeader, 1, 13, productText); //Fix, Postion too hardcoded?
+            productWindow.Draw(ConsoleColor.Green);
+
+            string key = Console.ReadKey(true).KeyChar.ToString().ToUpper();
+            if (key == addToCartKey)
+            {
+                CartItemServices.AddCartItem(product.Id, Settings.GetCurrentCustomerId());
+            }
+        }
+
+        public static void TryAddProductOnSaleToCart(List<Product> products, int index)
+        {
+            if (products.Count > 0 && index < products.Count)
+            {
+                CartItemServices.AddCartItem(products[index].Id, Settings.GetCurrentCustomerId());
+            }
+        }
+
+
+        //ACTION KEYS______________________________________________________________________________________
+        public static List<string> GetActionKeys()
+        {
+            List<string> actionKeys = new List<string>() { "Z", "X", "C", "V", "B", "N", "M" };
+            return actionKeys;
+        }
+
+        public static int GetActionKeyIndex(string actionKey)
+        {
+            List<string> actionKeys = GetActionKeys();
+
+            //Check if action key exists in ActionKeys. Return key Index
+            for (int i = 0; i < actionKeys.Count; i++)
+            {
+                if (actionKey.ToUpper() == actionKeys[i])
+                {
+                    return i;
+                }
+            }
+
+            return -1; //Return negative if key does not exist
+        }
+        //_________________________________________________________________________________________________
 
         //Menus things
-        public static void MenuWindow(Enum menuEnum, string menuHeader)
+        /// <summary>
+        /// Draw menu based on Enum. Menus always LeftPos 1, TopPos 1
+        /// </summary>
+        public static void DrawMenuEnum(Enum menuEnum, string menuHeader)
         {
             Type myEnum = menuEnum.GetType(); //Get what enum was inserted as parameter
             string menuText = "";
@@ -176,6 +228,16 @@ namespace WebShop
             Console.SetCursorPosition(0, 4); //Set cursor below menu window
 
         }
+
+        /// <summary>
+        /// Draw menu based on text. Menus always LeftPos 1, TopPos 1
+        /// </summary>
+        public static void DrawMenuText(string menuHeader, string menuText)
+        {
+            var window = new Window(menuHeader, 1, 1, new List<string> { menuText });
+            window.Draw(ConsoleColor.Yellow);
+        }
+
 
     }
 }

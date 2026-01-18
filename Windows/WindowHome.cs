@@ -28,7 +28,7 @@ namespace WebShop.Windows
 
 
             //Newsfeed window vars
-            int leftPosNewsFeed = Helpers.GetMaxLeftLength(welcomeWindowList) + 6; // +6 for borders
+            int leftPosNewsFeed = Helpers.GetMaxHorizontalLength(welcomeWindowList) + 6; // +6 for borders
             string headerNewsFeed = "News"; int newsFeedTopPos = 5;
 
             //News feed

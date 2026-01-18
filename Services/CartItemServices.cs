@@ -49,7 +49,6 @@ namespace WebShop.DbServices
                     cartItem.UnitAmount++;
                     db.Update(cartItem);
 
-                    ProductServices.UpdateProductStock(productId, -1); //remove 1 from stock
                 }
                 else
                 {
@@ -57,9 +56,9 @@ namespace WebShop.DbServices
                     cartItem = new CartItem(customerId, productId, 1);
                     db.Add(cartItem);
 
-                    ProductServices.UpdateProductStock(productId, -1); //remove 1 from stock
+                    
                 }
-                
+                ProductServices.UpdateProductStock(productId, -1); //remove 1 from stock
                 db.SaveChanges();
             }
         }

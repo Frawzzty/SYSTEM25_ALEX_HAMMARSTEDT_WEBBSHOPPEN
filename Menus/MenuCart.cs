@@ -22,7 +22,7 @@ namespace WebShop.Menus
             while (isActive)
             {
                 //Graphics
-                Helpers.MenuWindow(new MenuCartMain(), menuHeader);
+                Helpers.DrawMenuEnum(new MenuCartMain(), menuHeader);
                 WindowCart.ShowCartWindow(Settings.GetCurrentCustomerId());
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
@@ -69,10 +69,9 @@ namespace WebShop.Menus
             bool isActive = true;
             while (isActive)
             {
-;               bool isProductDeleted = false;
                 int totalItemsInCart = cartItems.Count - 1; //update every loop as it can update if items are removed
 
-                Helpers.MenuWindow(new MenuCartEdit(), menuHeader);
+                Helpers.DrawMenuEnum(new MenuCartEdit(), menuHeader);
                 WindowCart.EditCartPage(Settings.GetCurrentCustomerId(), cartItemIndex);
 
 
@@ -97,7 +96,7 @@ namespace WebShop.Menus
                         case Enums.MenuCartEdit.Increase:
                             if(totalItemsInCart != -1) 
                             {
-                                isProductDeleted = CartItemServices.UpdateCartItem(cartItems[cartItemIndex], 1);
+                                CartItemServices.UpdateCartItem(cartItems[cartItemIndex], 1);
                                 cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId());
                             }
                             else
@@ -110,8 +109,13 @@ namespace WebShop.Menus
                         case Enums.MenuCartEdit.Decrease:
                             if (totalItemsInCart != -1) 
                             {
-                                isProductDeleted = CartItemServices.UpdateCartItem(cartItems[cartItemIndex], -1);
+                                CartItemServices.UpdateCartItem(cartItems[cartItemIndex], -1);
                                 cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId());
+                                if(cartItems.Count == cartItemIndex) //Only true if item was deleted
+                                {
+                                    cartItemIndex -= 1;
+                                }
+  
                             }
                             else
                             {
@@ -123,6 +127,7 @@ namespace WebShop.Menus
                             isActive = false;
                             break;
                     }
+
                 }
 
                 Console.Clear();

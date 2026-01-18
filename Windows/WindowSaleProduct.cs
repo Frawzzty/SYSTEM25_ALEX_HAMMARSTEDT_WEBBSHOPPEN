@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.DbServices;
 using WebShop.Modles;
 using WebShop.Services;
 
@@ -12,41 +13,27 @@ namespace WebShop.Windows
 {
     internal class WindowSaleProduct
     {
-        public static void Draw()
+   
+        public static void DrawProductWindows(List<Product> products, int windowCount, List<string> actionKeys)
         {
-            
-            List<Product> productsOnSale = new List<Product>();
-            using (var db = new WebShopContext()) 
+            //Sort products? Revenu or volume sold.
+
+            products = products.Where(p => p.StockAmount > 0).Take(windowCount).ToList(); //Limit List count to amount of windows
+
+            int windowLeftPos = 1;
+            int windowTopPos = 12;
+            int windowSpacing = 5;
+
+            int index = 0; //used for displaying correct action key
+            foreach (var product in products) 
             {
-                productsOnSale = db.Products.Where(p => p.OnSale == true).ToList();
-            }
+                List<string> windowText = new List<string> { product.Name, product.Description, product.UnitSalePrice.ToString() + " SEK", "Stock: " + product.StockAmount, $"Add to Cart [{actionKeys[index]}]" };
 
-            DrawProductWindows(productsOnSale, 11);
-            
-        }
-
-        static void DrawProductWindows(List<Product> productsOnSale, int topPos)
-        {
-            int maxProductWindows = 3;
-            int windowSpacing = 5; // 5 leaves " " gap.
-            int leftPos = 1;
-            string windowHeader = "Special offer";
-            string[] offerKeys = { "6", "7", "8", "NoKey", "NoKey", "NoKey", "NoKey", "NoKey", "NoKey" };
-
-            int i = 0;
-            foreach (var product in productsOnSale)
-            {
-                List<string> offerText = new List<string> { product.Name, product.Description, product.UnitSalePrice.ToString() + " SEK", $"Add to Cart [{offerKeys[i]}]" };
-                
-                var windowOffer = new Window(windowHeader, leftPos, topPos, offerText);
-                windowOffer.Draw(ConsoleColor.Red);
-                leftPos += Helpers.GetMaxLeftLength(offerText) + windowSpacing; //Add current window to left pos to create spacing
-
-                i++;
-                //Dont draw more than X sale window
-                if (i >= maxProductWindows)
-                    break;
-
+                var window = new Window("Sale", windowLeftPos, windowTopPos, windowText);
+                window.Draw(ConsoleColor.Red);
+                windowLeftPos += Helpers.GetMaxHorizontalLength(windowText) + windowSpacing; //Add current window to left pos to create spacing
+                index++;
+                //Console.WriteLine(product.Name + ": " + product.OnSale);
             }
         }
     }

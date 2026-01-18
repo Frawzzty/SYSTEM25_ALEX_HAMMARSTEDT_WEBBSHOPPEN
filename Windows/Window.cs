@@ -63,7 +63,7 @@ namespace WebShop
             Console.SetCursorPosition(0, Lowest.LowestPosition);
         }
 
-        public void Draw(ConsoleColor color)
+        public void Draw(ConsoleColor headerColor)
         {
             var width = TextRows.OrderByDescending(s => s.Length).FirstOrDefault().Length;
 
@@ -79,7 +79,7 @@ namespace WebShop
             if (Header != "")
             {
                 Console.Write('┌' + " ");
-                Console.ForegroundColor = color;
+                Console.ForegroundColor = headerColor;
                 Console.Write(Header);
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write(" " + new string('─', width - Header.Length) + '┐');
@@ -110,7 +110,6 @@ namespace WebShop
             Console.SetCursorPosition(0, Lowest.LowestPosition);
         }
     }
-    
 
     public static class Lowest
     {

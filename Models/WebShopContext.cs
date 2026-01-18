@@ -25,6 +25,8 @@ namespace WebShop.Modles
             optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=WebShop2;Trusted_Connection=True; TrustServerCertificate=True;");
         }
 
+
+        /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
@@ -33,6 +35,7 @@ namespace WebShop.Modles
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
+        */
     }
 }
 

@@ -49,6 +49,53 @@ namespace WebShop.Services
             
         }
 
+        public static List<Product> GetProductsByCategory(int categoryId)
+        {
+            List<Product> products = new List<Product>();
+            using (var db = new WebShopContext())
+            {
+                products = db.Products
+                    .Include(p => p.Category) //Use .Include() to get access to Navigation property
+                    .Where(p => 
+                        p.Category.Id == categoryId)
+                    .ToList();
+            }
+            return products;
+
+        }
+        public static List<Product> GetProductsOnSale()
+        {
+            List<Product> products = new List<Product>();
+            using (var db = new WebShopContext())
+            {
+                products = db.Products //Use .Include() to get access to Navigation property
+                    .Include(p => p.Category)
+                    .Where(p => 
+                        p.OnSale == true)
+                    .ToList(); 
+            }
+            return products;
+        }
+
+        public static List<Product> GetProductsByString(string searchTerm)
+        {
+            List<Product> products = new List<Product>();
+            using (var db = new WebShopContext())
+            {
+                products = db.Products
+                    .Include(p => p.Category) //Use .Include() to get access to Navigation property
+                    .Where(p => 
+                        p.Name.Contains(searchTerm) ||
+                        p.Description.Contains(searchTerm) ||
+                        p.SupplierName.Contains(searchTerm) ||
+                        p.Category.Name.Contains(searchTerm))
+                    .ToList(); 
+                
+            }
+            return products;
+        }
+
+
         public static void PrintProducts(List<Product> products)
         {
             if(!products.IsNullOrEmpty())
@@ -272,6 +319,9 @@ namespace WebShop.Services
             }
         }
 
+        /// <summary>
+        /// stock += amount
+        /// </summary>
         public static void UpdateProductStock(int productId, int amount)
         {
             Product product;
@@ -283,6 +333,39 @@ namespace WebShop.Services
                 
                 db.SaveChanges();
             }
+        }
+
+        /// <summary>
+        /// Sets stock. Stock = amount
+        /// </summary>
+        public static void SetProductStock(Product product, int amount)
+        {
+            using (var db = new WebShopContext())
+            {
+                product.StockAmount = amount;
+                db.Products.Update(product);
+                db.SaveChanges();
+            }
+        }
+
+        public static Product SelectProduct()
+        {
+            
+            PrintProducts(GetAllProducts());
+
+            Console.Write("\nSelect Product... Enter ID: ");
+            string input = Console.ReadLine();
+            bool isNumber = int.TryParse(input, out int id) && id > 0;
+
+            Product product = null;
+            if (isNumber)
+            {
+                using (var db = new WebShopContext())
+                {
+                    product = db.Products.Where(p => p.Id == id).Include(p => p.Category).SingleOrDefault();
+                }
+            }
+            return product;
         }
 
         public static void SetProductOnSale()

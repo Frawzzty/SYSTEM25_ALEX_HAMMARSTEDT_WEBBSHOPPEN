@@ -36,8 +36,20 @@ namespace WebShop.Enums
     {
         Add_Product = 1,
         Update_Product,
-        Set_on_sale,
+        Edit_Sale,
+        Update_Stock,
         Delete_Product,
+
+        Back = 9,
+    }
+    public enum MenuAdminUpdateProduct
+    {
+        Edit_Name,
+        Edit_Desciption,
+        Edit_Category,
+        Edit_Supplier,
+        Edit_Unit_Price,
+        Set_Stock,
 
         Back = 9,
     }

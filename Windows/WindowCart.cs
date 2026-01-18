@@ -46,11 +46,11 @@ namespace WebShop.Windows
             
             Window controlsWindow;
             // If cart not empty
-            if (cartItems.Count > 0) 
+            if (cartItems.Count > 0 && cartItemIndex < cartItems.Count) //added "cartItemIndex < cartItems.Count". Now it displays wrong window when removing 2nd product or more
             {
-                controlsWindow = new Window($"Product {cartItemIndex + 1} / {cartItems.Count()}", windowLeftPos, windowTopPos, new List<string> { cartItems[cartItemIndex].UnitAmount + "x " + cartItems[cartItemIndex].Product.Name  }); //Bug will crash if removeing products
+                controlsWindow = new Window($"Product {cartItemIndex + 1} / {cartItems.Count()}", windowLeftPos, windowTopPos, new List<string> { cartItems[cartItemIndex].UnitAmount + "x " + cartItems[cartItemIndex].Product.Name  }); //Bug will crash if removing the 2nd product in the list
             }
-            else //If cart empty
+            else  //If cart empty
             {
                 controlsWindow = new Window($"Product 0 / 0", windowLeftPos, windowTopPos, new List<string> {"Cart empty"});
             }
