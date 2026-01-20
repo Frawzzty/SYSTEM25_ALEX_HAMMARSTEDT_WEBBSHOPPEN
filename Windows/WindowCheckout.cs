@@ -11,13 +11,6 @@ namespace WebShop.Windows
     internal class WindowCheckout
     {
 
-
-        //Draw Cart
-         
-        //Draw
-        
-
-
         public static void DrawPage(Order order)
         {
 
@@ -66,5 +59,7 @@ namespace WebShop.Windows
 
 
         }
+
+
     }
 }

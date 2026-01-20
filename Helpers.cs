@@ -32,6 +32,8 @@ namespace WebShop
             Console.ForegroundColor = originalColor;
         }
 
+
+
         //Message methods for commonly occuring messages
         public static void MsgLeavingAnyKey()
         {
@@ -50,6 +52,8 @@ namespace WebShop
             Console.WriteLine("Bad inputs. Any key to continue...");
             Console.ReadKey(true);
         }
+
+
 
         public static int GetHeaderMaxPadding(string header, int textLength, int columnSpacing)
         {
@@ -146,9 +150,9 @@ namespace WebShop
         }
 
         /// <summary>
-        /// Returns 1 for True, Returns 0 for False
+        /// Checks if a string is valid 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns 1 for True, Returns 0 for False</returns>
         public static int ValidateString(string text)
         {
             if (!string.IsNullOrWhiteSpace(text))

@@ -26,6 +26,7 @@ namespace WebShop.DbServices
             return cartItems;
         }
 
+
         public static void AddCartItem(int productId, int customerId)
         {
             CartItem cartItem = null;
@@ -103,6 +104,7 @@ namespace WebShop.DbServices
             return isRemoved;
         }
 
+
         public static void PrintCartItems(int customerId)
         {
             List<CartItem> cartItems = GetCartItemsByCustomerId(customerId);
@@ -112,6 +114,7 @@ namespace WebShop.DbServices
                 Console.WriteLine("Item ID: " + cartItem.Id + " " + cartItem.Product.Name);
             }
         }
+
 
         public static decimal GetCartValue(int customerId)
         {
@@ -132,7 +135,8 @@ namespace WebShop.DbServices
             return totalValue;
         }
 
-        public static void ClearCart(int customerId)
+
+        public static void DeleteCartItems(int customerId)
         {
             bool isSuccess = false;
 
@@ -153,5 +157,7 @@ namespace WebShop.DbServices
                 }
             }
         }
+
+
     }
 }

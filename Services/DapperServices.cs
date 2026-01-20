@@ -141,7 +141,7 @@ namespace WebShop.Services
             //Get Total Revenue
             string sql = @$"
                 SELECT 
-                    SUM(OD.UnitAmount * OD.Price)
+                    SUM(OD.Price)
                 FROM 
                     OrderDetails OD
                 JOIN 

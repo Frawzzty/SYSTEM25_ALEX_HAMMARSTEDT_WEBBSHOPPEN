@@ -22,43 +22,39 @@ namespace WebShop.Windows
             int leftPos = 1;
             int topPos = 5;
 
-            WinShopRevenue(leftPos, topPos);
+            Window WinTotalRevenue = WindowTotalRevenue();
+            WinTotalRevenue.Left = leftPos; WinTotalRevenue.Top = topPos;
+            WinTotalRevenue.Draw();
+            
+            Window WinProdcutsRevenue = WindowBestSellers(1);
+            Window WinProdcutsUnitsSold = WindowBestSellers(0);
+            List<Window> windowRowProducts = new List<Window>() { WinProdcutsRevenue, WinProdcutsUnitsSold };
+            Window.DrawWindowsInRow(windowRowProducts, 1, topPos += (Window.GetWindowVerticalLength(WinTotalRevenue) + 1), 1);
 
-
-            leftPos = 1;
-            topPos = topPos + 4;
-            leftPos += WinBestSellers(leftPos, topPos, 1) + 5;
-
-
-
-            WinBestSellers(leftPos, topPos, 0);
-
-            leftPos = 1;
-            topPos = topPos + 12;
-            leftPos += WinBestLocation(leftPos, topPos, 1) + 5;
-
-            WinBestLocation(leftPos, topPos, 0);
+            Window WinCountryRevenue = WindowBestLocation(1);
+            Window WinCityRevenue = WindowBestLocation(0);
+            List<Window> windowRowLocation = new List<Window>() { WinCountryRevenue, WinCityRevenue };
+            Window.DrawWindowsInRow(windowRowLocation, 1, topPos + Window.GetWindowVerticalLength(WinProdcutsRevenue) + 1, 1);
         }
 
 
         // WINDOWS
-        private static int WinShopRevenue(int leftPos, int topPos)
+        private static Window WindowTotalRevenue()
         {
             string header = "Total Revenue";
 
             decimal bestSellerValue = DapperServices.GetShopRevenue();
             List<string> textRows = new List<string>() { (bestSellerValue.ToString("N0")) + " SEK" };
             
+            var window = new Window(header, 0, 0, textRows);
+            window.headerColor = ConsoleColor.Green;
 
-            var window = new Window(header, leftPos, topPos, textRows);
-            window.Draw(ConsoleColor.Green);
-
-            return Helpers.GetMaxHorizontalLength(textRows); //Return how much space window takes up. For drawing window in-line
+            return window;
         }
 
         ///<summary> int table == 1; Orders by revenue else units sold</summary>
         /// <returns>Windows horizontal length</returns>
-        private static int WinBestSellers(int leftPos, int topPos, int table)
+        private static Window WindowBestSellers(int table)
         {
             var orderDetails = OrderDetailServices.GetAllOrderDetails();
             var groups = orderDetails //Group by product ID. And order by revenue
@@ -94,17 +90,18 @@ namespace WebShop.Windows
             }
 
             //Draw window
-            var window = new Window(header, leftPos, topPos, textRows);
-            window.Draw(ConsoleColor.Yellow);
+            var window = new Window(header, 0, 0, textRows);
+            window.headerColor = ConsoleColor.Yellow;
+ 
 
             //Return how much space the window take up to the left. For drawing In-line
-            return Helpers.GetMaxHorizontalLength(textRows);
+            return window;
         }
 
 
         /// <summary> int table == 1; Country table else City table </summary>
         /// <returns>Windows horizontal length</returns>
-        private static int WinBestLocation(int leftPos, int topPos, int table)
+        private static Window WindowBestLocation(int table)
         {
 
             var orderDetails = OrderDetailServices.GetAllOrderDetails();
@@ -158,12 +155,13 @@ namespace WebShop.Windows
             }
 
             //Draw window
-            var window = new Window(header, leftPos, topPos, textRows);
-            window.Draw(ConsoleColor.Yellow);
+            var window = new Window(header, 0, 0, textRows);
+            window.headerColor = ConsoleColor.Yellow;
 
             //Return how much space the window take up to the left. For drawing In-line
-            return Helpers.GetMaxHorizontalLength(textRows);
+            return window;
         }
+
 
 
 

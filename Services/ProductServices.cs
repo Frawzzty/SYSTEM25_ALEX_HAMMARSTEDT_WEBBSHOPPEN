@@ -28,6 +28,7 @@ namespace WebShop.Services
             return products;
         }
 
+
         public static Product GetProductById(int id)
         {
             Product product = null;
@@ -37,6 +38,7 @@ namespace WebShop.Services
             }
             return product;
         }
+
 
         public static List<Product> GetProductsByCategory(string categoryName)
         {
@@ -48,6 +50,7 @@ namespace WebShop.Services
             return products;
             
         }
+
 
         public static List<Product> GetProductsByCategory(int categoryId)
         {
@@ -63,6 +66,8 @@ namespace WebShop.Services
             return products;
 
         }
+
+
         public static List<Product> GetProductsOnSale()
         {
             List<Product> products = new List<Product>();
@@ -76,6 +81,7 @@ namespace WebShop.Services
             }
             return products;
         }
+
 
         public static List<Product> GetProductsByString(string searchTerm)
         {
@@ -162,6 +168,7 @@ namespace WebShop.Services
 
         }
 
+
         public static void AddProduct()
         {
             using (var db = new WebShopContext())
@@ -219,6 +226,7 @@ namespace WebShop.Services
             }
         }
 
+
         public static void UpdateProductName()
         {
             PrintProducts(GetAllProducts());
@@ -244,6 +252,7 @@ namespace WebShop.Services
                 Helpers.MsgBadInputsAnyKey();
             }
         }
+
 
         public static void UpdateProduct()
         {
@@ -319,6 +328,7 @@ namespace WebShop.Services
             }
         }
 
+
         /// <summary>
         /// stock += amount
         /// </summary>
@@ -335,6 +345,7 @@ namespace WebShop.Services
             }
         }
 
+
         /// <summary>
         /// Sets stock. Stock = amount
         /// </summary>
@@ -347,6 +358,7 @@ namespace WebShop.Services
                 db.SaveChanges();
             }
         }
+
 
         public static Product SelectProduct()
         {
@@ -367,6 +379,7 @@ namespace WebShop.Services
             }
             return product;
         }
+
 
         public static void SetProductOnSale()
         {

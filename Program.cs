@@ -14,6 +14,9 @@ namespace WebShop
 
         static void Main(string[] args)
         {
+
+            //Testing.WindowTesting();
+
             //Console.CursorVisible = false;
             Settings.SetCurrentCustomer(WindowCustomer.SelectCustomer());
             Console.Clear();

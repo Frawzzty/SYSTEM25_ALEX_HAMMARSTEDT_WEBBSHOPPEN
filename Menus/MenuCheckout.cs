@@ -20,21 +20,21 @@ namespace WebShop.Menus
         //MAIN BRANCH
         public static void MenuCheckOutMain()
         {
-            Order order = new Order(); //Create new order outside of loop so changes will be saved.
+            //Create order outside of loop so changes can be made to it.
+            Order order = new Order(); 
             order.CustomerId = Settings.GetCurrentCustomerId();
+
             decimal cartTotalPrice = CartItemServices.GetCartValue(Settings.GetCurrentCustomerId());
             decimal shippingPrice = 0;
             
-            string menuHeader = "Checkout";
             bool isActive = true;
             while (isActive)
             {
                 order.SubTotal = cartTotalPrice + shippingPrice; //Refresh incase shipping method changed.
-
-                //Graphics
-                Helpers.DrawMenuEnum(new MenuCheckOutMain(), menuHeader);
-                WindowCheckout.DrawPage(order);
-
+                
+                Helpers.DrawMenuEnum(new MenuCheckOutMain(), "Checkout");
+                //Draw page based on order info
+                WindowCheckout.DrawPage(order); 
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
@@ -57,13 +57,12 @@ namespace WebShop.Menus
 
                         case Enums.MenuCheckOutMain.Pay:
                             order.OrderDate = DateTime.Now;
-                            if (OrderServices.ValidateForPurchase(order))
+                            if (OrderServices.ValidateOrderForPurchase(order))
                             {
-                                OrderServices.CreateOrder(order); //Will also delete customer Customer Cart Items
+                                OrderServices.CreateOrderAndDetails(order); //Will also delete customer Customer Cart Items
                             }
                             isActive = false;
                             break;
-
 
                         case Enums.MenuCheckOutMain.Back:
                             isActive = false;
@@ -111,9 +110,9 @@ namespace WebShop.Menus
         private static (Order order, decimal shippingPrice) SelectShippingDetails(Order order)
         {
             //Get values
-            var shippingCarrier = GetShippingMethodAndPrice(); //Returns (method: "", price: 0)   if selection invalid
+            var shippingCarrier = GetShippingMethodAndPrice();
             Console.WriteLine();
-            var shippingDetails = GetShipping(); //Returns (street: "", city: "", country: "") if inputs failed
+            var shippingDetails = GetShipping();
 
             //Set values
             order.ShippingMethod = shippingCarrier.method;
@@ -131,8 +130,8 @@ namespace WebShop.Menus
             string shippingMethod = "";
             decimal shippingPrice = 0;
 
+            //Print options
             Console.WriteLine("Choose Shipping Method");
-            //Print menu
             int index = 1;
             foreach (int i in Enum.GetValues(typeof(Enums.ShippingOption)))
             {
@@ -142,11 +141,11 @@ namespace WebShop.Menus
                 index++;
             }
 
-            //Input
+            //Get input
             string input = Console.ReadKey(true).KeyChar.ToString();
             bool validInput = int.TryParse(input, out int number) && number > 0 && number <= Enum.GetValues(typeof(Enums.ShippingOption)).Length;
 
-            //set values
+            //Set values
             ShippingOption[] shippingOptions = Enum.GetValues<ShippingOption>(); //Get array of enum values
             if (validInput)
             {

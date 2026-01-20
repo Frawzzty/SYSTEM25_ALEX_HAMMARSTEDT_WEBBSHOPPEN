@@ -28,7 +28,12 @@ namespace WebShop.Services
         }
         
 
-        public static bool ValidateForPurchase(Order order)
+        /// <summary>
+        /// Validate order is ready for purchase
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns>True if all columns are filled in. Does not check for ID</returns>
+        public static bool ValidateOrderForPurchase(Order order)
         {
             bool isReady = false;
 
@@ -84,7 +89,12 @@ namespace WebShop.Services
             return isReady;
         }
 
-        public static async Task CreateOrder(Order order)
+
+        /// <summary>
+        /// Creates order. Gets cartItems from order.customerId. Creates Order details for each product in customers cart.
+        /// Then Clears cart
+        /// </summary>
+        public static void CreateOrderAndDetails(Order order)
         {
 
             using (var db = new WebShopContext())
@@ -93,7 +103,7 @@ namespace WebShop.Services
                 try
                 {
                     db.Orders.Add(order);
-                    await db.SaveChangesAsync();
+                    db.SaveChanges();
                 }
                 catch (Exception ex)
                 {
@@ -106,7 +116,7 @@ namespace WebShop.Services
                 //Get cartItems - Create one OrderDetail per product in cart
                 var cartItems = CartItemServices.GetCartItemsByCustomerId(order.CustomerId);
 
-                //Add order details
+                //Add an Order Detail for each Product in Cart
                 try
                 {
                     foreach (var cartItem in cartItems)
@@ -130,10 +140,10 @@ namespace WebShop.Services
 
                         db.OrderDetails.Add(orderDetail);
                     }
-                    await db.SaveChangesAsync();
+                    db.SaveChanges();
                     
-                    //Clear (delete) customer cart
-                    CartItemServices.ClearCart(order.CustomerId);
+                    //Clear Cart (Delete)
+                    CartItemServices.DeleteCartItems(order.CustomerId);
                 }
                 catch (Exception ex)
                 {
@@ -144,5 +154,7 @@ namespace WebShop.Services
                 }
             }
         }
+
+
     }
 }
