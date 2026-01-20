@@ -44,14 +44,14 @@ namespace WebShop.Menus
                     switch ((Enums.MenuCheckOutMain)number)
                     {
                         case Enums.MenuCheckOutMain.Shipping_Info:
-                            var values = GetShippingDetails(order);
+                            var values = SelectShippingDetails(order);
                             order = values.order;
                             shippingPrice = values.shippingPrice;
 
                             break;
 
                         case Enums.MenuCheckOutMain.Payment_Info:
-                            order = GetPaymentInfo(order);
+                            order = SelectPaymentInfo(order);
 
                             break;
 
@@ -74,7 +74,7 @@ namespace WebShop.Menus
             }
         }
 
-        private static Order GetPaymentInfo(Order order)
+        private static Order SelectPaymentInfo(Order order)
         {
             string paymentMethod = "";
 
@@ -104,11 +104,14 @@ namespace WebShop.Menus
         }
 
 
-
-        private static (Order order, decimal shippingPrice) GetShippingDetails(Order order)
+        /// <summary>
+        /// Lets user input shipping detials
+        /// </summary>
+        /// <returns>Input order and Shipping price as Orders do not have didcated column for shipping</returns>
+        private static (Order order, decimal shippingPrice) SelectShippingDetails(Order order)
         {
             //Get values
-            var shippingCarrier = GetShippingMethodAndPrice(); //Returns "Error", 0   if invalid selection
+            var shippingCarrier = GetShippingMethodAndPrice(); //Returns (method: "", price: 0)   if selection invalid
             Console.WriteLine();
             var shippingDetails = GetShipping(); //Returns (street: "", city: "", country: "") if inputs failed
 
@@ -121,7 +124,6 @@ namespace WebShop.Menus
 
             return (order, shippingCarrier.price);
         }
-
         
 
         private static (string method, decimal price) GetShippingMethodAndPrice()
@@ -134,7 +136,9 @@ namespace WebShop.Menus
             int index = 1;
             foreach (int i in Enum.GetValues(typeof(Enums.ShippingOption)))
             {
-                Console.WriteLine(index + ". " + Enum.GetName(typeof(Enums.ShippingOption), i).Replace('_', ' '));
+                Console.WriteLine(
+                    ("[" + index + "] " + Enum.GetName(typeof(Enums.ShippingOption), i).Replace('_', ' ')).PadRight(15)
+                    + i + " SEK" );
                 index++;
             }
 
@@ -143,7 +147,7 @@ namespace WebShop.Menus
             bool validInput = int.TryParse(input, out int number) && number > 0 && number <= Enum.GetValues(typeof(Enums.ShippingOption)).Length;
 
             //set values
-            ShippingOption[] shippingOptions = Enum.GetValues<ShippingOption>();
+            ShippingOption[] shippingOptions = Enum.GetValues<ShippingOption>(); //Get array of enum values
             if (validInput)
             {
                 ShippingOption selectedMethod = shippingOptions[number - 1];
@@ -154,12 +158,13 @@ namespace WebShop.Menus
             return (shippingMethod,shippingPrice);
         }
 
+
         private static (string name, string street, string city, string country) GetShipping()
         {
-            string name =       "";    //Set inital as error
-            string street =     "";    //Set inital as error
-            string city =       "";    //Set inital as error
-            string country =    "";    //Set inital as error
+            string name =       "";
+            string street =     "";
+            string city =       "";
+            string country =    "";
 
             Console.WriteLine("Enter Shipping Info:");
             Console.WriteLine("[1] Auto Fill (Customer details) - [2] Enter Manually");

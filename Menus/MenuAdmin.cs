@@ -8,6 +8,7 @@ using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Modles;
 using WebShop.Services;
+using WebShop.Windows;
 
 namespace WebShop.Menus
 {
@@ -38,6 +39,11 @@ namespace WebShop.Menus
 
                         case Enums.MenuAdminMain.Customers:
                             MenuAdminCustomer();
+                            break;
+
+                        case Enums.MenuAdminMain.Dashboard:
+                            WindowStatistics.Draw();
+                            Console.ReadKey();
                             break;
 
                         case Enums.MenuAdminMain.Back:

@@ -26,9 +26,7 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-                //WindowCustomer.SelectCustomer();
 
-                
                 Helpers.DrawMenuEnum(new MenuHomeMain(), menuHeader);
                 WindowHome.DrawHome(); //Welcome message & Newsfeed
 
@@ -39,11 +37,11 @@ namespace WebShop.Menus
 
                 string input = Console.ReadKey(true).KeyChar.ToString().ToUpper();
                 int actionKeyIndex = Helpers.GetActionKeyIndex(input);
-                //Handle Navbar menu
+
+                //Navbar menu
                 Console.Clear();
                 if (int.TryParse(input, out int number))
                 {
-
                     switch ((Enums.MenuHomeMain)number)
                     {
                         case Enums.MenuHomeMain.Store:
@@ -71,6 +69,7 @@ namespace WebShop.Menus
                             break;
                     }
                 }
+                //Add to cart
                 else if(actionKeyIndex >= 0) //Try add sale product to cart
                 {
                         Helpers.TryAddProductOnSaleToCart(productsOnSale, actionKeyIndex);

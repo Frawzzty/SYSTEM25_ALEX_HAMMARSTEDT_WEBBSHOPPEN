@@ -28,7 +28,7 @@ namespace WebShop.Enums
         Product = 1,
         Category, 
         Customers,
-
+        Dashboard,
         Back = 9,
     }
 

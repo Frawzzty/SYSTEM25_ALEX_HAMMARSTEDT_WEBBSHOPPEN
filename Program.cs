@@ -15,11 +15,8 @@ namespace WebShop
         static void Main(string[] args)
         {
             //Console.CursorVisible = false;
-
-            //myCustomerId = WindowCustomer.SelectCustomer(); //Get selected customer or create a new one. Used to keep track of what customer is "signed in"
             Settings.SetCurrentCustomer(WindowCustomer.SelectCustomer());
             Console.Clear();
-
 
 
             while (true)
@@ -29,7 +26,7 @@ namespace WebShop
                 break;
             }
 
-            Console.WriteLine("Byyyye please dont ever come back!");
+            Console.WriteLine("Byyyye please dont ever come back!\n\n\n");
 
         }
     }
