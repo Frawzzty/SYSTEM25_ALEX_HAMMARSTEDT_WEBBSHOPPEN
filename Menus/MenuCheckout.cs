@@ -18,8 +18,10 @@ namespace WebShop.Menus
     {
 
         //MAIN BRANCH
-        public static void MenuCheckOutMain()
+        public static bool MenuCheckOutMain()
         {
+            bool isPruchase = false;
+
             //Create order outside of loop so changes can be made to it.
             Order order = new Order(); 
             order.CustomerId = Settings.GetCurrentCustomerId();
@@ -59,7 +61,8 @@ namespace WebShop.Menus
                             order.OrderDate = DateTime.Now;
                             if (OrderServices.ValidateOrderForPurchase(order))
                             {
-                                OrderServices.CreateOrderAndDetails(order); //Will also delete customer Customer Cart Items
+                                OrderServices.CreateOrderAndDetailsAsync(order); //Will also delete customer Customer Cart Items
+                                isPruchase = true;
                                 isActive = false;
                             }
                             
@@ -72,6 +75,7 @@ namespace WebShop.Menus
                 }
                 Console.Clear();
             }
+            return isPruchase;
         }
 
         private static Order SelectPaymentInfo(Order order)

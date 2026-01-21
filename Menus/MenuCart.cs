@@ -30,18 +30,19 @@ namespace WebShop.Menus
                 //Inputs
                 if (int.TryParse(input, out int number))
                 {
+                    int cartItemCount = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId()).Count;
+
                     switch ((Enums.MenuCartMain)number)
                     {
                         case Enums.MenuCartMain.Next_Shipping:
-                            if (CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId()).Count > 0)
+                            if (cartItemCount > 0)
                             {
-                                MenuCheckout.MenuCheckOutMain();
-                                isActive = false;
+                                isActive = !MenuCheckout.MenuCheckOutMain(); //If sucessfull purchase send back to home screen
                             }
                             break;
 
                         case Enums.MenuCartMain.Edit_Cart:
-                            if(CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId()).Count > 0)
+                            if(cartItemCount > 0)
                             {
                                 MenuCartEditCart();
                             }
@@ -63,13 +64,16 @@ namespace WebShop.Menus
 
             int cartItemIndex = 0;
             List<CartItem> cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId());
-            
 
             string menuHeader = "Edit Cart";
             bool isActive = true;
             while (isActive)
             {
                 int totalItemsInCart = cartItems.Count - 1; //update every loop as it can update if items are removed
+                if(totalItemsInCart == -1) //Leave if cart is empty
+                {
+                    break;
+                }
 
                 Helpers.DrawMenuEnum(new MenuCartEdit(), menuHeader);
                 WindowCart.EditCartPage(Settings.GetCurrentCustomerId(), cartItemIndex);
@@ -91,36 +95,24 @@ namespace WebShop.Menus
                             cartItemIndex = Math.Clamp(cartItemIndex += 1, 0, totalItemsInCart);
                             break;
 
-
                         //Increase units on specific product
                         case Enums.MenuCartEdit.Increase:
-                            if(totalItemsInCart != -1) 
-                            {
+
                                 CartItemServices.UpdateCartItem(cartItems[cartItemIndex], 1);
-                                cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId());
-                            }
-                            else
-                            {
-                                isActive = false;  //If cart empty, leave edit cart page
-                            }
+                                cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId());  //Update cartitems (To get new stock value)
                             break;
 
                         //Reduce units on specific product
                         case Enums.MenuCartEdit.Decrease:
-                            if (totalItemsInCart != -1) 
+
+                            CartItemServices.UpdateCartItem(cartItems[cartItemIndex], -1);
+                            cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId()); //Update cartitems (To get new stock value OR if item was removed)
+
+                            if (cartItems.Count == cartItemIndex) //Can be true if item was deletd
                             {
-                                CartItemServices.UpdateCartItem(cartItems[cartItemIndex], -1);
-                                cartItems = CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId());
-                                if(cartItems.Count == cartItemIndex) //Only true if item was deleted
-                                {
-                                    cartItemIndex -= 1;
-                                }
-  
+                                cartItemIndex -= 1;
                             }
-                            else
-                            {
-                                isActive = false; //If cart empty, leave edit cart page
-                            }
+
                             break;
 
                         case Enums.MenuCartEdit.Back:

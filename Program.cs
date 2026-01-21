@@ -15,6 +15,10 @@ namespace WebShop
 
         static void Main(string[] args)
         {
+
+            //Console.ReadKey();
+
+
             //BEFORE START
             //CHECK VPN is OFF;
             //CHECK DB STRINGS;

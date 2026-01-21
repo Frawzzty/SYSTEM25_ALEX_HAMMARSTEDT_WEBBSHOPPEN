@@ -42,25 +42,39 @@ namespace WebShop.DbServices
                 }
             }
 
+            
             using (var db = new WebShopContext())
             {
-                if (cartItem != null)
+                try
                 {
-                    // + 1 to existing cartitem
-                    cartItem.UnitAmount++;
-                    db.Update(cartItem);
+                    if (cartItem != null)
+                    {
+                        // + 1 to existing cartitem
+                        cartItem.UnitAmount++;
+                        db.Update(cartItem);
 
-                }
-                else
-                {
-                    // create new cartitem
-                    cartItem = new CartItem(customerId, productId, 1);
-                    db.Add(cartItem);
+                    }
+                    else
+                    {
+                        // create new cartitem
+                        cartItem = new CartItem(customerId, productId, 1);
+                        db.Add(cartItem);
+
+
+                    }
+                    ProductServices.UpdateProductStock(productId, -1); //remove 1 from stock
+                    db.SaveChanges();
 
                     
+                    MongoDbServices.AddUserAction(new Models.UserAction(customerId, Enums.UserActions.Added_To_Cart, "Product ID: " + cartItem.ProductId));
                 }
-                ProductServices.UpdateProductStock(productId, -1); //remove 1 from stock
-                db.SaveChanges();
+                catch (Exception ex) 
+                {
+                    Console.WriteLine("Could not add CartItem\n");
+                    Console.WriteLine(ex.Message);
+                    Console.ReadKey(true);
+                }
+
             }
         }
 
@@ -71,7 +85,7 @@ namespace WebShop.DbServices
             bool isRemoved = false;
 
 
-            if (cartItem != null) 
+            if (cartItem != null)
             {
                 cartItem.UnitAmount += value;
 
@@ -79,7 +93,7 @@ namespace WebShop.DbServices
                 {
                     if (cartItem.UnitAmount > 0)
                     {
-                        
+
                         db.Update(cartItem);
                     }
                     else
@@ -87,11 +101,11 @@ namespace WebShop.DbServices
                         db.Remove(cartItem);
                         isRemoved = true;
                     }
-                    
+
                     db.SaveChanges();
                 }
                 //Update stock
-                if(value < 0)
+                if (value < 0)
                 {
                     ProductServices.UpdateProductStock(cartItem.ProductId, Math.Abs(value)); //Add 1 to stock.
                 }
@@ -109,7 +123,7 @@ namespace WebShop.DbServices
         {
             List<CartItem> cartItems = GetCartItemsByCustomerId(customerId);
 
-            foreach (var cartItem in cartItems) 
+            foreach (var cartItem in cartItems)
             {
                 Console.WriteLine("Item ID: " + cartItem.Id + " " + cartItem.Product.Name);
             }
@@ -123,41 +137,54 @@ namespace WebShop.DbServices
 
             foreach (var cartItem in cartItems)
             {
-                if(cartItem.Product.IsOnSale == true)
-                {
-                    totalValue += cartItem.Product.UnitSalePrice * cartItem.UnitAmount;
-                }
-                else
-                {
-                    totalValue += cartItem.Product.UnitPrice * cartItem.UnitAmount;
-                }
+                totalValue += ProductServices.GetProductCurrentUnitPrice(cartItem.Product);
             }
             return totalValue;
         }
 
-
-        public static void DeleteCartItems(int customerId)
+   
+        public static void DeleteCartItems(List<CartItem> cartItems)
         {
-            bool isSuccess = false;
 
-            List<CartItem > cartItems = CartItemServices.GetCartItemsByCustomerId(customerId);
             using (var db = new WebShopContext())
             {
                 try
                 {
                     db.CartItems.RemoveRange(cartItems);
-                    db.SaveChanges();
+                    if(db.SaveChanges() > 0)
+                    {
+
+                    }
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Error Clearing Cart");
+                    Console.WriteLine("Error deleteing CartItems");
+                    Console.WriteLine("Any key to continue...\n");
                     Console.WriteLine(ex.InnerException);
-                    Console.WriteLine("\nAny key to continue...");
-                    Console.ReadKey();
+
+                    Console.ReadKey(true);
                 }
             }
         }
 
+        /// <summary>
+        /// Method does not save changes.
+        /// </summary>
+        public static void DeleteCartItems(List<CartItem> cartItems, WebShopContext db)
+        {
+            try
+            {
+                db.CartItems.RemoveRange(cartItems);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error deleteing CartItems");
+                Console.WriteLine("Any key to continue...\n");
+                Console.WriteLine(ex.InnerException);
 
+                Console.ReadKey(true);
+            }
+        }
     }
+
 }

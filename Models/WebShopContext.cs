@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -22,7 +24,13 @@ namespace WebShop.Modles
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer($"Server=.\\SQLExpress;Database={Settings.GetDatabaseName()};Trusted_Connection=True; TrustServerCertificate=True;");
+            var config = new ConfigurationBuilder()
+                .AddUserSecrets<Program>()
+                .Build();
+
+            var connStr = config["MySettings:ConnectionStringLocal"];
+
+            optionsBuilder.UseSqlServer(connStr);
         }
 
 

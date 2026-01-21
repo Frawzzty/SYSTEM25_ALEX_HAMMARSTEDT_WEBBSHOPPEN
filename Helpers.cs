@@ -40,7 +40,7 @@ namespace WebShop
         {
             if(text.Length > 1)
             {
-                text = text.Substring(0, 1) + text.Substring(1);
+                text = text.Substring(0, 1).ToUpper() + text.Substring(1);
             }
             
             return text;

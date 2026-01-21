@@ -52,13 +52,15 @@ namespace WebShop.Windows
                             break;
                     }
                 }
+
                 MongoDbServices.AddUserAction(new UserAction(customers[selectedCustomer].Id, UserActions.Logged_In));
+
                 return customers[selectedCustomer].Id;
 
             }
             else //If no customer is found - Create a new one
             {
-                Console.WriteLine("No cusomter found. Please add one...");
+                Console.WriteLine("No cusomter found. Please add a new one...");
                 Customer newCustomer = CustomerServices.AddCustomer();
 
                 MongoDbServices.AddUserAction(new UserAction(newCustomer.Id, UserActions.Customer_Added));

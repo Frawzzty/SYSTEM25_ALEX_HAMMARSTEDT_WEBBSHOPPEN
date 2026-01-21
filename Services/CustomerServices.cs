@@ -254,17 +254,24 @@ namespace WebShop.DbServices
 
         public static void UpdateCustomerName(Customer customer)
         {
+            string oldName = customer.Name;
+
             Console.WriteLine("Update customer name...");
             Console.WriteLine($"Current name: {customer.Name}");
             Console.Write("Enter new name: ");
             string newName = Console.ReadLine();
 
-            GenericServices.UpdateItemName(customer, newName); //Method handles input check.
-            
+            bool isSuccess = GenericServices.UpdateItemName(customer, newName); //Method handles input check.
+
+            if(isSuccess)
+                MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated name: From {oldName} To: {newName}"));
+
         }
 
         public static void UpdateCustomerEmail(Customer customer)
         {
+            string oldEmail = customer.Email;
+
             Console.WriteLine("Update customer email...");
             Console.WriteLine($"Current email: {customer.Email}");
             Console.Write("Enter new email: ");
@@ -276,7 +283,11 @@ namespace WebShop.DbServices
                 {
                     customer.Email = newEmail;
                     db.Update(customer);
-                    db.SaveChanges();
+
+                    if(db.SaveChanges() > 0)
+                    {
+                        MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated Email: From {oldEmail} To: {newEmail}"));
+                    }
                 }
             }
             else
@@ -287,6 +298,8 @@ namespace WebShop.DbServices
 
         public static void UpdateCustomerStreet(Customer customer)
         {
+            string oldStreetName = customer.Street;
+
             Console.WriteLine("Update customer street...");
             Console.WriteLine($"Current street: {customer.Street}");
             Console.Write("Enter new steet name: ");
@@ -298,7 +311,11 @@ namespace WebShop.DbServices
                 {
                     customer.Street = newStreetName;
                     db.Update(customer);
-                    db.SaveChanges();
+
+                    if (db.SaveChanges() > 0)
+                    {
+                        MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated Street: From {oldStreetName} To: {newStreetName}"));
+                    }
                 }
             }
             else
@@ -309,6 +326,7 @@ namespace WebShop.DbServices
 
         public static void UpdateCustomerCity(Customer customer)
         {
+            string oldCityName = customer.City;
             Console.WriteLine("Update customer City...");
             Console.WriteLine($"Current city: {customer.City}");
             Console.Write("Enter new city name: ");
@@ -320,7 +338,11 @@ namespace WebShop.DbServices
                 {
                     customer.City = newCityName;
                     db.Update(customer);
-                    db.SaveChanges();
+
+                    if (db.SaveChanges() > 0)
+                    {
+                        MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated City: From {oldCityName} To: {newCityName}"));
+                    }
                 }
             }
             else
@@ -331,6 +353,7 @@ namespace WebShop.DbServices
 
         public static void UpdateCustomerCountry(Customer customer)
         {
+            string oldCountryName = customer.Country;
             Console.WriteLine("Update customer country...");
             Console.WriteLine($"Current country: {customer.Country}");
             Console.Write("Enter new country name: ");
@@ -342,7 +365,11 @@ namespace WebShop.DbServices
                 {
                     customer.Country = newCountryName;
                     db.Update(customer);
-                    db.SaveChanges();
+
+                    if (db.SaveChanges() > 0)
+                    {
+                        MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated Country: From {oldCountryName} To: {newCountryName}"));
+                    }
                 }
             }
             else

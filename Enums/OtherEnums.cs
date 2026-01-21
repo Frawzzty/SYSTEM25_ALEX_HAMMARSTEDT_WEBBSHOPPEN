@@ -26,6 +26,7 @@ namespace WebShop.Enums
         Pruchase_Failed,
         Customer_Added,
         Customer_Removed,
+        Customer_Updated,
         Logged_In,
         Logged_Out
     }

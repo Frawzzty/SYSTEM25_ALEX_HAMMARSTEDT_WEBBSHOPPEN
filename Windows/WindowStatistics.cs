@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebShop.Modles;
 using WebShop.Services;
@@ -15,7 +17,7 @@ namespace WebShop.Windows
 
         public static void Draw()
         {
-            Helpers.DrawMenuText("Statistics", "[Any key] Go Back");
+            Helpers.DrawMenuText("Statistics", "[Any key - Go Back]");
 
             int leftGap = 8;
 
@@ -23,9 +25,12 @@ namespace WebShop.Windows
             int topPos = 5;
 
             Window WinTotalRevenue = WindowTotalRevenue();
-            WinTotalRevenue.Left = leftPos; WinTotalRevenue.Top = topPos;
-            WinTotalRevenue.Draw();
-            
+
+            Window WinRevenueLastHour = WindowRevenueLastHour();
+            List<Window> windowsRevenue = new List<Window>() { WinTotalRevenue, WinRevenueLastHour };
+            Window.DrawWindowsInRow(windowsRevenue, 1, topPos, 1);
+
+
             Window WinProdcutsRevenue = WindowBestSellers(1);
             Window WinProdcutsUnitsSold = WindowBestSellers(0);
             List<Window> windowRowProducts = new List<Window>() { WinProdcutsRevenue, WinProdcutsUnitsSold };
@@ -34,7 +39,23 @@ namespace WebShop.Windows
             Window WinCountryRevenue = WindowBestLocation(1);
             Window WinCityRevenue = WindowBestLocation(0);
             List<Window> windowRowLocation = new List<Window>() { WinCountryRevenue, WinCityRevenue };
-            Window.DrawWindowsInRow(windowRowLocation, 1, topPos + Window.GetWindowVerticalLength(WinProdcutsRevenue) + 1, 1);
+            Window.DrawWindowsInRow(windowRowLocation, 1, topPos += Window.GetWindowVerticalLength(WinProdcutsRevenue) + 1, 1);
+
+
+            Window WinCategoryRevenue = WindowBestCategoryRevenue();
+            Window WinCategoryRevenue2 = WindowBestCategoryUnitsSold();
+            List<Window> windowRowCategory = new List<Window>() { WinCategoryRevenue, WinCategoryRevenue2 };
+            Window.DrawWindowsInRow(windowRowCategory, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
+
+            
+            //Category breakdown?
+
+
+            //Shipping method popularity?
+
+            //Monthly Revenue breakdown?
+
+
         }
 
 
@@ -43,9 +64,26 @@ namespace WebShop.Windows
         {
             string header = "Total Revenue";
 
-            decimal bestSellerValue = DapperServices.GetShopRevenue();
-            List<string> textRows = new List<string>() { (bestSellerValue.ToString("N0")) + " SEK" };
+            decimal value = DapperServices.GetShopRevenueTotal();
+            List<string> textRows = new List<string>() { (value.ToString("N0")) + " SEK" };
             
+            var window = new Window(header, 0, 0, textRows);
+            window.headerColor = ConsoleColor.Green;
+
+            return window;
+        }
+
+        private static Window WindowRevenueLastHour()
+        {
+            string header = "Total Revenue -1 Hour";
+
+            DateTime endDate = DateTime.Now;
+            DateTime startDate = endDate.AddHours(-1);
+            
+            decimal value = DapperServices.GetShopRevenueL30D(startDate, endDate);
+            
+            List<string> textRows = new List<string>() { (value.ToString() + " SEK" )};
+
             var window = new Window(header, 0, 0, textRows);
             window.headerColor = ConsoleColor.Green;
 
@@ -192,7 +230,63 @@ namespace WebShop.Windows
 
 
 
+        private static Window WindowBestCategoryRevenue()
+        {
 
+            List<string> textRows = new List<string>();
+            using (var db = new WebShopContext())
+            {
+                var groups = db.OrderDetails
+                    .Include(od => od.Product).ThenInclude(p => p.Category)
+                    .ToList()
+                    .GroupBy(od => od.Product.Category.Name)
+                    .OrderByDescending(group => group.Sum(od => od.SubTotal));
+
+                foreach (var group in groups)
+                {
+                    textRows.Add((group.Sum(g => g.SubTotal).ToString("N0").PadRight(15) + " " + group.First().Product.Category.Name));
+                }
+
+                if (textRows.Count == 0)
+                    textRows.Add(" ");
+             
+            }
+
+            string header = "Category Revenue";
+            var window = new Window(header, 0, 0, textRows);
+            window.headerColor = ConsoleColor.Yellow;
+
+            return window;
+        }
+
+        private static Window WindowBestCategoryUnitsSold()
+        {
+
+            List<string> textRows = new List<string>();
+            using (var db = new WebShopContext())
+            {
+                var groups = db.OrderDetails
+                    .Include(od => od.Product).ThenInclude(p => p.Category)
+                    .ToList()
+                    .GroupBy(od => od.Product.Category.Name)
+                    .OrderByDescending(group => group.Sum(od => od.UnitAmount));
+
+                foreach (var group in groups)
+                {
+                    textRows.Add((group.Sum(g => g.UnitAmount) + "x").PadRight(15) + group.First().Product.Category.Name);
+                }
+
+                if (textRows.Count == 0)
+                    textRows.Add(" ");
+
+            }
+
+            string header = "Category Units Sold";
+            var window = new Window(header, 0, 0, textRows);
+            window.headerColor = ConsoleColor.Yellow;
+
+            return window;
+        }
 
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -31,7 +33,6 @@ namespace WebShop.Services
         /// <summary>
         /// Validate order is ready for purchase
         /// </summary>
-        /// <param name="order"></param>
         /// <returns>True if all columns are filled in. Does not check for ID</returns>
         public static bool ValidateOrderForPurchase(Order order)
         {
@@ -94,31 +95,19 @@ namespace WebShop.Services
         /// Creates order. Gets cartItems from order.customerId. Creates Order details for each product in customers cart.
         /// Then Clears cart
         /// </summary>
-        public static void CreateOrderAndDetails(Order order)
+        public static async void CreateOrderAndDetailsAsync(Order order)
         {
-
             using (var db = new WebShopContext())
             {
+                var myTransaction = db.Database.BeginTransaction();
                 //Add order
                 try
                 {
                     db.Orders.Add(order);
-                    db.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error Adding order");
-                    Console.WriteLine(ex.InnerException);
-                    Console.WriteLine("\nAny key to continue...");
-                    Console.ReadKey();
-                }
+                    await db.SaveChangesAsync(); //Save first so OrderId gets generated
 
-                //Get cartItems - Create one OrderDetail per product in cart
-                var cartItems = CartItemServices.GetCartItemsByCustomerId(order.CustomerId);
+                    var cartItems = CartItemServices.GetCartItemsByCustomerId(order.CustomerId);
 
-                //Add an Order Detail for each Product in Cart
-                try
-                {
                     foreach (var cartItem in cartItems)
                     {
                         OrderDetail orderDetail = new OrderDetail();
@@ -135,26 +124,33 @@ namespace WebShop.Services
                         {
                             orderDetail.SubTotal = cartItem.Product.UnitPrice * cartItem.UnitAmount;
                         }
-                           
+
                         orderDetail.UnitAmount = cartItem.UnitAmount;
 
                         db.OrderDetails.Add(orderDetail);
                     }
-                    db.SaveChanges();
-                    
-                    //Clear Cart (Delete)
-                    CartItemServices.DeleteCartItems(order.CustomerId);
+
+                    //Clear cart. Use current db context so it stays on the same transaction chain
+                    CartItemServices.DeleteCartItems(cartItems, db);
+
+                    await db.SaveChangesAsync();
+                    await myTransaction.CommitAsync();
+
+                    MongoDbServices.AddUserAction(new Models.UserAction(order.Customer.Id, Enums.UserActions.Pruchase_Success, ("Order ID: " + order.Id)));
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error Adding Order details");
+                    await myTransaction.RollbackAsync();
+                    Console.WriteLine("Error Adding order");
                     Console.WriteLine(ex.InnerException);
                     Console.WriteLine("\nAny key to continue...");
                     Console.ReadKey();
                 }
+
+
+
             }
         }
-
 
     }
 }

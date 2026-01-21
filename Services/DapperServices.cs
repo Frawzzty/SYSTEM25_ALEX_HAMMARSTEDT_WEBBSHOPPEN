@@ -15,7 +15,7 @@ namespace WebShop.Services
 {
     internal class DapperServices
     {
-        private static string connString = $"data source=.\\SQLEXPRESS; initial catalog = {Settings.GetDatabaseName()}; persist security info = True; Integrated Security = True; TrustServerCertificate=true;";
+        private static string connString = Connections.ConnectionDapper.GetConnectionString();
 
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace WebShop.Services
         /// <summary>
         /// Get shops lifetime revenue
         /// </summary>
-        public static decimal GetShopRevenue()
+        public static decimal GetShopRevenueTotal()
         {
 
             //Get Total Revenue
@@ -159,18 +159,14 @@ namespace WebShop.Services
             return revenue;
         }
 
-        /// <summary>
-        /// Returns total revenue within date window. Looks 30 days back from input date
-        /// </summary>
-        public static decimal GetShopRevenueL30D(DateTime endDate)
+        
+        public static decimal GetShopRevenueL30D(DateTime startDate, DateTime endDate) //date.now
         {
-            decimal total = 0;
-            DateTime startDate = endDate.AddDays(-30);
 
             //Get Total Revenue
             string sql = @$"
                 SELECT 
-                    SUM(OD.UnitAmount * OD.SubTotal)
+                    SUM(OD.SubTotal)
                 FROM 
                     OrderDetails OD
                 JOIN 
@@ -180,19 +176,18 @@ namespace WebShop.Services
                     AND 
                     O.OrderDate <= '{endDate}'";
 
-            List<decimal> values = new List<decimal>();
+            decimal total = 0;
             using (var connection = new SqlConnection(connString))
             {
-                values = connection.Query<decimal>(sql).ToList();
-            }
+                //Query singel, only return cell
+                var shopRevenue = connection.QuerySingle<decimal?>(sql); //Make nullable, will crash if returns null.
 
-            foreach (var value in values)
-            {
-                total += value;
+                total = shopRevenue != null ? shopRevenue.Value : 0;
             }
 
             return total;
         }
+
     }
 
 }

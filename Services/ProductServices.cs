@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.Migrations;
 using WebShop.Modles;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -449,6 +450,27 @@ namespace WebShop.Services
                     GenericServices.DeleteDbItem(product);
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Gets product current price. Normal price or Sale price if on sale
+        /// </summary>
+        /// <returns></returns>
+        public static decimal GetProductCurrentUnitPrice(Product product)
+        {
+            decimal price = 0;
+
+            if (product.IsOnSale)
+            {
+                price = product.UnitSalePrice;
+            }
+            else
+            {
+                price = product.UnitPrice;
+            }
+
+            return price;
         }
     }
 }
