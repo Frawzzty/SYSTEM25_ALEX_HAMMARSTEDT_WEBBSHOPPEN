@@ -18,7 +18,7 @@ namespace WebShop.Modles
         public Category() { }
         public Category(string name)
         {
-            Name = name.Trim().ToLower();
+            Name = Helpers.FirtUpperCaseRestLower(name);
         }
     }
 }

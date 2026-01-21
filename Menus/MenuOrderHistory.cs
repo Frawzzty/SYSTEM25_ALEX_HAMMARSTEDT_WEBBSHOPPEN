@@ -118,7 +118,7 @@ namespace WebShop.Menus
 
                 foreach(var orderDetail in order.OrderDetails)
                 {
-                    Console.WriteLine(orderDetail.UnitAmount + "x " + orderDetail.Product.Name + " - " + orderDetail.Price + " SEK");
+                    Console.WriteLine(orderDetail.UnitAmount + "x " + orderDetail.Product.Name + " - " + orderDetail.SubTotal + " SEK");
                 }
                 Console.WriteLine();
                 Console.WriteLine("------------------------------");
@@ -150,7 +150,7 @@ namespace WebShop.Menus
 
             foreach (var od in order.OrderDetails)
             {
-                orderText.Add(od.UnitAmount + "x " + od.Product.Name + " - " + od.Price + " SEK");
+                orderText.Add(od.UnitAmount + "x " + od.Product.Name + " - " + od.SubTotal + " SEK");
             }
 
             var windowMenu = new Window("Order", 1, 5, orderText);

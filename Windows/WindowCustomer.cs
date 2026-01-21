@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.DbServices;
+using WebShop.Enums;
+using WebShop.Models;
 using WebShop.Modles;
+using WebShop.Services;
 
 namespace WebShop.Windows
 {
@@ -27,7 +30,7 @@ namespace WebShop.Windows
                     //Draw controls
                     var controlsWindow = new Window($"Select Customer", 1, 1, new List<string> { 
                         $"Name: {customers[selectedCustomer].Name}",
-                        $"ID:{customers[selectedCustomer].Id} - IsAdmin: {customers[selectedCustomer].IsAdmin}", 
+                        $"ID: {customers[selectedCustomer].Id}",$"Admin: {customers[selectedCustomer].IsAdmin}", 
                         "[Q] Previous [E] Next  -  [9] Select " });
                     controlsWindow.Draw(ConsoleColor.Yellow);
                     
@@ -49,16 +52,20 @@ namespace WebShop.Windows
                             break;
                     }
                 }
+                MongoDbServices.AddUserAction(new UserAction(customers[selectedCustomer].Id, UserActions.Logged_In));
+                return customers[selectedCustomer].Id;
+
             }
             else //If no customer is found - Create a new one
             {
                 Console.WriteLine("No cusomter found. Please add one...");
                 Customer newCustomer = CustomerServices.AddCustomer();
-                
+
+                MongoDbServices.AddUserAction(new UserAction(newCustomer.Id, UserActions.Customer_Added));
                 return newCustomer.Id;
             }
             
-            return customers[selectedCustomer].Id;
+            
         }
     }
 }

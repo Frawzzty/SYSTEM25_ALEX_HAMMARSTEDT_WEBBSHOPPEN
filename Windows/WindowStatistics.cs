@@ -15,7 +15,7 @@ namespace WebShop.Windows
 
         public static void Draw()
         {
-            Helpers.DrawMenuText("Statistics", "Any key to go back");
+            Helpers.DrawMenuText("Statistics", "[Any key] Go Back");
 
             int leftGap = 8;
 
@@ -64,7 +64,7 @@ namespace WebShop.Windows
             if (table == 1)
             {
                 header = "Best Selling - Revenue";
-                groups = groups.OrderByDescending(group => group.Sum(od => od.Price));
+                groups = groups.OrderByDescending(group => group.Sum(od => od.SubTotal));
             }
             else
             {
@@ -73,24 +73,39 @@ namespace WebShop.Windows
             }
 
             //Limit to max rows;
-            groups = groups.Take(tableRowLimit); 
+            groups = groups.Take(tableRowLimit);
 
             //Get padding for to columns
-            int padUnitsSold = Helpers.GetHeaderMaxPadding(" ", groups.Max(group => group.Max(od => od.UnitAmount.ToString().Length)), 4);
-            int padRevenue = Helpers.GetHeaderMaxPadding(" ", groups.Max(group => group.Max(od => od.Price.ToString().Length)), 2);
+            int padUnitsSold = 0;
+            int padRevenue = 0;
+
+            if(orderDetails.Count > 0)
+            {
+                padUnitsSold = Helpers.GetHeaderMaxPadding(" ", groups.Max(group => group.Max(od => od.UnitAmount.ToString().Length)), 4);
+                padRevenue = Helpers.GetHeaderMaxPadding(" ", groups.Max(group => group.Max(od => od.SubTotal.ToString().Length)), 2);
+            }
+
 
             //Create text row for window
             List<string> textRows = new List<string>();
-            foreach (var group in groups)
+            if(orderDetails.Count > 0)
             {
-                int unitsSold = group.Sum(g => g.UnitAmount);
-                decimal revenue = group.Sum(g => g.Price);
+                foreach (var group in groups)
+                {
+                    int unitsSold = group.Sum(g => g.UnitAmount);
+                    decimal revenue = group.Sum(g => g.SubTotal);
 
-                textRows.Add(revenue.ToString().PadRight(padRevenue) + (unitsSold + "x").PadRight(padUnitsSold) + group.First().Product.Name);
+                    textRows.Add(revenue.ToString("N0").PadRight(padRevenue) + (unitsSold + "x").PadRight(padUnitsSold) + group.First().Product.Name);
+                }
+            }
+            else
+            {
+                textRows.Add("Table empty");
             }
 
-            //Draw window
-            var window = new Window(header, 0, 0, textRows);
+
+                //Draw window
+                var window = new Window(header, 0, 0, textRows);
             window.headerColor = ConsoleColor.Yellow;
  
 
@@ -108,50 +123,63 @@ namespace WebShop.Windows
             IOrderedEnumerable<IGrouping<string, OrderDetail>> groups;
 
             string header = "";
-            int padLocation = 0;
             if (table == 1)
             {
                 groups = orderDetails.GroupBy(od => od.Order.Country)
-                    .OrderByDescending(group => group.Sum(od => od.Price));
+                    .OrderByDescending(group => group.Sum(od => od.SubTotal));
 
                 header = "Country - Revenue";
-                padLocation = Helpers.GetHeaderMaxPadding(" ", groups.Max(group => group.Max(od => od.Order.Country.Length)), 2);
+                
             }
             else
             {
                 groups = orderDetails.GroupBy(od => od.Order.City)
-                    .OrderByDescending(group => group.Sum(od => od.Price));
+                    .OrderByDescending(group => group.Sum(od => od.SubTotal));
 
                 header = "City - Revenue";
-                padLocation = Helpers.GetHeaderMaxPadding(" ", groups.Max(group => group.Max(od => od.Order.City.Length)), 2);
             }
-
+            
+            
             //Limit to max rows;
             var groupsLimited = groups.Take(tableRowLimit);
 
+            int padUnitsSold = 0;
+            int padRevenue = 0;
+            int padCountry = 0;
+            int padCity = 0;
             //Get padding for to columns
-            int padUnitsSold = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.UnitAmount.ToString().Length)), 4);
-            int padRevenue = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.Price.ToString().Length)), 2);
-            int padCountry = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.Order.Country.ToString().Length)), 2);
-            int padCity = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.Order.City.ToString().Length)), 2);
+            if (orderDetails.Count > 0)
+            {
+                padUnitsSold = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.UnitAmount.ToString().Length)), 4);
+                padRevenue = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.SubTotal.ToString().Length)), 2);
+                padCountry = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.Order.Country.ToString().Length)), 2);
+                padCity = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.Order.City.ToString().Length)), 2);
+            }
+
 
             //Create text row for window
             List<string> textRows = new List<string>();
-            foreach (var group in groupsLimited)
+            if(orderDetails.Count > 0)
             {
-                int unitsSold = group.Sum(g => g.UnitAmount);
-                decimal revenue = group.Sum(g => g.Price);
-
-                if(table == 1)
+                foreach (var group in groupsLimited)
                 {
-                    textRows.Add(revenue.ToString().PadRight(padRevenue) + (unitsSold + "x").PadRight(padUnitsSold) + group.First().Order.Country.PadRight(padCountry));
-                }
-                else
-                {
-                    textRows.Add(revenue.ToString().PadRight(padRevenue) + (unitsSold + "x").PadRight(padUnitsSold) + group.First().Order.Country.PadRight(padCountry) + group.First().Order.City.PadRight(padCity));
+                    int unitsSold = group.Sum(g => g.UnitAmount);
+                    decimal revenue = group.Sum(g => g.SubTotal);
 
-                }
+                    if (table == 1)
+                    {
+                        textRows.Add(revenue.ToString("N0").PadRight(padRevenue) + (unitsSold + "x").PadRight(padUnitsSold) + group.First().Order.Country.PadRight(padCountry));
+                    }
+                    else
+                    {
+                        textRows.Add(revenue.ToString("N0").PadRight(padRevenue) + (unitsSold + "x").PadRight(padUnitsSold) + group.First().Order.Country.PadRight(padCountry) + group.First().Order.City.PadRight(padCity));
 
+                    }
+                }
+            }
+            else
+            {
+                textRows.Add("Table empty");
             }
 
             //Draw window

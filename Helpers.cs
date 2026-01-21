@@ -32,7 +32,19 @@ namespace WebShop
             Console.ForegroundColor = originalColor;
         }
 
-
+        //FORMATING
+        /// <summary>
+        /// Makes first letter upper case and the rest lower
+        /// </summary>
+        public static string FirtUpperCaseRestLower(string text)
+        {
+            if(text.Length > 1)
+            {
+                text = text.Substring(0, 1) + text.Substring(1);
+            }
+            
+            return text;
+        }
 
         //Message methods for commonly occuring messages
         public static void MsgLeavingAnyKey()
@@ -91,7 +103,7 @@ namespace WebShop
             List<string> productWindowTexts = new List<string>();
             productWindowTexts.Add(product.Name);
             productWindowTexts.Add(product.UnitPrice.ToString() + " SEK");
-            if (product.OnSale == true && product.UnitSalePrice > 0)
+            if (product.IsOnSale == true && product.UnitSalePrice > 0)
             {
                 productWindowTexts.Add("Sale: " + product.UnitSalePrice.ToString() + " SEK");
             }
@@ -113,7 +125,7 @@ namespace WebShop
             productWindowTexts.Add(" ");
             productWindowTexts.Add("Amount in stock: " + product.StockAmount);
             productWindowTexts.Add(product.UnitPrice.ToString() + " SEK");
-            if (product.OnSale == true && product.UnitSalePrice > 0)
+            if (product.IsOnSale == true && product.UnitSalePrice > 0)
             {
                 productWindowTexts.Add("Sale: " + product.UnitSalePrice.ToString() + " SEK");
             }
@@ -137,7 +149,7 @@ namespace WebShop
                 padProductName = Helpers.GetHeaderMaxPadding("", cartItems.Max(item => item.Product.Name.Length), 3); //Make price text start on the same LeftPos
                 foreach (var item in cartItems)
                 {
-                    decimal price = item.Product.OnSale == false ? (item.UnitAmount * item.Product.UnitPrice) : (item.UnitAmount * item.Product.UnitSalePrice);
+                    decimal price = item.Product.IsOnSale == false ? (item.UnitAmount * item.Product.UnitPrice) : (item.UnitAmount * item.Product.UnitSalePrice);
                     cartText.Add($"{item.UnitAmount}x {item.Product.Name.PadRight(padProductName)} {price} SEK");
                 }
             }

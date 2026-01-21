@@ -14,6 +14,7 @@ namespace WebShop.Services
     {
         public static void UpdateItemName2<T>(T item, string newName, Enum myEnum)
         {
+
         }
 
         public static bool UpdateItemName<T>(T item, string newName)
@@ -38,7 +39,7 @@ namespace WebShop.Services
             using (var db = new WebShopContext())
             {
                 db.Update(item);
-                db.SaveChanges();
+                 db.SaveChangesAsync();
                 isSucess = true;
             }
             else
@@ -57,7 +58,7 @@ namespace WebShop.Services
             //Rows
         }
 
-        public static bool DeleteItem<T>(T item)
+        public static bool DeleteDbItem<T>(T item)
         {
             bool success = false;
 

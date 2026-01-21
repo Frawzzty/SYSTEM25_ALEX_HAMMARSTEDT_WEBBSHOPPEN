@@ -69,7 +69,7 @@ namespace WebShop.Windows
                 padProductName = Helpers.GetHeaderMaxPadding("", cartItems.Max(item => item.Product.Name.Length), 3); //Make price text start on the same LeftPos
                 foreach (var item in cartItems)
                 {
-                    decimal price = item.Product.OnSale == false ? (item.UnitAmount * item.Product.UnitPrice) : (item.UnitAmount * item.Product.UnitSalePrice);
+                    decimal price = item.Product.IsOnSale == false ? (item.UnitAmount * item.Product.UnitPrice) : (item.UnitAmount * item.Product.UnitSalePrice);
                     cartText.Add($"{item.UnitAmount}x {item.Product.Name.PadRight(padProductName)} {price} SEK");
                 }
             }
@@ -87,7 +87,7 @@ namespace WebShop.Windows
 
             foreach (var item in cartItems)
             {
-                if(item.Product.OnSale == true)
+                if(item.Product.IsOnSale == true)
                 {
                     totalPrice += item.UnitAmount * item.Product.UnitSalePrice;
                 }

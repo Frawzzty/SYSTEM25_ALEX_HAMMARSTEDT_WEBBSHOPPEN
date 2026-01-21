@@ -17,7 +17,7 @@ namespace WebShop.Services
             Console.WriteLine("ID:          " + orderDetail.Id);
             Console.WriteLine("Order ID:    " + orderDetail.OrderId);
             Console.WriteLine("Product ID:  " + orderDetail.ProductId);
-            Console.WriteLine("Price:       " + orderDetail.Price);
+            Console.WriteLine("Price:       " + orderDetail.SubTotal);
             Console.WriteLine("Unit Amount: " + orderDetail.UnitAmount);
         }
 

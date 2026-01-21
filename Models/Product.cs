@@ -21,8 +21,8 @@ namespace WebShop.Modles
 
         
         public decimal UnitPrice { get; set; }
-        public decimal UnitSalePrice { get; set; }
-        public bool OnSale { get; set; }
+        public decimal UnitSalePrice { get; set; } = 0;    //Default 0
+        public bool IsOnSale { get; set; } = false;         //Default false
         public int StockAmount { get; set; }
 
         public Product() { }
@@ -33,8 +33,6 @@ namespace WebShop.Modles
             CategoryId = categoryId;
             SupplierName = supplierName;
             UnitPrice = unitPrice;
-            OnSale = false;         //Default false, edit in Admin menu
-            UnitSalePrice = 0;   //Default null, edit in Admin menu
             StockAmount = stockAmount;
         }
     }

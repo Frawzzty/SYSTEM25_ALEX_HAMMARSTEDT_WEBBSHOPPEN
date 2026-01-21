@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.Modles;
@@ -85,6 +86,10 @@ namespace WebShop.DbServices
 
         }
 
+        /// <summary>
+        /// Lets user create customer with inputs
+        /// </summary>
+        /// <returns>the customer created</returns>
         public static Customer AddCustomer()
         {
             Console.WriteLine("Add new Customer...");
@@ -100,18 +105,28 @@ namespace WebShop.DbServices
             string country = Console.ReadLine();
 
             Customer newCustomer = new Customer(name, email, street, city, country);
+
             if (newCustomer != null) 
             {
                 using (var db = new WebShopContext())
                 {
-                    db.Customers.Add(newCustomer);
-                    db.SaveChanges();
+                    try
+                    {
+                        db.Customers.Add(newCustomer);
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Could not add new customer" + "\n");
+                        Console.WriteLine(ex.Message);
+                    }
+
                 }
             }
             return newCustomer;
         }
 
-        public static void DeleteCustomer()
+        public static async void DeleteCustomer()
         {
             List<Customer> customers = GetAllCustomers();
             PrintCustomers(customers);
@@ -129,8 +144,17 @@ namespace WebShop.DbServices
                 {
                     using (var db = new WebShopContext())
                     {
-                        db.Remove(selectedCustomer);
-                        db.SaveChanges();
+                        try
+                        {
+                            db.Remove(selectedCustomer);
+                            await db.SaveChangesAsync();
+                            return;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Could not delete  customer" + "\n");
+                            Console.WriteLine(ex.Message);
+                        }
                     }
                 }
                 else
@@ -211,8 +235,17 @@ namespace WebShop.DbServices
                         selectedCustomer.IsAdmin = false;
                     }
 
-                    db.Update(selectedCustomer);
-                    db.SaveChanges();
+                    try 
+                    {
+                        db.Update(selectedCustomer);
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Could not update customer role" + "\n");
+                        Console.WriteLine(ex.Message);
+                    }
+;
                 }
             }
 

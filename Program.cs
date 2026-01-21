@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System.Runtime.CompilerServices;
+using WebShop.Enums;
 using WebShop.Menus;
 using WebShop.Modles;
 using WebShop.Services;
@@ -14,6 +15,10 @@ namespace WebShop
 
         static void Main(string[] args)
         {
+            //BEFORE START
+            //CHECK VPN is OFF;
+            //CHECK DB STRINGS;
+            //Crashes at launch likley unallowed IP adress.
 
             //Testing.WindowTesting();
 

@@ -9,12 +9,13 @@ using WebShop.Modles;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System.Windows.Markup;
+using WebShop.Migrations;
 
 namespace WebShop.Services
 {
     internal class DapperServices
     {
-        private static string connString = "data source=.\\SQLEXPRESS; initial catalog = WebShop2; persist security info = True; Integrated Security = True; TrustServerCertificate=true;";
+        private static string connString = $"data source=.\\SQLEXPRESS; initial catalog = {Settings.GetDatabaseName()}; persist security info = True; Integrated Security = True; TrustServerCertificate=true;";
 
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace WebShop.Services
                 //Get Total Revenue
                 string sql = @$"
                 SELECT 
-                    SUM(OD.UnitAmount * OD.Price)
+                    SUM(OD.UnitAmount * OD.SubTotal)
                 FROM 
                     Products P
                 JOIN
@@ -136,29 +137,26 @@ namespace WebShop.Services
         /// </summary>
         public static decimal GetShopRevenue()
         {
-            decimal total = 0;
 
             //Get Total Revenue
             string sql = @$"
                 SELECT 
-                    SUM(OD.Price)
+                    SUM(OD.SubTotal)
                 FROM 
                     OrderDetails OD
                 JOIN 
                     Orders O ON OD.OrderId = O.ID";
 
-            List<decimal> values = new List<decimal>();
+            decimal revenue = 0;
             using (var connection = new SqlConnection(connString))
             {
-                values = connection.Query<decimal>(sql).ToList();
+                //Query singel, only return cell
+                var shopRevenue = connection.QuerySingle<decimal?>(sql); //Make nullable, will crash if returns null.
+
+                revenue = shopRevenue != null ? shopRevenue.Value : 0;
             }
 
-            foreach (var value in values)
-            {
-                total += value;
-            }
-
-            return total;
+            return revenue;
         }
 
         /// <summary>
@@ -172,7 +170,7 @@ namespace WebShop.Services
             //Get Total Revenue
             string sql = @$"
                 SELECT 
-                    SUM(OD.UnitAmount * OD.Price)
+                    SUM(OD.UnitAmount * OD.SubTotal)
                 FROM 
                     OrderDetails OD
                 JOIN 

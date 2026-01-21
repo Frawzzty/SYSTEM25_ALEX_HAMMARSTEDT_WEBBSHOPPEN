@@ -60,8 +60,9 @@ namespace WebShop.Menus
                             if (OrderServices.ValidateOrderForPurchase(order))
                             {
                                 OrderServices.CreateOrderAndDetails(order); //Will also delete customer Customer Cart Items
+                                isActive = false;
                             }
-                            isActive = false;
+                            
                             break;
 
                         case Enums.MenuCheckOutMain.Back:
@@ -80,21 +81,21 @@ namespace WebShop.Menus
             //Print menu
             int index = 1;
             Console.WriteLine("Select Payment method");
-            foreach (int i in Enum.GetValues(typeof(Enums.PaymentOption)))
+            foreach (int i in Enum.GetValues(typeof(Enums.PaymentOptions)))
             {
-                Console.WriteLine("[" + index + "] " + Enum.GetName(typeof(Enums.PaymentOption), i).Replace('_', ' '));
+                Console.WriteLine("[" + index + "] " + Enum.GetName(typeof(Enums.PaymentOptions), i).Replace('_', ' '));
                 index++;
             }
 
             //Input
             string input = Console.ReadKey(true).KeyChar.ToString();
-            bool validInput = int.TryParse(input, out int number) && number > 0 && number <= Enum.GetValues(typeof(Enums.PaymentOption)).Length;
+            bool validInput = int.TryParse(input, out int number) && number > 0 && number <= Enum.GetValues(typeof(Enums.PaymentOptions)).Length;
 
             //set values
-            PaymentOption[] shippingOptions = Enum.GetValues<PaymentOption>();
+            PaymentOptions[] shippingOptions = Enum.GetValues<PaymentOptions>();
             if (validInput)
             {
-                PaymentOption selectedMethod = shippingOptions[number - 1];
+                PaymentOptions selectedMethod = shippingOptions[number - 1];
                 paymentMethod = selectedMethod.ToString().Replace('_', ' ');
             }
 
@@ -133,23 +134,23 @@ namespace WebShop.Menus
             //Print options
             Console.WriteLine("Choose Shipping Method");
             int index = 1;
-            foreach (int i in Enum.GetValues(typeof(Enums.ShippingOption)))
+            foreach (int i in Enum.GetValues(typeof(Enums.ShippingOptions)))
             {
                 Console.WriteLine(
-                    ("[" + index + "] " + Enum.GetName(typeof(Enums.ShippingOption), i).Replace('_', ' ')).PadRight(15)
+                    ("[" + index + "] " + Enum.GetName(typeof(Enums.ShippingOptions), i).Replace('_', ' ')).PadRight(15)
                     + i + " SEK" );
                 index++;
             }
 
             //Get input
             string input = Console.ReadKey(true).KeyChar.ToString();
-            bool validInput = int.TryParse(input, out int number) && number > 0 && number <= Enum.GetValues(typeof(Enums.ShippingOption)).Length;
+            bool validInput = int.TryParse(input, out int number) && number > 0 && number <= Enum.GetValues(typeof(Enums.ShippingOptions)).Length;
 
             //Set values
-            ShippingOption[] shippingOptions = Enum.GetValues<ShippingOption>(); //Get array of enum values
+            ShippingOptions[] shippingOptions = Enum.GetValues<ShippingOptions>(); //Get array of enum values
             if (validInput)
             {
-                ShippingOption selectedMethod = shippingOptions[number - 1];
+                ShippingOptions selectedMethod = shippingOptions[number - 1];
                 shippingMethod = selectedMethod.ToString().Replace('_', ' ');
                 shippingPrice = (decimal)selectedMethod;
             }

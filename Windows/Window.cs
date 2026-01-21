@@ -11,7 +11,7 @@ namespace WebShop
         public int Top { get; set; }
         public List<string> TextRows { get; set; }
 
-        public ConsoleColor headerColor { get; set; }
+        public ConsoleColor headerColor { get; set; } = ConsoleColor.White;
 
         public Window(string header, int left, int top, List<string> textRows)
         {
@@ -19,7 +19,6 @@ namespace WebShop
             Left = left;
             Top = top;
             TextRows = textRows;
-            headerColor = ConsoleColor.White;
         }
 
         public void Draw()

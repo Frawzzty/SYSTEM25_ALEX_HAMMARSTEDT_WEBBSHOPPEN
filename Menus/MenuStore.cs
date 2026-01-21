@@ -42,7 +42,8 @@ namespace WebShop.Menus
                 Console.Clear();
                 if (isValidCategory)
                 {
-                    WindowBrowseProducts.ProductPageByCategory(categories[index -1].Id, productsPerPage);
+                    WindowBrowseProducts.BroweProducts(categories[index - 1].Id, productsPerPage);
+                  
                 }
                 //Search product by text
                 else if (input == "F") 
@@ -52,7 +53,7 @@ namespace WebShop.Menus
                     Console.Clear();
                     if (!string.IsNullOrWhiteSpace(searchTerm))
                     {
-                        WindowBrowseProducts.ProductPageByList(ProductServices.GetProductsByString(searchTerm), productsPerPage);
+                        WindowBrowseProducts.BroweProducts(ProductServices.GetProductsByString(searchTerm), productsPerPage);
                     }
                 }
                 //Go back

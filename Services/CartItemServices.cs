@@ -123,7 +123,7 @@ namespace WebShop.DbServices
 
             foreach (var cartItem in cartItems)
             {
-                if(cartItem.Product.OnSale == true)
+                if(cartItem.Product.IsOnSale == true)
                 {
                     totalValue += cartItem.Product.UnitSalePrice * cartItem.UnitAmount;
                 }

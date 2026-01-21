@@ -76,7 +76,7 @@ namespace WebShop.Services
                 products = db.Products //Use .Include() to get access to Navigation property
                     .Include(p => p.Category)
                     .Where(p => 
-                        p.OnSale == true)
+                        p.IsOnSale == true)
                     .ToList(); 
             }
             return products;
@@ -126,7 +126,7 @@ namespace WebShop.Services
                 int padSupplierName =   Helpers.GetHeaderMaxPadding(headerSupplierName, products.Max(item => item.SupplierName.Length), cellpadding);
                 int padUnitPrice =      Helpers.GetHeaderMaxPadding(headerUnitPrice, products.Max(item => item.UnitPrice.ToString().Length), cellpadding);
                 int padUnitSalePrice =  Helpers.GetHeaderMaxPadding(headerUnitSalePrice, products.Max(item => item.UnitSalePrice.ToString().Length), cellpadding);
-                int padOnSale =         Helpers.GetHeaderMaxPadding(headerOnSale, products.Max(item => item.OnSale.ToString().Length), cellpadding);
+                int padOnSale =         Helpers.GetHeaderMaxPadding(headerOnSale, products.Max(item => item.IsOnSale.ToString().Length), cellpadding);
                 int padStockAmount =    Helpers.GetHeaderMaxPadding(headerStockAmount, products.Max(item => item.StockAmount.ToString().Length), cellpadding);
 
                 //Draw Headers
@@ -155,7 +155,7 @@ namespace WebShop.Services
                         product.SupplierName.PadRight(padSupplierName) +
                         product.UnitPrice.ToString().PadRight(padUnitPrice) +
                         product.UnitSalePrice.ToString().PadRight(padUnitSalePrice) +
-                        product.OnSale.ToString().PadRight(padOnSale) +
+                        product.IsOnSale.ToString().PadRight(padOnSale) +
                         product.StockAmount.ToString().PadRight(padStockAmount)
                         );
                 }
@@ -400,7 +400,7 @@ namespace WebShop.Services
                     bool isValidUnitSalePrice = false;
                     if (keyOnSale == "Y")
                     {
-                        product.OnSale = true;
+                        product.IsOnSale = true;
 
                         Console.Write("Enter unit sale price [00,00]: ");
                         isValidUnitSalePrice = decimal.TryParse(Console.ReadLine().Replace('.', ','), out decimal unitSalePrice) && unitSalePrice > 0;
@@ -410,7 +410,7 @@ namespace WebShop.Services
                     }
                     else if (keyOnSale == "N")
                     {
-                        product.OnSale = false;
+                        product.IsOnSale = false;
                         product.UnitSalePrice = 0;
                     }
 
@@ -446,7 +446,7 @@ namespace WebShop.Services
                 Product product = products.Where(p => p.Id == itemId).SingleOrDefault();
                 if (product != null) 
                 {
-                    GenericServices.DeleteItem(product);
+                    GenericServices.DeleteDbItem(product);
                 }
             }
         }

@@ -11,6 +11,10 @@ namespace WebShop
 {
     internal class Settings
     {
+        private static bool mongoLoggingEnabled = false;
+
+        private static string dbName = "WebShop3";
+
         private static int currentCustomerId = -1; //Set as negative instead of null or zero
         public static Customer GetCurrentCustomer()
         {
@@ -26,5 +30,16 @@ namespace WebShop
         {
             currentCustomerId = id;
         }
+
+        public static string GetDatabaseName()
+        {
+            return dbName;
+        }
+
+        public static bool GetMongoLoggingEnabled()
+        {
+            return mongoLoggingEnabled;
+        }
+ 
     }
 }

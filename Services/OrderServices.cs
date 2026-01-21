@@ -127,13 +127,13 @@ namespace WebShop.Services
                         orderDetail.ProductId = cartItem.ProductId;
 
                         //Get mormal price or sale price.
-                        if (cartItem.Product.OnSale == true)
+                        if (cartItem.Product.IsOnSale == true)
                         {
-                            orderDetail.Price = cartItem.Product.UnitSalePrice * cartItem.UnitAmount;
+                            orderDetail.SubTotal = cartItem.Product.UnitSalePrice * cartItem.UnitAmount;
                         }
                         else
                         {
-                            orderDetail.Price = cartItem.Product.UnitPrice * cartItem.UnitAmount;
+                            orderDetail.SubTotal = cartItem.Product.UnitPrice * cartItem.UnitAmount;
                         }
                            
                         orderDetail.UnitAmount = cartItem.UnitAmount;
