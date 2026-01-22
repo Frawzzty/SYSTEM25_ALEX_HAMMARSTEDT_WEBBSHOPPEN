@@ -44,10 +44,10 @@ namespace WebShop.Enums
     internal enum UpdateProduct
     {
         Update_Name = 1,
-        Update_street,
-        Update_city,
-        Update_Country,
-        Update_Email,
-        Update_Password
+        Update_Description,
+        Update_Category_Id,
+        Update_Supplyer_Name,
+        Update_Unit_Price,
+        Update_Stock
     }
 }

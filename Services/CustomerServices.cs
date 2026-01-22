@@ -258,9 +258,9 @@ namespace WebShop.DbServices
                         Console.ReadKey(true);
                     }
                 }
-
             }
         }
+
         public static void UpdateCusomterRole()
         {
             List<Customer> customers = GetAllCustomers();

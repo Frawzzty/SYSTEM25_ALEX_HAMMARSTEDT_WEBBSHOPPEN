@@ -33,7 +33,6 @@ namespace WebShop.Enums
         Add_Product = 1,
         Update_Product,
         Edit_Sale,
-        Update_Stock,
         Delete_Product,
 
         Back = 9,

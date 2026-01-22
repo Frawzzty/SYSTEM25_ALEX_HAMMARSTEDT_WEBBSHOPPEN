@@ -82,22 +82,12 @@ namespace WebShop.Menus
 
                         case Enums.MenuAdminProduct.Update_Product:
                             Console.WriteLine("Update product");
-                            ProductServices.UpdateProduct();
+                            ProductServices.UpdateProducte();
                             break;
 
                         case Enums.MenuAdminProduct.Edit_Sale:
                             Console.WriteLine("Set / remove product on sale");
                             ProductServices.SetProductOnSale();
-                            break;
-
-                        case Enums.MenuAdminProduct.Update_Stock:
-                            Console.Clear();
-                            Product product = ProductServices.SelectProduct();
-                            Console.Write("Enter stock amount: ");
-                            bool isValid = int.TryParse(Console.ReadLine(), out int amount) && amount >= 0;
-
-                            if (isValid)
-                                ProductServices.SetProductStock(product, amount);
                             break;
 
                         case Enums.MenuAdminProduct.Delete_Product:

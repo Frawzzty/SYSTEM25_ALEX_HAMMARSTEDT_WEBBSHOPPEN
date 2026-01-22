@@ -228,108 +228,6 @@ namespace WebShop.Services
         }
 
 
-        public static void UpdateProductName()
-        {
-            PrintProducts(GetAllProducts());
-
-            Console.WriteLine("\n[Leave inputs empty to exit] \nUpdate product name ");
-            Console.Write("Enter ID: ");
-            bool validId = int.TryParse(Console.ReadLine(), out int itemId) && itemId > 0;
-
-            Console.Write("Enter new product name: ");
-            string newName = Console.ReadLine();
-            bool validName = !string.IsNullOrWhiteSpace(newName);
-
-            if (validId && validName)
-            {
-                Product product = GetProductById(itemId);
-                if (product != null)
-                {
-                    GenericServices.UpdateItemName(product, newName); //Returns true if manged to update
-                }
-            }
-            else
-            {
-                Helpers.MsgBadInputsAnyKey();
-            }
-        }
-
-
-        public static void UpdateProduct()
-        {
-            PrintProducts(GetAllProducts());
-            using (var db = new WebShopContext())
-            {
-                Console.WriteLine("\n[Leave inputs empty to exit] \nUpdate product");
-                Console.Write("Enter ID: ");
-                bool validId = int.TryParse(Console.ReadLine(), out int itemId) && itemId > 0;
-
-                Product product = db.Products.Where(p => p.Id == itemId).SingleOrDefault();
-
-                if (product != null) 
-                {
-                    Console.Write("Enter name: ");
-                    string name = Console.ReadLine();
-
-                    Console.Write("Enter description: ");
-                    string description = Console.ReadLine();
-
-                    CategoryServices.PrintCategories(CategoryServices.GetAllCategories());
-                    Console.Write("Enter category ID: ");
-                    bool isValidInputID = int.TryParse(Console.ReadLine(), out int categoryId) && categoryId > 0;
-
-                    Console.Write("Enter Supplier name: ");
-                    string supplierName = Console.ReadLine();
-
-                    Console.Write("Enter unit price [00,00]: ");
-                    bool isValidUnitPrice = decimal.TryParse(Console.ReadLine().Replace('.', ','), out decimal unitPrice) && unitPrice > 0;
-
-                    Console.Write("Enter stock amount: ");
-                    bool isValidInputStockAmount = int.TryParse(Console.ReadLine(), out int stockAmount) && stockAmount > 0;
-
-                    //Check inputs are valid
-                    if (
-                     !string.IsNullOrEmpty(name) &&
-                     !string.IsNullOrEmpty(description) &&
-                     isValidInputID &&
-                     !string.IsNullOrEmpty(supplierName) &&
-                     isValidUnitPrice &&
-                     isValidInputStockAmount)
-                    {
-                        Console.Write("\n[Y] to update prodcut Or cancle [Any key]\n");
-                        if (Console.ReadKey(true).KeyChar.ToString().ToUpper() == "Y")
-                        {
-                            try
-                            {
-                                product.Name = name; 
-                                product.Description = description;
-                                product.CategoryId = categoryId;
-                                product.SupplierName = supplierName;
-                                product.UnitPrice = unitPrice;
-                                product.StockAmount = stockAmount;
-
-                                db.Update(product);
-                                db.SaveChanges();
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                                Console.ReadKey(true);
-                            }
-                        }
-                        else { Helpers.MsgLeavingAnyKey(); }
-                    }
-                    else { Helpers.MsgBadInputsAnyKey(); }
-                }
-                else
-                {
-                    Console.WriteLine("Product ID returned NULL");
-                    Helpers.MsgLeavingAnyKey();
-                }
-            }
-        }
-
-
         /// <summary>
         /// stock += amount
         /// </summary>
@@ -473,6 +371,96 @@ namespace WebShop.Services
             return price;
         }
 
-      
+
+        public static void UpdateProducte()
+        {
+            List<Product> products = GetAllProducts();
+            PrintProducts(products);
+
+            Console.Write("\nChoose Product - Enter ID: ");
+            bool isValidId = int.TryParse(Console.ReadLine(), out int id) && id > 0;
+            Product product = products.Where(item => item.Id == id).SingleOrDefault();
+
+            Console.Clear();
+            if (product != null)
+            {
+                bool isActive = true;
+                while (isActive)
+                {
+                    //Print menu and selected Prodcut
+                    Helpers.DrawMenuEnum(new Enums.UpdateProduct(), "Update Product");
+                    PrintProducts(new List<Product> { product });
+                    Console.WriteLine("\n\n");
+
+                    //Handle input
+                    string input = Console.ReadKey(true).KeyChar.ToString();
+                    if (int.TryParse(input, out int number) && number <= Enum.GetNames(typeof(Enums.UpdateProduct)).Length) //Check number is less than enum menu length
+                    {
+                        UpdateProductHandler(product, (Enums.UpdateProduct)number);
+                    }
+                    else
+                    {
+                        isActive = false;
+                    }
+
+                    Console.Clear();
+                }
+            }
+        }
+
+
+        public static void UpdateProductHandler(Product existingProduct, Enums.UpdateProduct option)
+        {
+            Console.Write("Enter new" + option.ToString().Replace("Update_", " ") + ": ");
+            string input = Console.ReadLine();
+
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                input = input.Trim();
+
+                using (var db = new WebShopContext())
+                {
+                    try
+                    {
+                        switch (option)
+                        {
+                            case Enums.UpdateProduct.Update_Name:
+                                existingProduct.Name = input;
+                                break;
+
+                            case Enums.UpdateProduct.Update_Description:
+                                existingProduct.Description = input;
+                                break;
+
+                            case Enums.UpdateProduct.Update_Category_Id:
+                                existingProduct.CategoryId = int.Parse(input);
+                                break;
+
+                            case Enums.UpdateProduct.Update_Supplyer_Name:
+                                existingProduct.SupplierName = input;
+                                break;
+
+                            case Enums.UpdateProduct.Update_Unit_Price:
+                                existingProduct.UnitPrice = decimal.Parse(input.Replace('.', ',')); //Format
+                                break;
+
+                            case Enums.UpdateProduct.Update_Stock:
+                                existingProduct.StockAmount = int.Parse(input);
+                                break;
+                        }
+
+                        db.Update(existingProduct);
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Could not update " + option.ToString().Replace("Update_", " ") + "\n");
+                        Console.WriteLine(ex.Message);
+                        Console.ReadKey(true);
+                    }
+                }
+            }
+        }
+
     }
 }
