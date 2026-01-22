@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace WebShop.Modles
 {
     internal class Customer
+
     {
         public int Id { get; set; }
 

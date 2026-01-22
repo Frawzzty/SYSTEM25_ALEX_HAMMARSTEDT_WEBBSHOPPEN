@@ -33,7 +33,17 @@ namespace WebShop.Enums
 
     internal enum UpdateCustomer
     {
-        Update_Name,
+        Update_Name = 1,
+        Update_street,
+        Update_city,
+        Update_Country,
+        Update_Email,
+        Update_Password
+    }
+
+    internal enum UpdateProduct
+    {
+        Update_Name = 1,
         Update_street,
         Update_city,
         Update_Country,

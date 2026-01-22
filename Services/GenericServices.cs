@@ -30,7 +30,7 @@ namespace WebShop.Services
             {
                 category.Name = newName;
             }
-            else if (item is Customer customer)
+            else if (item is Product customer)
             {
                 customer.Name = newName;
             }

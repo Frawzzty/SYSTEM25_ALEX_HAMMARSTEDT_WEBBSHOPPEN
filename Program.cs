@@ -35,7 +35,19 @@ namespace WebShop
 
             while (true)
             {
-                if (await WindowLoginRegister.Authenticate()) //Login or Register
+                bool auth = false;
+                if (!Settings.GetDebugStatus())
+                {
+                    auth = await WindowLoginRegister.Authenticate(); //Login or Register
+                }
+                else
+                {
+                    auth = true;
+                    Settings.SetCurrentCustomer(1);
+                }
+
+                    
+                if (auth) 
                 {
                     MenuHome.MenuHomeMain();
                 }

@@ -472,5 +472,7 @@ namespace WebShop.Services
 
             return price;
         }
+
+      
     }
 }

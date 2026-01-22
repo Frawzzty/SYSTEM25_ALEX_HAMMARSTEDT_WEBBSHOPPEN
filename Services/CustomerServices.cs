@@ -7,6 +7,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.Enums;
+using WebShop.Models;
 using WebShop.Modles;
 using WebShop.Services;
 
@@ -58,18 +60,19 @@ namespace WebShop.DbServices
                 int padIsAdmin = Helpers.GetHeaderMaxPadding(headerIsAdmin, customers.Max(item => item.IsAdmin.ToString().Length), 3);
 
                 Helpers.WriteLineInColor(ConsoleColor.Blue,
-                headerId.PadRight(padId) +
-                headerName.PadRight(padName) +
-                headerEmail.PadRight(padEmail) +
-                headerStreet.PadRight(padStreet) +
-                headerCity.PadRight(padCity) +
-                headerCountry.PadRight(padCountry) +
-                headerIsAdmin.PadRight(padIsAdmin)
+                    "  " + // Move everything 1 step to the right
+                    headerId.PadRight(padId) +
+                    headerName.PadRight(padName) +
+                    headerEmail.PadRight(padEmail) +
+                    headerStreet.PadRight(padStreet) +
+                    headerCity.PadRight(padCity) +
+                    headerCountry.PadRight(padCountry) +
+                    headerIsAdmin.PadRight(padIsAdmin)
                 );
 
                 foreach (var customer in customers)
                 {
-                    Console.WriteLine(
+                    Console.WriteLine("  " + //Move everything 1 step to the right
                         customer.Id.ToString().PadRight(padId) +
                         customer.Name.PadRight(padName) +
                         customer.Email.PadRight(padEmail) +
@@ -184,86 +187,26 @@ namespace WebShop.DbServices
                 bool isActive = true;
                 while (isActive)
                 {
+                    //Print menu and selected customer
+                    Helpers.DrawMenuEnum(new Enums.UpdateCustomer(), "Update Customer");
+                    
                     PrintCustomers(new List<Customer> { selectedCustomer });
-                    Console.WriteLine("" +
-                        "\nUPDATE CUSTOMER\n" +
-                        "[1] Name, [2] Street, [3] City, [4] Country, [5] Email, [6] Password [Any key to leave] \n");
+                    Console.WriteLine("\n\n");
 
-                    switch (Console.ReadKey(true).KeyChar.ToString().ToUpper())
+                    //Handle input
+                    string input = Console.ReadKey(true).KeyChar.ToString();
+                    if(int.TryParse(input, out int number) && number <= Enum.GetNames(typeof(Enums.UpdateCustomer)).Length) //Check number is less than enum menu length
                     {
-                        case "1":
-                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_Name);
-                            break;
-
-                        case "2":
-                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_street);
-                            break;
-
-                        case "3":
-                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_city);
-                            break;
-
-                        case "4":
-                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_Country);
-                            break;
-
-                        case "5":
-                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_Email);
-                            break;
-
-                        case "6":
-                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_Password);
-                            break;
-
-                        default:
-                            isActive = false;
-                            break;
-                    }
-                    Console.Clear();
-                }
-            }
-        }
-
-        public static void UpdateCusomterRole()
-        {
-            List<Customer> customers = GetAllCustomers();
-            PrintCustomers(customers);
-
-            Console.WriteLine("\nSet Role");
-            Console.Write("Enter user ID: ");
-            bool isValidInputID = int.TryParse(Console.ReadLine(), out int userId) && userId > 0;
-            Customer selectedCustomer = customers.Where(c => c.Id == userId).SingleOrDefault();
-            
-            if (selectedCustomer != null)
-            {
-                using (var db = new WebShopContext())
-                {
-                    Console.WriteLine($"\nCurrent Admin status: {selectedCustomer.IsAdmin}");
-                    Console.Write("[Y] to make Admin Or Cancle [Any key]");
-                    if (Console.ReadKey(true).KeyChar.ToString().ToUpper() == "Y")
-                    {
-                        selectedCustomer.IsAdmin = true; 
+                        UpdateCustomerer(selectedCustomer, (Enums.UpdateCustomer)number);
                     }
                     else
                     {
-                        selectedCustomer.IsAdmin = false;
+                        isActive = false;
                     }
-
-                    try 
-                    {
-                        db.Update(selectedCustomer);
-                        db.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Could not update customer role" + "\n");
-                        Console.WriteLine(ex.Message);
-                    }
-;
+                    
+                    Console.Clear();
                 }
             }
-
-
         }
 
 
@@ -307,7 +250,6 @@ namespace WebShop.DbServices
 
                         db.Update(existingCustomer);
                         db.SaveChanges();
-
                     }
                     catch (Exception ex)
                     {
@@ -319,8 +261,45 @@ namespace WebShop.DbServices
 
             }
         }
+        public static void UpdateCusomterRole()
+        {
+            List<Customer> customers = GetAllCustomers();
+            PrintCustomers(customers);
 
+            Console.WriteLine("\nSet Role");
+            Console.Write("Enter user ID: ");
+            bool isValidInputID = int.TryParse(Console.ReadLine(), out int userId) && userId > 0;
+            Customer selectedCustomer = customers.Where(c => c.Id == userId).SingleOrDefault();
 
-          
+            if (selectedCustomer != null)
+            {
+                using (var db = new WebShopContext())
+                {
+                    Console.WriteLine($"\nCurrent Admin status: {selectedCustomer.IsAdmin}");
+                    Console.Write("[Y] to make Admin Or Cancle [Any key]");
+                    if (Console.ReadKey(true).KeyChar.ToString().ToUpper() == "Y")
+                    {
+                        selectedCustomer.IsAdmin = true;
+                    }
+                    else
+                    {
+                        selectedCustomer.IsAdmin = false;
+                    }
+
+                    try
+                    {
+                        db.Update(selectedCustomer);
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Could not update customer role" + "\n");
+                        Console.WriteLine(ex.Message);
+                    }
+;
+                }
+            }
+        }
+
     }
 }

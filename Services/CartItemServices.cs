@@ -125,7 +125,7 @@ namespace WebShop.DbServices
 
             foreach (var cartItem in cartItems)
             {
-                Console.WriteLine("Item ID: " + cartItem.Id + " " + cartItem.Product.Name);
+                Console.WriteLine((string)("Item ID: " + cartItem.Id + " " + cartItem.Product.Name));
             }
         }
 

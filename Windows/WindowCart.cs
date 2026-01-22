@@ -66,7 +66,7 @@ namespace WebShop.Windows
 
             if (cartItems.Count > 0) //Will crash if cart is empty
             {
-                padProductName = Helpers.GetHeaderMaxPadding("", cartItems.Max(item => item.Product.Name.Length), 3); //Make price text start on the same LeftPos
+                padProductName = Helpers.GetHeaderMaxPadding("", cartItems.Max((Func<CartItem, int>)(item => (int)item.Product.Name.Length)), 3); //Make price text start on the same LeftPos
                 foreach (var item in cartItems)
                 {
                     decimal price = item.Product.IsOnSale == false ? (item.UnitAmount * item.Product.UnitPrice) : (item.UnitAmount * item.Product.UnitSalePrice);
