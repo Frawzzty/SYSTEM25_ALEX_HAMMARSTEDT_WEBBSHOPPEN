@@ -18,6 +18,11 @@ namespace WebShop.Models
         public DateTime DateTime { get; set; } = DateTime.Now; //IN utc? 1h behind
 
 
+        public UserAction()
+        {
+
+        }
+
         public UserAction(int customerId, Enums.UserActions action)
         {
             CustomerId = customerId;

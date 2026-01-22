@@ -22,13 +22,13 @@ namespace WebShop.Enums
     {
         Added_To_Cart,
         Remove_From_Cart,
-        Pruchase_Success,
+        Pruchase,
         Pruchase_Failed,
         Customer_Added,
         Customer_Removed,
         Customer_Updated,
+        Product,
         Logged_In,
-        Logged_Out
     }
 
     internal enum UpdateCustomer
@@ -48,6 +48,8 @@ namespace WebShop.Enums
         Update_Category_Id,
         Update_Supplyer_Name,
         Update_Unit_Price,
+        Update_Unit_Sale_Price,
+        Update_Is_On_Sale,
         Update_Stock
     }
 }

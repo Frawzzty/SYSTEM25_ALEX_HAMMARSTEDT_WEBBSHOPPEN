@@ -36,19 +36,30 @@ namespace WebShop.Services
             }
 
             if (item != null && !string.IsNullOrWhiteSpace(newName))
-            using (var db = new WebShopContext())
             {
-                db.Update(item);
-                 db.SaveChangesAsync();
-                isSucess = true;
+                using (var db = new WebShopContext())
+                {
+                    try
+                    {
+                        db.Update(item);
+                        db.SaveChangesAsync();
+                        isSucess = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Could not update {item.GetType()} name");
+                        Console.ReadKey(true);
+                    }
+                }
             }
+
             else
             {
                 //Rollback?
                 Console.WriteLine("Could not find Item or invalid name. Any key to continue...");
                 Console.ReadKey(true);
             }
-                return isSucess;
+            return isSucess;
         }
 
         public static void PrintBaseClass<T>(List<T> items)
@@ -60,15 +71,15 @@ namespace WebShop.Services
 
         public static bool DeleteDbItem<T>(T item)
         {
-            bool success = false;
+            bool isScucess = false;
 
             using (var db = new WebShopContext()) 
             {
                 try
                 {
                     db.Remove(item);
-                    db.SaveChanges(success);
-                    success = true;
+                    db.SaveChanges(isScucess);
+                    isScucess = true;
                 }
                 catch (Exception ex) 
                 { 
@@ -77,7 +88,7 @@ namespace WebShop.Services
                 }
 
             }
-            return success;
+            return isScucess;
 
         }
     }

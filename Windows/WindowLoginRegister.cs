@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Models;
 using WebShop.Modles;
@@ -30,7 +31,7 @@ namespace WebShop.Windows
             while (isActive)
             {
 
-                DrawWindow(email, password, message);
+                DrawLoginWindow(email, password, message);
                 message = "";
 
                 string key = Console.ReadKey(true).KeyChar.ToString().ToUpper();
@@ -39,17 +40,15 @@ namespace WebShop.Windows
                 {
                     case "1": 
                         //Enter email
-                        Console.Clear();
                         Console.Write("Enter email: ");
-                        email = Console.ReadLine();
+                        email = Console.ReadLine().ToLower();
 
                         break;
 
                     case "2": 
                         //Enter passowrd
-                        Console.Clear();
                         Console.Write("Enter password: ");
-                        password = Console.ReadLine();
+                        password = Console.ReadLine().ToLower();
 
                         break;
 
@@ -62,14 +61,14 @@ namespace WebShop.Windows
                         }
                         else
                         {
-                            message = "Login failed";
+                            message = "Login failed"; //Shown in next 
                         }
 
                         break;
 
                     case "4": 
                         //Create user
-                        message = await RegisterCustomer() == true ? "Registred successfully" : "Registration failed";
+                        message = await CustomerServices.RegisterCustomer() == true ? "Registred successfully" : "Registration failed";
                             break;
 
                     case "9":  
@@ -84,18 +83,23 @@ namespace WebShop.Windows
 
         }
 
-        private static void DrawWindow(string email, string password, string message)
+        private static void DrawLoginWindow(string email, string password, string message)
         {
-            var window = new Window("Login / Register", 1, 1, new List<string>() {
+            List<string> windowText = new List<string>() {
+                "",
                 $"[1] Email: {email}",
                 $"[2] Password: {password}",
+                $"",
                 $"[3] Login",
-                $" ",
                 $"[4] Register",
+                $"",
                 $"[9] Exit",
-            " ",
-            message});
-            window.headerColor = ConsoleColor.Green;
+                "",
+                message};
+
+            var window = new Window("Login / Register", 1, 1, windowText);
+            window.headerColor = ConsoleColor.Yellow;
+
             window.Draw();
         }
 
@@ -115,7 +119,8 @@ namespace WebShop.Windows
                     {
                         logginSuccess = true;
                         Settings.SetCurrentCustomer(customer.Id);
-                        MongoDbServices.AddUserAction(new UserAction(customer.Id, UserActions.Logged_In, customer.Email));
+
+                        MongoDbServices.AddUserAction(new UserAction(customer.Id, UserActions.Logged_In, "Admin: " + customer.IsAdmin));
                     }
 
                 }
@@ -125,56 +130,7 @@ namespace WebShop.Windows
 
         }
 
-        private static async Task<bool> RegisterCustomer()
-        {
-            bool sucess = false;
-
-            Console.Clear();
-            Console.WriteLine("Register");
-            Console.Write("Name: ");
-            string name = Console.ReadLine();
-
-            Console.Write("Street: ");
-            string street = Console.ReadLine();
-
-            Console.Write("City: ");
-            string city = Console.ReadLine();
-
-            Console.Write("Country: ");
-            string country = Console.ReadLine();
-
-            Console.Write("Email: ");
-            string email = Console.ReadLine();
-
-            Console.Write("Password: ");
-            string password = Console.ReadLine();
-
-            
-            using (var db = new WebShopContext())
-            {
-                Customer customer = new Customer(name, street, city, country, email, password);
-
-                try
-                {
-                    db.Customers.Add(customer);
-                    await db.SaveChangesAsync();
-
-                    sucess = true;
-                    MongoDbServices.AddUserAction(new UserAction(customer.Id, UserActions.Customer_Added, customer.Email));
-
-                    Console.WriteLine("Thanks for accepting marketing and cookikes :)");
-                    
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could not Register user to DB... Check inputs and try again");
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            return sucess;
-
-        }
+        
 
     }
 }

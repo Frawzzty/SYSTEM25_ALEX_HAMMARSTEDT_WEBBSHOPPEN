@@ -104,24 +104,31 @@ namespace WebShop.Services
                 {
                     Category selectedItem = allCategories.Where(c => c.Id == inputId).SingleOrDefault();
 
-                    Console.WriteLine($"Confirm you want to DELETE {selectedItem.Name}: [Y] or [N]");
+                    Console.WriteLine($"\nConfirm you want to DELETE: [Y] or [N]");
                     string key = Console.ReadKey(true).KeyChar.ToString().ToUpper();
-                    Console.WriteLine(key);
-                    if(key == "Y")
+                    if (key == "Y")
                     {
-                        db.Remove(selectedItem);
-                        db.SaveChanges(); //WIll crash if deleting category with products
-                        success = true;
+                        try
+                        {
+                            db.Remove(selectedItem);
+                            db.SaveChanges(); //WIll crash if deleting category with products
+                            success = true;
+                        }
+                        catch
+                        {
+                            Console.WriteLine("\nERROR: Invalid ID or selected category still contains prodcuts");
+                        }
                     }
+
+                    if (!success)
+                    {
+                        Helpers.MsgLeavingAnyKey();
+                    }
+                        
                 }
-
-                if(!success)
-                    Helpers.MsgLeavingAnyKey();
             }
+
         }
-
-
-
 
     }
 }

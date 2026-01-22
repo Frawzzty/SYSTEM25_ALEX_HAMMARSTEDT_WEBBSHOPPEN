@@ -82,12 +82,7 @@ namespace WebShop.Menus
 
                         case Enums.MenuAdminProduct.Update_Product:
                             Console.WriteLine("Update product");
-                            ProductServices.UpdateProducte();
-                            break;
-
-                        case Enums.MenuAdminProduct.Edit_Sale:
-                            Console.WriteLine("Set / remove product on sale");
-                            ProductServices.SetProductOnSale();
+                            ProductServices.UpdateProduct();
                             break;
 
                         case Enums.MenuAdminProduct.Delete_Product:

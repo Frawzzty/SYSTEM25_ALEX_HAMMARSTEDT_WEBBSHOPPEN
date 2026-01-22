@@ -129,6 +129,60 @@ namespace WebShop.DbServices
             return newCustomer;
         }
 
+        public static async Task<bool> RegisterCustomer()
+        {
+            bool sucess = false;
+
+            Console.Clear();
+            Console.WriteLine("Register");
+            Console.Write("Name: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Street: ");
+            string street = Console.ReadLine();
+
+            Console.Write("City: ");
+            string city = Console.ReadLine();
+
+            Console.Write("Country: ");
+            string country = Console.ReadLine();
+
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
+
+            Console.Write("Password: ");
+            string password = Console.ReadLine();
+
+
+            using (var db = new WebShopContext())
+            {
+                Customer customer = new Customer(name, street, city, country, email, password);
+
+                if (validateCustomerDetails(customer)) //Checks details are not empty
+                {
+                    try
+                    {
+                        db.Customers.Add(customer);
+                        await db.SaveChangesAsync();
+
+                        sucess = true;
+                        MongoDbServices.AddUserAction(new UserAction(customer.Id, UserActions.Customer_Added, customer.Email));
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Could not Register user Check inputs and try again");
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+               
+            }
+
+            return sucess;
+
+        }
+
         public static async void DeleteCustomer()
         {
             List<Customer> customers = GetAllCustomers();
@@ -210,9 +264,9 @@ namespace WebShop.DbServices
         }
 
 
-        public static void UpdateCustomerer(Customer existingCustomer, Enums.UpdateCustomer option)
+        public static void UpdateCustomerer(Customer existingCustomer, Enums.UpdateCustomer enumOption)
         {
-            Console.Write("Enter new" + option.ToString().Replace("Update_", " ") + ": ");
+            Console.Write("Enter new" + enumOption.ToString().Replace("Update_", " ") + ": ");
             string input = Console.ReadLine();
 
             if (!string.IsNullOrWhiteSpace(input))
@@ -221,39 +275,48 @@ namespace WebShop.DbServices
                 {
                     try
                     {
-                        switch (option)
+                        UserAction userAction = new UserAction() { CustomerId = Settings.GetCurrentCustomerId(), Action = Enums.UserActions.Product.ToString() };
+                        switch (enumOption)
                         {
                             case Enums.UpdateCustomer.Update_Name:
+                                userAction.Details = $"{enumOption}: {existingCustomer.Name} : {input}";
                                 existingCustomer.Name = input;
                                 break;
 
                             case Enums.UpdateCustomer.Update_street:
+                                userAction.Details = $"{enumOption}: {existingCustomer.Street} : {input}";
                                 existingCustomer.Street = input;
                                 break;
 
                             case Enums.UpdateCustomer.Update_city:
+                                userAction.Details = $"{enumOption}: {existingCustomer.City} : {input}";
                                 existingCustomer.City = input;
                                 break;
 
                             case Enums.UpdateCustomer.Update_Country:
+                                userAction.Details = $"{enumOption}: {existingCustomer.Country} : {input}";
                                 existingCustomer.Country = input;
                                 break;
 
                             case Enums.UpdateCustomer.Update_Email:
+                                userAction.Details = $"{enumOption}: {existingCustomer.Email} : {input}";
                                 existingCustomer.Email = input;
                                 break;
 
                             case Enums.UpdateCustomer.Update_Password:
+                                userAction.Details = $"Update password";
                                 existingCustomer.Password = input;
                                 break;
                         }
 
                         db.Update(existingCustomer);
                         db.SaveChanges();
+
+                        MongoDbServices.AddUserAction(userAction);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Could not update " + option.ToString().Replace("Update_", " ") + "\n");
+                        Console.WriteLine("Could not update " + enumOption.ToString().Replace("Update_", " ") + "\n");
                         Console.WriteLine(ex.Message);
                         Console.ReadKey(true);
                     }
@@ -301,5 +364,19 @@ namespace WebShop.DbServices
             }
         }
 
+        public static bool validateCustomerDetails(Customer customer)
+        {
+            bool isValidCustomerDetails = true;
+
+            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Name)        ?   true : false;
+            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Email)       ?   true : false;
+            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Street)      ?   true : false;
+            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.City)        ?   true : false;
+            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Country)     ?   true : false;
+            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Password)    ?   true : false;
+
+            return isValidCustomerDetails;
+
+        }
     }
 }

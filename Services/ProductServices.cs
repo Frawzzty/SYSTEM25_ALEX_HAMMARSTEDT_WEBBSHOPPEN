@@ -10,6 +10,7 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.Migrations;
+using WebShop.Models;
 using WebShop.Modles;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -280,55 +281,6 @@ namespace WebShop.Services
         }
 
 
-        public static void SetProductOnSale()
-        {
-            PrintProducts(GetAllProducts());
-
-            Console.WriteLine("\n[Leave inputs empty to exit] \nSet / remove product on sale");
-            Console.Write("Enter ID: ");
-            bool validId = int.TryParse(Console.ReadLine(), out int itemId) && itemId > 0; //TODO Make inputs Methods?
-            Product product;
-            if (validId)
-            {
-                product = GetProductById(itemId);
-
-                if (product != null)
-                {
-                    Console.WriteLine("Is product on sale Y / N");
-                    string keyOnSale = Console.ReadKey(true).KeyChar.ToString().ToUpper();
-                    bool isValidUnitSalePrice = false;
-                    if (keyOnSale == "Y")
-                    {
-                        product.IsOnSale = true;
-
-                        Console.Write("Enter unit sale price [00,00]: ");
-                        isValidUnitSalePrice = decimal.TryParse(Console.ReadLine().Replace('.', ','), out decimal unitSalePrice) && unitSalePrice > 0;
-                        if (isValidUnitSalePrice)
-                            product.UnitSalePrice = unitSalePrice;
-                        
-                    }
-                    else if (keyOnSale == "N")
-                    {
-                        product.IsOnSale = false;
-                        product.UnitSalePrice = 0;
-                    }
-
-                    if(keyOnSale == "Y" || keyOnSale == "N") //Update if yes or no.
-                    {
-                        using (var db = new WebShopContext())
-                        {
-                            db.Update(product);
-                            db.SaveChanges();
-                        }
-                    }
- 
-                    else { Helpers.MsgLeavingAnyKey(); }
-
-                }
-                else { Console.WriteLine("Products returned NULL"); } //TODO Add readkey? / HELPER MESSAGE
-            }
-            else { Console.WriteLine("Invalid ID / ID input"); } //TODO Add readkey? / HELPER MESSAGE
-        }
 
 
         public static void DeleteProduct()
@@ -372,7 +324,7 @@ namespace WebShop.Services
         }
 
 
-        public static void UpdateProducte()
+        public static void UpdateProduct()
         {
             List<Product> products = GetAllProducts();
             PrintProducts(products);
@@ -409,9 +361,18 @@ namespace WebShop.Services
         }
 
 
-        public static void UpdateProductHandler(Product existingProduct, Enums.UpdateProduct option)
+        public static void UpdateProductHandler(Product existingProduct, Enums.UpdateProduct enumOption)
         {
-            Console.Write("Enter new" + option.ToString().Replace("Update_", " ") + ": ");
+            if(enumOption == Enums.UpdateProduct.Update_Is_On_Sale)
+            {
+                Console.Write($"{enumOption.ToString().Replace("Update_", " ")} [Y] or [N]");
+            }
+            else
+            {
+                Console.Write("Enter new" + enumOption.ToString().Replace("Update_", " ") + ": ");
+            }
+                
+            
             string input = Console.ReadLine();
 
             if (!string.IsNullOrWhiteSpace(input))
@@ -422,39 +383,77 @@ namespace WebShop.Services
                 {
                     try
                     {
-                        switch (option)
+                        UserAction userAction = new UserAction() { CustomerId = Settings.GetCurrentCustomerId(), Action = Enums.UserActions.Product.ToString()};
+                        switch (enumOption)
                         {
                             case Enums.UpdateProduct.Update_Name:
+                                userAction.Details = $"{enumOption}: {existingProduct.Name} : {input}";
                                 existingProduct.Name = input;
+                                
                                 break;
 
                             case Enums.UpdateProduct.Update_Description:
+                                userAction.Details = $"{enumOption}: {existingProduct.Description} : {input}";
                                 existingProduct.Description = input;
+
                                 break;
 
                             case Enums.UpdateProduct.Update_Category_Id:
+                                userAction.Details = $"{enumOption}: {existingProduct.CategoryId} : {input}";
                                 existingProduct.CategoryId = int.Parse(input);
+
                                 break;
 
                             case Enums.UpdateProduct.Update_Supplyer_Name:
+                                userAction.Details = $"{enumOption}: {existingProduct.SupplierName} : {input}";
                                 existingProduct.SupplierName = input;
+
                                 break;
 
                             case Enums.UpdateProduct.Update_Unit_Price:
+                                userAction.Details = $"{enumOption}: {existingProduct.UnitPrice} : {input}";
                                 existingProduct.UnitPrice = decimal.Parse(input.Replace('.', ',')); //Format
+
+                                break;
+
+                            case Enums.UpdateProduct.Update_Unit_Sale_Price:
+                                userAction.Details = $"{enumOption}: {existingProduct.UnitSalePrice} : {input}";
+                                existingProduct.UnitPrice = decimal.Parse(input.Replace('.', ',')); //Format
+
+                                break;
+
+                            case Enums.UpdateProduct.Update_Is_On_Sale:
+                                if(input.ToUpper() == "Y")
+                                {
+                                    userAction.Details = $"{enumOption}: {existingProduct.IsOnSale} : {"Added to Sale"}";
+
+                                    existingProduct.IsOnSale = true;
+
+                                    if(existingProduct.UnitSalePrice > existingProduct.UnitPrice || existingProduct.UnitSalePrice == 0) //Set sale price to unit price if above unit price or is 0
+                                        existingProduct.UnitSalePrice = existingProduct.UnitPrice;
+                                }
+                                else if(input.ToUpper() == "N")
+                                {
+                                    userAction.Details = $"{enumOption}: {existingProduct.IsOnSale} : {"Removed from sale"}";
+                                    existingProduct.IsOnSale = false;
+                                }
                                 break;
 
                             case Enums.UpdateProduct.Update_Stock:
+                                userAction.Details = $"{enumOption}: {existingProduct.StockAmount} : {input}";
                                 existingProduct.StockAmount = int.Parse(input);
+
                                 break;
                         }
 
                         db.Update(existingProduct);
                         db.SaveChanges();
+
+                        MongoDbServices.AddUserAction(userAction);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Could not update " + option.ToString().Replace("Update_", " ") + "\n");
+                        Console.WriteLine("Could not update " + enumOption.ToString().Replace("Update_", " ") + "\n");
                         Console.WriteLine(ex.Message);
                         Console.ReadKey(true);
                     }
