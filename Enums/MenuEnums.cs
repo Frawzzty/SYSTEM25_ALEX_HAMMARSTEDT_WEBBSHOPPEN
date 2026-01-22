@@ -12,7 +12,7 @@ namespace WebShop.Enums
         Store = 1,
         Cart,    // --> show product --> Shipping --> Payment
         Order_History,
-        Switch_Customer,
+        Logout,
         Admin,
         Exit = 9
     }

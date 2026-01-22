@@ -26,20 +26,21 @@ namespace WebShop.Menus
             bool loop = true;
             while (loop)
             {
-
+                //Draw menu and Home screen
                 Helpers.DrawMenuEnum(new MenuHomeMain(), menuHeader);
-                WindowHome.DrawHome(); //Welcome message & Newsfeed
+                WindowHome.DrawHome(); 
 
+                //Draw product windows
                 productsOnSale = ProductServices.GetProductsOnSale();
-
-                List<string> saleActionKeys = new List<string> { "Z", "X", "C", "V" }; //Will draw same amount of products windows
+                List<string> saleActionKeys = Helpers.GetActionKeys().Take(4).ToList(); //Get actions keys for prodcut windows. Take(x) to limit how many windows are drawn.
                 WindowSaleProduct.DrawProductWindows(productsOnSale, saleActionKeys.Count, saleActionKeys);
 
+                //Inputs
                 string input = Console.ReadKey(true).KeyChar.ToString().ToUpper();
-                int actionKeyIndex = Helpers.GetActionKeyIndex(input);
-
-                //Navbar menu
+                int actionKeyIndex = Helpers.GetActionKeyIndex(input); //Check if input was a valid key for prodcut windows
+                
                 Console.Clear();
+                //Navbar menu
                 if (int.TryParse(input, out int number))
                 {
                     switch ((Enums.MenuHomeMain)number)
@@ -56,8 +57,9 @@ namespace WebShop.Menus
                             Menus.MenuOrderHistory.MenuOrderHistoryMain();
                             break;
 
-                        case Enums.MenuHomeMain.Switch_Customer:
-                            Settings.SetCurrentCustomer(WindowCustomer.SelectCustomer());
+                        case Enums.MenuHomeMain.Logout:
+                            Settings.SetCurrentCustomer(-1); //Set current customer to invalid id
+                            loop = false;
                             break;
 
                         case Enums.MenuHomeMain.Admin:

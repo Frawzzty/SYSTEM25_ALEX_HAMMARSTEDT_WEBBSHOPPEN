@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System.Runtime.CompilerServices;
+using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Menus;
 using WebShop.Modles;
@@ -13,32 +14,35 @@ namespace WebShop
     {
         //public static int myCustomerId;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-
-            //Console.ReadKey();
+            //CustomerServices.UpdateCustomerer(new Customer(), Enums.UpdateCustomer.Update_Name);
+            // Console.ReadKey();
 
 
             //BEFORE START
+            //Crashes at launch likley unallowed IP adress.
             //CHECK VPN is OFF;
             //CHECK DB STRINGS;
-            //Crashes at launch likley unallowed IP adress.
+
 
             //Testing.WindowTesting();
 
             //Console.CursorVisible = false;
-            Settings.SetCurrentCustomer(WindowCustomer.SelectCustomer());
+            //Settings.SetCurrentCustomer(WindowCustomer.SelectCustomer());
             Console.Clear();
 
 
             while (true)
             {
-                //ChooseCustomer
-                MenuHome.MenuHomeMain();
-                break;
+                if (await WindowLoginRegister.Authenticate()) //Login or Register
+                {
+                    MenuHome.MenuHomeMain();
+                }
+
             }
 
-            Console.WriteLine("Byyyye please dont ever come back!\n\n\n");
+            Console.WriteLine("Byyyye, thanks for moooney! <3 \n\n\n");
 
         }
     }

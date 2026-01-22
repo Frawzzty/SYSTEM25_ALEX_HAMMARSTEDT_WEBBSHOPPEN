@@ -30,4 +30,14 @@ namespace WebShop.Enums
         Logged_In,
         Logged_Out
     }
+
+    internal enum UpdateCustomer
+    {
+        Update_Name,
+        Update_street,
+        Update_city,
+        Update_Country,
+        Update_Email,
+        Update_Password
+    }
 }

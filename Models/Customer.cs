@@ -17,6 +17,7 @@ namespace WebShop.Modles
         public string City { get; set; }
         public string Country { get; set; }
         public bool IsAdmin { get; set; } = false; //Default false
+        public string? Password { get; set; } = "1234";
 
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
@@ -29,6 +30,17 @@ namespace WebShop.Modles
             Street =    Helpers.FirtUpperCaseRestLower(street);
             City =      Helpers.FirtUpperCaseRestLower(city);
             Country =   Helpers.FirtUpperCaseRestLower(country);
+        }
+
+        public Customer(string name, string street, string city, string country, string email, string password)
+        {
+            Name = Helpers.FirtUpperCaseRestLower(name);
+            Street = Helpers.FirtUpperCaseRestLower(street);
+            City = Helpers.FirtUpperCaseRestLower(city);
+            Country = Helpers.FirtUpperCaseRestLower(country);
+
+            Email = email.ToLower();
+            Password = password; 
         }
     }
 }

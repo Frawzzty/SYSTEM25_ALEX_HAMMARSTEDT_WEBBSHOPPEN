@@ -178,34 +178,48 @@ namespace WebShop.DbServices
             bool isValidInputID = int.TryParse(Console.ReadLine(), out int userId) && userId > 0;
             Customer selectedCustomer = customers.Where(c => c.Id == userId).SingleOrDefault();
 
+            Console.Clear();
             if (selectedCustomer != null)
             {
-                Console.WriteLine("Edit - [1] Name, [2] Email, [3] Street, [4] City, [5] Country \n");
-                switch (Console.ReadKey(true).KeyChar.ToString().ToUpper())
+                bool isActive = true;
+                while (isActive)
                 {
-                    case "1":
-                        Console.Clear();
-                        UpdateCustomerName(selectedCustomer);
-                        break;
-                    case "2":
-                        Console.Clear();
-                        UpdateCustomerEmail(selectedCustomer);
-                        break;
-                    case "3":
-                        Console.Clear();
-                        UpdateCustomerStreet(selectedCustomer);
-                        break;
-                    case "4":
-                        Console.Clear();
-                        UpdateCustomerCity(selectedCustomer);
-                        break;
-                    case "5":
-                        Console.Clear();
-                        UpdateCustomerCountry(selectedCustomer);
-                        break;
-                    default:
-                        Helpers.MsgBadInputsAnyKey();
-                        break;
+                    PrintCustomers(new List<Customer> { selectedCustomer });
+                    Console.WriteLine("" +
+                        "\nUPDATE CUSTOMER\n" +
+                        "[1] Name, [2] Street, [3] City, [4] Country, [5] Email, [6] Password [Any key to leave] \n");
+
+                    switch (Console.ReadKey(true).KeyChar.ToString().ToUpper())
+                    {
+                        case "1":
+                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_Name);
+                            break;
+
+                        case "2":
+                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_street);
+                            break;
+
+                        case "3":
+                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_city);
+                            break;
+
+                        case "4":
+                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_Country);
+                            break;
+
+                        case "5":
+                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_Email);
+                            break;
+
+                        case "6":
+                            UpdateCustomerer(selectedCustomer, Enums.UpdateCustomer.Update_Password);
+                            break;
+
+                        default:
+                            isActive = false;
+                            break;
+                    }
+                    Console.Clear();
                 }
             }
         }
@@ -252,132 +266,61 @@ namespace WebShop.DbServices
 
         }
 
-        public static void UpdateCustomerName(Customer customer)
+
+        public static void UpdateCustomerer(Customer existingCustomer, Enums.UpdateCustomer option)
         {
-            string oldName = customer.Name;
+            Console.Write("Enter new" + option.ToString().Replace("Update_", " ") + ": ");
+            string input = Console.ReadLine();
 
-            Console.WriteLine("Update customer name...");
-            Console.WriteLine($"Current name: {customer.Name}");
-            Console.Write("Enter new name: ");
-            string newName = Console.ReadLine();
-
-            bool isSuccess = GenericServices.UpdateItemName(customer, newName); //Method handles input check.
-
-            if(isSuccess)
-                MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated name: From {oldName} To: {newName}"));
-
-        }
-
-        public static void UpdateCustomerEmail(Customer customer)
-        {
-            string oldEmail = customer.Email;
-
-            Console.WriteLine("Update customer email...");
-            Console.WriteLine($"Current email: {customer.Email}");
-            Console.Write("Enter new email: ");
-            string newEmail = Console.ReadLine();
-
-            if (customer != null && !string.IsNullOrEmpty(newEmail))
+            if (!string.IsNullOrWhiteSpace(input))
             {
                 using (var db = new WebShopContext())
                 {
-                    customer.Email = newEmail;
-                    db.Update(customer);
-
-                    if(db.SaveChanges() > 0)
+                    try
                     {
-                        MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated Email: From {oldEmail} To: {newEmail}"));
+                        switch (option)
+                        {
+                            case Enums.UpdateCustomer.Update_Name:
+                                existingCustomer.Name = input;
+                                break;
+
+                            case Enums.UpdateCustomer.Update_street:
+                                existingCustomer.Street = input;
+                                break;
+
+                            case Enums.UpdateCustomer.Update_city:
+                                existingCustomer.City = input;
+                                break;
+
+                            case Enums.UpdateCustomer.Update_Country:
+                                existingCustomer.Country = input;
+                                break;
+
+                            case Enums.UpdateCustomer.Update_Email:
+                                existingCustomer.Email = input;
+                                break;
+
+                            case Enums.UpdateCustomer.Update_Password:
+                                existingCustomer.Password = input;
+                                break;
+                        }
+
+                        db.Update(existingCustomer);
+                        db.SaveChanges();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Could not update " + option.ToString().Replace("Update_", " ") + "\n");
+                        Console.WriteLine(ex.Message);
+                        Console.ReadKey(true);
                     }
                 }
-            }
-            else
-            {
-                Helpers.MsgBadInputsAnyKey();
+
             }
         }
 
-        public static void UpdateCustomerStreet(Customer customer)
-        {
-            string oldStreetName = customer.Street;
 
-            Console.WriteLine("Update customer street...");
-            Console.WriteLine($"Current street: {customer.Street}");
-            Console.Write("Enter new steet name: ");
-            string newStreetName = Console.ReadLine();
-
-            if (customer != null && !string.IsNullOrEmpty(newStreetName))
-            {
-                using (var db = new WebShopContext())
-                {
-                    customer.Street = newStreetName;
-                    db.Update(customer);
-
-                    if (db.SaveChanges() > 0)
-                    {
-                        MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated Street: From {oldStreetName} To: {newStreetName}"));
-                    }
-                }
-            }
-            else
-            {
-                Helpers.MsgBadInputsAnyKey();
-            }
-        }
-
-        public static void UpdateCustomerCity(Customer customer)
-        {
-            string oldCityName = customer.City;
-            Console.WriteLine("Update customer City...");
-            Console.WriteLine($"Current city: {customer.City}");
-            Console.Write("Enter new city name: ");
-            string newCityName = Console.ReadLine();
-
-            if (customer != null && !string.IsNullOrEmpty(newCityName))
-            {
-                using (var db = new WebShopContext())
-                {
-                    customer.City = newCityName;
-                    db.Update(customer);
-
-                    if (db.SaveChanges() > 0)
-                    {
-                        MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated City: From {oldCityName} To: {newCityName}"));
-                    }
-                }
-            }
-            else
-            {
-                Helpers.MsgBadInputsAnyKey();
-            }
-        }
-
-        public static void UpdateCustomerCountry(Customer customer)
-        {
-            string oldCountryName = customer.Country;
-            Console.WriteLine("Update customer country...");
-            Console.WriteLine($"Current country: {customer.Country}");
-            Console.Write("Enter new country name: ");
-            string newCountryName = Console.ReadLine();
-
-            if (customer != null && !string.IsNullOrEmpty(newCountryName))
-            {
-                using (var db = new WebShopContext())
-                {
-                    customer.Country = newCountryName;
-                    db.Update(customer);
-
-                    if (db.SaveChanges() > 0)
-                    {
-                        MongoDbServices.AddUserAction(new Models.UserAction(customer.Id, Enums.UserActions.Customer_Updated, $"Updated Country: From {oldCountryName} To: {newCountryName}"));
-                    }
-                }
-            }
-            else
-            {
-                Helpers.MsgBadInputsAnyKey();
-            }
-        }
-        
-
+          
     }
 }

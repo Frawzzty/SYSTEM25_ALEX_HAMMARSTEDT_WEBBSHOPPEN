@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebShop.Modles;
 
@@ -11,9 +12,11 @@ using WebShop.Modles;
 namespace WebShop.Migrations
 {
     [DbContext(typeof(WebShopContext))]
-    partial class WebShopContextModelSnapshot : ModelSnapshot
+    [Migration("20260122084128_add_unique_email_customer")]
+    partial class add_unique_email_customer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
