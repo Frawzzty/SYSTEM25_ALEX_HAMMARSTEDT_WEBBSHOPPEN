@@ -68,14 +68,14 @@ namespace WebShop.Menus
                             break;
 
                         case Enums.MenuHomeMain.Exit:
-                            loop = false;
+                            Environment.Exit(0);
                             break;
                     }
                 }
                 //Add to cart
                 else if(actionKeyIndex >= 0) //Try add sale product to cart
                 {
-                        Helpers.TryAddProductOnSaleToCart(productsOnSale, actionKeyIndex);
+                    Helpers.AddProductOnSaleToCart(productsOnSale, actionKeyIndex);
                 }
 
                 Console.Clear();

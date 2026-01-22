@@ -179,13 +179,16 @@ namespace WebShop
 
         public static void ViewMoreWindow(Product product)
         {
+            //Window settings
             string addToCartKey = "B";
             string windowHeader = "Selected product";
             List<string> productText = Helpers.GetProductTexLongForWindow(product, "Add To Cart", addToCartKey);
 
+            //Window
             var productWindow = new Window(windowHeader, 1, 13, productText); //Fix, Postion too hardcoded?
             productWindow.Draw(ConsoleColor.Green);
 
+            //Add to cart
             string key = Console.ReadKey(true).KeyChar.ToString().ToUpper();
             if (key == addToCartKey)
             {
@@ -193,9 +196,9 @@ namespace WebShop
             }
         }
 
-        public static void TryAddProductOnSaleToCart(List<Product> products, int index)
+        public static void AddProductOnSaleToCart(List<Product> products, int index)
         {
-            if (products.Count > 0 && index < products.Count)
+            if (products.Count > 0 && index < products.Count) //Check index is not out of bounds
             {
                 CartItemServices.AddCartItem(products[index].Id, Settings.GetCurrentCustomerId());
             }

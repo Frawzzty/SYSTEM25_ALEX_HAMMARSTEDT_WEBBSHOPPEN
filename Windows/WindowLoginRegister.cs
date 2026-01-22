@@ -17,8 +17,6 @@ namespace WebShop.Windows
     internal class WindowLoginRegister
     {
 
-
-
         public static async Task<bool> Authenticate()
         {
             string email = "";
@@ -68,7 +66,7 @@ namespace WebShop.Windows
 
                     case "4": 
                         //Create user
-                        message = await CustomerServices.RegisterCustomer() == true ? "Registred successfully" : "Registration failed";
+                        message = await CustomerServices.RegisterCustomerAsync() == true ? "Registred successfully" : "Registration failed";
                             break;
 
                     case "9":  
@@ -120,7 +118,8 @@ namespace WebShop.Windows
                         logginSuccess = true;
                         Settings.SetCurrentCustomer(customer.Id);
 
-                        MongoDbServices.AddUserAction(new UserAction(customer.Id, UserActions.Logged_In, "Admin: " + customer.IsAdmin));
+                        
+                        MongoDbServices.AddUserActionAsync(new UserAction(customer.Id, UserActions.Logged_In, "Admin: " + customer.IsAdmin));
                     }
 
                 }

@@ -36,14 +36,14 @@ namespace WebShop
             while (true)
             {
                 bool auth = false;
-                if (!Settings.GetDebugStatus())
-                {
-                    auth = await WindowLoginRegister.Authenticate(); //Login or Register
-                }
-                else
+                if (Settings.GetDebugStatus())
                 {
                     auth = true;
                     Settings.SetCurrentCustomer(2);
+                }
+                else 
+                {
+                    auth = await WindowLoginRegister.Authenticate(); //Login or Register
                 }
 
                     

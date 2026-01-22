@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.Connections;
+using WebShop.Enums;
+using WebShop.Models;
 using WebShop.Modles;
 using WebShop.Services;
 
@@ -28,7 +30,7 @@ namespace WebShop.DbServices
         }
 
 
-        public static void AddCartItem(int productId, int customerId)
+        public static async void AddCartItem(int productId, int customerId)
         {
             CartItem cartItem = null;
 
@@ -42,7 +44,6 @@ namespace WebShop.DbServices
                     break;
                 }
             }
-
             
             using (var db = new WebShopContext())
             {
@@ -66,8 +67,8 @@ namespace WebShop.DbServices
                     ProductServices.UpdateProductStock(productId, -1); //remove 1 from stock
                     db.SaveChanges();
 
-                    
-                    MongoDbServices.AddUserAction(new Models.UserAction(customerId, Enums.UserActions.Added_To_Cart, "Product ID: " + cartItem.ProductId));
+                    UserAction userAction = new Models.UserAction(customerId, Enums.UserActions.Added_To_Cart, "Product ID: " + cartItem.ProductId);
+                    await MongoDbServices.AddUserActionAsync(userAction);
                 }
                 catch (Exception ex) 
                 {
@@ -144,6 +145,7 @@ namespace WebShop.DbServices
         }
 
    
+        //REMOVE?
         public static void DeleteCartItems(List<CartItem> cartItems)
         {
 
@@ -161,7 +163,7 @@ namespace WebShop.DbServices
                 {
                     Console.WriteLine("Error deleteing CartItems");
                     Console.WriteLine("Any key to continue...\n");
-                    Console.WriteLine(ex.InnerException);
+                    Console.WriteLine(ex.Message);
 
                     Console.ReadKey(true);
                 }
@@ -181,7 +183,7 @@ namespace WebShop.DbServices
             {
                 Console.WriteLine("Error deleteing CartItems");
                 Console.WriteLine("Any key to continue...\n");
-                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Message);
 
                 Console.ReadKey(true);
             }

@@ -9,6 +9,8 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
+using WebShop.Connections;
 using WebShop.Migrations;
 using WebShop.Models;
 using WebShop.Modles;
@@ -208,13 +210,15 @@ namespace WebShop.Services
                     {
                         try
                         {
-                            
                             db.Products.Add(newProduct);
                             db.SaveChanges();
+
+                            UserAction userAction = new UserAction(Settings.GetCurrentCustomerId(), Enums.UserActions.Product, "Added product Id: " + newProduct.Id);
+                            MongoDbServices.AddUserActionAsync(userAction);
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(ex.InnerException);
+                            Console.WriteLine(ex.Message);
                             Console.ReadKey(true);
                         }
                     }
@@ -341,7 +345,7 @@ namespace WebShop.Services
                 {
                     //Print menu and selected Prodcut
                     Helpers.DrawMenuEnum(new Enums.UpdateProduct(), "Update Product");
-                    PrintProducts(new List<Product> { product });
+                    PrintProducts(new List<Product> { GetProductById(product.Id) }); //Refresh product incase changes are made
                     Console.WriteLine("\n\n");
 
                     //Handle input
@@ -360,7 +364,7 @@ namespace WebShop.Services
             }
         }
 
-        public static void UpdateProductHandler(Product existingProduct, Enums.UpdateProduct enumOption)
+        public static async Task UpdateProductHandler(Product existingProduct, Enums.UpdateProduct enumOption)
         {
             if(enumOption == Enums.UpdateProduct.Update_Is_On_Sale) //If bool
             {
@@ -379,6 +383,7 @@ namespace WebShop.Services
 
                 using (var db = new Connections.WebShopContext())
                 {
+                    //var myTransaction = await db.Database.BeginTransactionAsync(); //Start transaction
                     try
                     {
                         UserAction userAction = new UserAction() { CustomerId = Settings.GetCurrentCustomerId(), Action = Enums.UserActions.Product.ToString()};
@@ -416,7 +421,7 @@ namespace WebShop.Services
 
                             case Enums.UpdateProduct.Update_Unit_Sale_Price:
                                 userAction.Details = $"{enumOption}: {existingProduct.UnitSalePrice} : {input}";
-                                existingProduct.UnitPrice = decimal.Parse(input.Replace('.', ','));
+                                existingProduct.UnitSalePrice = decimal.Parse(input.Replace('.', ','));
 
                                 break;
 
@@ -427,7 +432,7 @@ namespace WebShop.Services
 
                                     existingProduct.IsOnSale = true;
 
-                                    //Safty: Set sale price to Unitprice If higher than uit price or below 0
+                                    //Safety: If sale price is higher than uit price or below 0:  Set sale price to Unitprice
                                     if (existingProduct.UnitSalePrice > existingProduct.UnitPrice || existingProduct.UnitSalePrice == 0) 
                                         existingProduct.UnitSalePrice = existingProduct.UnitPrice;
                                 }
@@ -445,16 +450,21 @@ namespace WebShop.Services
                                 break;
                         }
 
+
                         db.Update(existingProduct);
                         db.SaveChanges();
+                        //await myTransaction.CommitAsync();
 
-                        MongoDbServices.AddUserAction(userAction);
+                        await MongoDbServices.AddUserActionAsync(userAction);
                     }
                     catch (Exception ex)
                     {
+                        //await myTransaction.RollbackAsync();
                         Console.WriteLine("Could not update " + enumOption.ToString().Replace("Update_", " ") + "\n");
                         Console.WriteLine(ex.Message);
                         Console.ReadKey(true);
+
+                        
                     }
                 }
             }

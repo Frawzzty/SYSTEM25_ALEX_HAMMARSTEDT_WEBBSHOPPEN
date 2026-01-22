@@ -310,8 +310,8 @@ namespace WebShop.Windows
 
                 foreach(var date in dates)
                 {
-                    var selectedOrders = orders //Select where date is in between
-                        .Where(g => g.OrderDate >= date.ToDateTime(TimeOnly.MinValue))
+                    var selectedOrders = orders //Select where date is in between 
+                        .Where(g => g.OrderDate >= date.ToDateTime(TimeOnly.MinValue)) //convert to DateTime: starting at 00:00 (makes sure data from whole day is captured)
                         .Where(g => g.OrderDate < date.AddDays(1).ToDateTime(TimeOnly.MinValue));
 
                     decimal subTotal = selectedOrders.Sum(o => o.SubTotal);
@@ -357,7 +357,7 @@ namespace WebShop.Windows
 
             string header = "Most common passwords";
             var window = new Window(header, 0, 0, textRows);
-            window.headerColor = ConsoleColor.Yellow;
+            window.headerColor = ConsoleColor.DarkYellow;
 
             return window;
         }

@@ -25,7 +25,7 @@ namespace WebShop.Services
 
 
         //Add UserAction
-        public static async Task AddUserAction(UserAction userAction)
+        public static async Task AddUserActionAsync(UserAction userAction)
         {
             if (Settings.GetMongoLoggingStatus()) //Only logg if enabled
             {

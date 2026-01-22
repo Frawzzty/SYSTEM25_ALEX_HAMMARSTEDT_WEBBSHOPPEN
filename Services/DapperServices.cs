@@ -19,7 +19,7 @@ namespace WebShop.Services
 
 
         /// <summary>
-        /// Does not include navigation property... >:(
+        /// Works, but does not include EF navigation property... >:(
         /// </summary>
         public static List<Product> GetProductsByString(string searchTerm)
         {

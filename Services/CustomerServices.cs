@@ -93,43 +93,8 @@ namespace WebShop.DbServices
         /// Lets user create customer with inputs
         /// </summary>
         /// <returns>the customer created</returns>
-        public static Customer AddCustomer()
-        {
-            Console.WriteLine("Add new Customer...");
-            Console.Write("Name: ");
-            string name = Console.ReadLine();
-            Console.Write("Email: ");
-            string email = Console.ReadLine();
-            Console.Write("Street: ");
-            string street = Console.ReadLine();
-            Console.Write("City: ");
-            string city = Console.ReadLine();
-            Console.Write("Country: ");
-            string country = Console.ReadLine();
 
-            Customer newCustomer = new Customer(name, email, street, city, country);
-
-            if (newCustomer != null) 
-            {
-                using (var db = new Connections.WebShopContext())
-                {
-                    try
-                    {
-                        db.Customers.Add(newCustomer);
-                        db.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Could not add new customer" + "\n");
-                        Console.WriteLine(ex.Message);
-                    }
-
-                }
-            }
-            return newCustomer;
-        }
-
-        public static async Task<bool> RegisterCustomer()
+        public static async Task<bool> RegisterCustomerAsync()
         {
             bool sucess = false;
 
@@ -166,7 +131,7 @@ namespace WebShop.DbServices
                         await db.SaveChangesAsync();
 
                         sucess = true;
-                        MongoDbServices.AddUserAction(new UserAction(customer.Id, UserActions.Customer_Added, customer.Email));
+                        MongoDbServices.AddUserActionAsync(new UserAction(customer.Id, UserActions.Customer_Added, customer.Email));
 
 
                     }
@@ -312,7 +277,7 @@ namespace WebShop.DbServices
                         db.Update(existingCustomer);
                         db.SaveChanges();
 
-                        MongoDbServices.AddUserAction(userAction);
+                        MongoDbServices.AddUserActionAsync(userAction);
                     }
                     catch (Exception ex)
                     {

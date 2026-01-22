@@ -160,7 +160,7 @@ namespace WebShop.Services
                     await db.SaveChangesAsync();
                     await myTransaction.CommitAsync();
 
-                    await MongoDbServices.AddUserAction(new Models.UserAction(order.Customer.Id, Enums.UserActions.Pruchase, ("Order ID: " + order.Id)));
+                    await MongoDbServices.AddUserActionAsync(new Models.UserAction(order.Customer.Id, Enums.UserActions.Pruchase, ("Order ID: " + order.Id)));
                 }
                 catch (Exception ex)
                 {

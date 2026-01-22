@@ -162,7 +162,7 @@ namespace WebShop.Menus
                     switch ((MenuAdminCustomer)number)
                     {
                         case Enums.MenuAdminCustomer.Add_Customer:
-                            CustomerServices.AddCustomer();
+                            CustomerServices.RegisterCustomerAsync();
 
                             break;
 
