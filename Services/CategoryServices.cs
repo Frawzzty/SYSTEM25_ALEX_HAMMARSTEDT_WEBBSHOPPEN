@@ -16,7 +16,7 @@ namespace WebShop.Services
         {
             List<Category> categories = new List<Category>();
 
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 categories = db.Categories.ToList();
             }
@@ -26,7 +26,7 @@ namespace WebShop.Services
         public static Category GetCategory(int id)
         {
             Category category = null;
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 category = db.Categories.Where(c => c.Id == id).Include(c => c.Products).SingleOrDefault();
             }
@@ -52,7 +52,7 @@ namespace WebShop.Services
 
             if (!string.IsNullOrEmpty(input))
             {
-                using (var db = new WebShopContext())
+                using (var db = new Connections.WebShopContext())
                 {
                     db.Categories.Add(new Category(input));
                     db.SaveChanges();
@@ -92,7 +92,7 @@ namespace WebShop.Services
         public static void DeleteCategory()
         {
             bool success = false;
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 var allCategories = db.Categories.ToList();
                 PrintCategories(allCategories);    //Give the user an overlook of what exists

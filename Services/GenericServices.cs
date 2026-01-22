@@ -37,7 +37,7 @@ namespace WebShop.Services
 
             if (item != null && !string.IsNullOrWhiteSpace(newName))
             {
-                using (var db = new WebShopContext())
+                using (var db = new Connections.WebShopContext())
                 {
                     try
                     {
@@ -73,7 +73,7 @@ namespace WebShop.Services
         {
             bool isScucess = false;
 
-            using (var db = new WebShopContext()) 
+            using (var db = new Connections.WebShopContext()) 
             {
                 try
                 {

@@ -7,6 +7,7 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.Connections;
 using WebShop.Modles;
 using WebShop.Services;
 

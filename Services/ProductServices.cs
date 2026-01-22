@@ -22,7 +22,7 @@ namespace WebShop.Services
         {
             List<Product> products = new List<Product>();
 
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 products = db.Products.ToList();
             }
@@ -34,7 +34,7 @@ namespace WebShop.Services
         public static Product GetProductById(int id)
         {
             Product product = null;
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 product = db.Products.Where(p => p.Id == id).SingleOrDefault();
             }
@@ -45,7 +45,7 @@ namespace WebShop.Services
         public static List<Product> GetProductsByCategory(string categoryName)
         {
             List<Product> products = new List<Product>();
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 products = db.Products.Include(p => p.Category).Where(p => p.Category.Name == categoryName).ToList(); //Use .Include so we are able to access the category props
             }
@@ -57,7 +57,7 @@ namespace WebShop.Services
         public static List<Product> GetProductsByCategory(int categoryId)
         {
             List<Product> products = new List<Product>();
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 products = db.Products
                     .Include(p => p.Category) //Use .Include() to get access to Navigation property
@@ -73,7 +73,7 @@ namespace WebShop.Services
         public static List<Product> GetProductsOnSale()
         {
             List<Product> products = new List<Product>();
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 products = db.Products //Use .Include() to get access to Navigation property
                     .Include(p => p.Category)
@@ -88,7 +88,7 @@ namespace WebShop.Services
         public static List<Product> GetProductsByString(string searchTerm)
         {
             List<Product> products = new List<Product>();
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 products = db.Products
                     .Include(p => p.Category) //Use .Include() to get access to Navigation property
@@ -173,7 +173,7 @@ namespace WebShop.Services
 
         public static void AddProduct()
         {
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 PrintProducts(db.Products.ToList());
                 Console.WriteLine();
@@ -198,21 +198,17 @@ namespace WebShop.Services
 
                 Console.Write("Enter stock amount: ");
                 bool isValidInputStockAmount = int.TryParse(Console.ReadLine(), out int stockAmount) && stockAmount > 0;
-                
-                if(
-                    !string.IsNullOrEmpty(name) && 
-                    !string.IsNullOrEmpty(description) && 
-                    isValidInputID && 
-                    !string.IsNullOrEmpty(supplierName) && 
-                    isValidUnitPrice && 
-                    isValidInputStockAmount)
+
+
+                Product newProduct = new Product(name, description, categoryId, supplierName, unitPrice, stockAmount);
+                if (ValidateProduct(newProduct))
                 {
                     Console.Write("\n[Y] to add prodcut Or cancle [Any key]\n");
                     if (Console.ReadKey(true).KeyChar.ToString().ToUpper() == "Y")
                     {
                         try
                         {
-                            Product newProduct = new Product(name, description, categoryId, supplierName, unitPrice, stockAmount);
+                            
                             db.Products.Add(newProduct);
                             db.SaveChanges();
                         }
@@ -235,7 +231,7 @@ namespace WebShop.Services
         public static void UpdateProductStock(int productId, int amount)
         {
             Product product;
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 product = db.Products.Where(p => p.Id == productId).SingleOrDefault();
                 
@@ -251,7 +247,7 @@ namespace WebShop.Services
         /// </summary>
         public static void SetProductStock(Product product, int amount)
         {
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 product.StockAmount = amount;
                 db.Products.Update(product);
@@ -272,15 +268,13 @@ namespace WebShop.Services
             Product product = null;
             if (isNumber)
             {
-                using (var db = new WebShopContext())
+                using (var db = new Connections.WebShopContext())
                 {
                     product = db.Products.Where(p => p.Id == id).Include(p => p.Category).SingleOrDefault();
                 }
             }
             return product;
         }
-
-
 
 
         public static void DeleteProduct()
@@ -297,7 +291,12 @@ namespace WebShop.Services
                 Product product = products.Where(p => p.Id == itemId).SingleOrDefault();
                 if (product != null) 
                 {
-                    GenericServices.DeleteDbItem(product);
+                    Console.WriteLine(
+                        $"Are you sure you want to DELETE: {product.Name}" +
+                        $"\n[Y] or [Cancle any key]");
+
+                    if(Console.ReadKey().Key.ToString().ToUpper() == "Y")
+                        GenericServices.DeleteDbItem(product);
                 }
             }
         }
@@ -329,6 +328,7 @@ namespace WebShop.Services
             List<Product> products = GetAllProducts();
             PrintProducts(products);
 
+            //Select product
             Console.Write("\nChoose Product - Enter ID: ");
             bool isValidId = int.TryParse(Console.ReadLine(), out int id) && id > 0;
             Product product = products.Where(item => item.Id == id).SingleOrDefault();
@@ -360,18 +360,16 @@ namespace WebShop.Services
             }
         }
 
-
         public static void UpdateProductHandler(Product existingProduct, Enums.UpdateProduct enumOption)
         {
-            if(enumOption == Enums.UpdateProduct.Update_Is_On_Sale)
+            if(enumOption == Enums.UpdateProduct.Update_Is_On_Sale) //If bool
             {
                 Console.Write($"{enumOption.ToString().Replace("Update_", " ")} [Y] or [N]");
             }
-            else
+            else //If string
             {
                 Console.Write("Enter new" + enumOption.ToString().Replace("Update_", " ") + ": ");
             }
-                
             
             string input = Console.ReadLine();
 
@@ -379,7 +377,7 @@ namespace WebShop.Services
             {
                 input = input.Trim();
 
-                using (var db = new WebShopContext())
+                using (var db = new Connections.WebShopContext())
                 {
                     try
                     {
@@ -387,8 +385,8 @@ namespace WebShop.Services
                         switch (enumOption)
                         {
                             case Enums.UpdateProduct.Update_Name:
-                                userAction.Details = $"{enumOption}: {existingProduct.Name} : {input}";
-                                existingProduct.Name = input;
+                                userAction.Details = $"{enumOption}: {existingProduct.Name} : {input}"; //Generate MongoLog text
+                                existingProduct.Name = input; //Update db item
                                 
                                 break;
 
@@ -412,13 +410,13 @@ namespace WebShop.Services
 
                             case Enums.UpdateProduct.Update_Unit_Price:
                                 userAction.Details = $"{enumOption}: {existingProduct.UnitPrice} : {input}";
-                                existingProduct.UnitPrice = decimal.Parse(input.Replace('.', ',')); //Format
+                                existingProduct.UnitPrice = decimal.Parse(input.Replace('.', ','));
 
                                 break;
 
                             case Enums.UpdateProduct.Update_Unit_Sale_Price:
                                 userAction.Details = $"{enumOption}: {existingProduct.UnitSalePrice} : {input}";
-                                existingProduct.UnitPrice = decimal.Parse(input.Replace('.', ',')); //Format
+                                existingProduct.UnitPrice = decimal.Parse(input.Replace('.', ','));
 
                                 break;
 
@@ -429,7 +427,8 @@ namespace WebShop.Services
 
                                     existingProduct.IsOnSale = true;
 
-                                    if(existingProduct.UnitSalePrice > existingProduct.UnitPrice || existingProduct.UnitSalePrice == 0) //Set sale price to unit price if above unit price or is 0
+                                    //Safty: Set sale price to Unitprice If higher than uit price or below 0
+                                    if (existingProduct.UnitSalePrice > existingProduct.UnitPrice || existingProduct.UnitSalePrice == 0) 
                                         existingProduct.UnitSalePrice = existingProduct.UnitPrice;
                                 }
                                 else if(input.ToUpper() == "N")
@@ -461,5 +460,24 @@ namespace WebShop.Services
             }
         }
 
+        public static bool ValidateProduct(Product product)
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrWhiteSpace(product.Name)) return false;
+
+            if (string.IsNullOrWhiteSpace(product.Description)) return false;
+
+            if (product.CategoryId !<= 0) return false;
+
+            if (string.IsNullOrWhiteSpace(product.SupplierName)) return false;
+
+            if (product.UnitPrice !<= 0) return false;
+
+            if (product.StockAmount < 0) return false; //Allow valid if zero
+
+
+            return isValid;
+        }
     }
 }

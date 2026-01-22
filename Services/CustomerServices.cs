@@ -19,7 +19,7 @@ namespace WebShop.DbServices
         public static List<Customer> GetAllCustomers()
         {
             List<Customer> customers = new List<Customer>();
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 customers = db.Customers.Include(c => c.Orders).Include(c => c.CartItems).ToList();
             }
@@ -29,7 +29,7 @@ namespace WebShop.DbServices
         public static Customer GetCustomerById(int id)
         {
             Customer customers;
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 //Include customer data
                 customers = db.Customers.Include(c => c.Orders).Include(c => c.CartItems).Where(c => c.Id == id).SingleOrDefault();
@@ -111,7 +111,7 @@ namespace WebShop.DbServices
 
             if (newCustomer != null) 
             {
-                using (var db = new WebShopContext())
+                using (var db = new Connections.WebShopContext())
                 {
                     try
                     {
@@ -154,7 +154,7 @@ namespace WebShop.DbServices
             string password = Console.ReadLine();
 
 
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 Customer customer = new Customer(name, street, city, country, email, password);
 
@@ -199,7 +199,7 @@ namespace WebShop.DbServices
                 string key = Console.ReadKey(true).KeyChar.ToString().ToUpper();
                 if (key == "Y")
                 {
-                    using (var db = new WebShopContext())
+                    using (var db = new Connections.WebShopContext())
                     {
                         try
                         {
@@ -251,7 +251,7 @@ namespace WebShop.DbServices
                     string input = Console.ReadKey(true).KeyChar.ToString();
                     if(int.TryParse(input, out int number) && number <= Enum.GetNames(typeof(Enums.UpdateCustomer)).Length) //Check number is less than enum menu length
                     {
-                        UpdateCustomerer(selectedCustomer, (Enums.UpdateCustomer)number);
+                        UpdateCustomerHandler(selectedCustomer, (Enums.UpdateCustomer)number);
                     }
                     else
                     {
@@ -264,14 +264,14 @@ namespace WebShop.DbServices
         }
 
 
-        public static void UpdateCustomerer(Customer existingCustomer, Enums.UpdateCustomer enumOption)
+        public static void UpdateCustomerHandler(Customer existingCustomer, Enums.UpdateCustomer enumOption)
         {
             Console.Write("Enter new" + enumOption.ToString().Replace("Update_", " ") + ": ");
             string input = Console.ReadLine();
 
             if (!string.IsNullOrWhiteSpace(input))
             {
-                using (var db = new WebShopContext())
+                using (var db = new Connections.WebShopContext())
                 {
                     try
                     {
@@ -336,7 +336,7 @@ namespace WebShop.DbServices
 
             if (selectedCustomer != null)
             {
-                using (var db = new WebShopContext())
+                using (var db = new Connections.WebShopContext())
                 {
                     Console.WriteLine($"\nCurrent Admin status: {selectedCustomer.IsAdmin}");
                     Console.Write("[Y] to make Admin Or Cancle [Any key]");
@@ -366,17 +366,22 @@ namespace WebShop.DbServices
 
         public static bool validateCustomerDetails(Customer customer)
         {
-            bool isValidCustomerDetails = true;
+            bool isValid = true;
 
-            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Name)        ?   true : false;
-            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Email)       ?   true : false;
-            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Street)      ?   true : false;
-            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.City)        ?   true : false;
-            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Country)     ?   true : false;
-            isValidCustomerDetails = !string.IsNullOrWhiteSpace(customer.Password)    ?   true : false;
+            if(string.IsNullOrWhiteSpace(customer.Name))        return false;
 
-            return isValidCustomerDetails;
+            if (string.IsNullOrWhiteSpace(customer.Email))      return false;
 
+            if (string.IsNullOrWhiteSpace(customer.Street))     return false;
+
+            if (string.IsNullOrWhiteSpace(customer.City))       return false;
+
+            if (string.IsNullOrWhiteSpace(customer.Country))    return false;
+
+            if (string.IsNullOrWhiteSpace(customer.Password))   return false;
+
+
+            return isValid;
         }
     }
 }

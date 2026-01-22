@@ -59,7 +59,7 @@ namespace WebShop.Menus
 
                         case Enums.MenuCheckOutMain.Pay:
                             order.OrderDate = DateTime.Now;
-                            if (OrderServices.ValidateOrderForPurchase(order))
+                            if (OrderServices.ValidateOrderForPurchase2(order))
                             {
                                 OrderServices.CreateOrderAndDetailsAsync(order); //Will also delete customer Customer Cart Items
                                 isPruchase = true;

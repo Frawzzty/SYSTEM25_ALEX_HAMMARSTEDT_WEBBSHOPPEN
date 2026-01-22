@@ -12,7 +12,7 @@ namespace WebShop
     internal class Settings
     {
         private static bool mongoLoggingEnabled = false;
-        private static bool debugEnabled = true;
+        private static bool debugEnabled = false;
 
         private static int currentCustomerId = -1; //Set as negative on start up
         public static Customer GetCurrentCustomer()

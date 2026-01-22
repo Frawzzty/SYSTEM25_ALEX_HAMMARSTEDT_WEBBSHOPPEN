@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.PortableExecutable;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WebShop.Connections;
 using WebShop.Migrations;
 using WebShop.Modles;
 using WebShop.Services;
@@ -50,7 +52,8 @@ namespace WebShop.Windows
 
 
             Window WinLast7Days = WindowLast7Days();
-            List<Window> WindowDailyBreakdow = new List<Window>() { WinLast7Days };
+            Window WinPasswords = WindowPasswords();
+            List<Window> WindowDailyBreakdow = new List<Window>() { WinLast7Days, WinPasswords };
             Window.DrawWindowsInRow(WindowDailyBreakdow, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
 
             //Category breakdown?
@@ -239,7 +242,7 @@ namespace WebShop.Windows
         {
 
             List<string> textRows = new List<string>();
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 var groups = db.OrderDetails
                     .Include(od => od.Product).ThenInclude(p => p.Category)
@@ -268,7 +271,7 @@ namespace WebShop.Windows
         {
 
             List<string> textRows = new List<string>();
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 var groups = db.OrderDetails
                     .Include(od => od.Product).ThenInclude(p => p.Category)
@@ -298,7 +301,7 @@ namespace WebShop.Windows
             List<DateOnly> dates = Helpers.GetDates(7);
 
             List<string> textRows = new List<string>();
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 var orders = db.Orders
                     .Include(o => o.OrderDetails)
@@ -329,6 +332,30 @@ namespace WebShop.Windows
             }
 
             string header = "Revenue Last 7 Days";
+            var window = new Window(header, 0, 0, textRows);
+            window.headerColor = ConsoleColor.Yellow;
+
+            return window;
+        }
+
+        private static Window WindowPasswords()
+        {
+            List<string> textRows = new List<string>();
+
+            using (var db = new WebShopContext())
+            {
+                var groups = db.Customers
+                    .GroupBy(c => c.Password)
+                    .ToList()
+                    .OrderByDescending(g => g.Count());
+
+                foreach (var group in groups)
+                {
+                    textRows.Add((group.Count() + "x").PadRight(15) + group.Key);
+                }
+            }
+
+            string header = "Most common passwords";
             var window = new Window(header, 0, 0, textRows);
             window.headerColor = ConsoleColor.Yellow;
 

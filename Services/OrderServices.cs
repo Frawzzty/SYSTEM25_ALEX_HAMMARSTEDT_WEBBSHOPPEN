@@ -18,7 +18,7 @@ namespace WebShop.Services
 
         public static List<Order> GetCustomerOrders(int customerId)
         {
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 //Get obj with navigation properties available. Order by latest date
                 List<Order> orders = db.Orders
@@ -90,6 +90,30 @@ namespace WebShop.Services
             return isReady;
         }
 
+        public static bool ValidateOrderForPurchase2(Order order)
+        {
+            bool isValidCustomerDetails = true;
+
+            if (string.IsNullOrWhiteSpace(order.Name))              return false;
+
+            if (string.IsNullOrWhiteSpace(order.PaymentMethod))     return false;
+
+            if (string.IsNullOrWhiteSpace(order.ShippingMethod))    return false;
+
+            if (string.IsNullOrWhiteSpace(order.Street))            return false;
+
+            if (string.IsNullOrWhiteSpace(order.City))              return false;
+
+            if (string.IsNullOrWhiteSpace(order.Country))           return false;
+
+            if (order.SubTotal <= 0)                                return false;
+
+            if (order.OrderDate == null)                            return false;
+           
+
+            return isValidCustomerDetails;
+        }
+
 
         /// <summary>
         /// Creates order. Gets cartItems from order.customerId. Creates Order details for each product in customers cart.
@@ -97,7 +121,7 @@ namespace WebShop.Services
         /// </summary>
         public static async void CreateOrderAndDetailsAsync(Order order)
         {
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 var myTransaction = db.Database.BeginTransaction();
                 //Add order

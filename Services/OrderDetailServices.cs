@@ -24,7 +24,7 @@ namespace WebShop.Services
         public static List<OrderDetail> GetAllOrderDetails()
         {
             List<OrderDetail> orderDetails = new List<OrderDetail>();
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 //Including everyting possible
                 orderDetails = db.OrderDetails

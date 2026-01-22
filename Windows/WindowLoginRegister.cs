@@ -108,7 +108,7 @@ namespace WebShop.Windows
         {
 
             bool logginSuccess = false;
-            using (var db = new WebShopContext())
+            using (var db = new Connections.WebShopContext())
             {
                 var customers = db.Customers.ToList();
                 var customer = customers.Where(c => c.Email == inputEmail).SingleOrDefault(); //Unique email per customer
@@ -129,8 +129,5 @@ namespace WebShop.Windows
             return logginSuccess;
 
         }
-
-        
-
     }
 }

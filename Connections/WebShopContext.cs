@@ -8,8 +8,9 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.Modles;
 
-namespace WebShop.Modles
+namespace WebShop.Connections
 {
     internal class WebShopContext : DbContext
     {
