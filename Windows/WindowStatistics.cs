@@ -6,6 +6,7 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WebShop.Migrations;
 using WebShop.Modles;
 using WebShop.Services;
 
@@ -47,7 +48,11 @@ namespace WebShop.Windows
             List<Window> windowRowCategory = new List<Window>() { WinCategoryRevenue, WinCategoryRevenue2 };
             Window.DrawWindowsInRow(windowRowCategory, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
 
-            
+
+            Window WinLast7Days = WindowLast7Days();
+            List<Window> WindowDailyBreakdow = new List<Window>() { WinLast7Days };
+            Window.DrawWindowsInRow(WindowDailyBreakdow, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
+
             //Category breakdown?
 
 
@@ -282,6 +287,48 @@ namespace WebShop.Windows
             }
 
             string header = "Category Units Sold";
+            var window = new Window(header, 0, 0, textRows);
+            window.headerColor = ConsoleColor.Yellow;
+
+            return window;
+        }
+
+        private static Window WindowLast7Days()
+        {
+            List<DateOnly> dates = Helpers.GetDates(7);
+
+            List<string> textRows = new List<string>();
+            using (var db = new WebShopContext())
+            {
+                var orders = db.Orders
+                    .Include(o => o.OrderDetails)
+                    .ToList()
+                    .OrderByDescending(o => o.SubTotal);
+
+                foreach(var date in dates)
+                {
+                    var selectedOrders = orders //Select where date is in between
+                        .Where(g => g.OrderDate >= date.ToDateTime(TimeOnly.MinValue))
+                        .Where(g => g.OrderDate < date.AddDays(1).ToDateTime(TimeOnly.MinValue));
+
+                    decimal subTotal = selectedOrders.Sum(o => o.SubTotal);
+                    if (subTotal > 0)
+                    {
+                        textRows.Add(date.ToString().PadRight(12) + subTotal.ToString("N0"));
+                    }
+                    else
+                    {
+                        textRows.Add(date.ToString().PadRight(12) + "0");
+                    }
+                    
+                }
+
+                if (textRows.Count == 0)
+                    textRows.Add(" ");
+
+            }
+
+            string header = "Revenue Last 7 Days";
             var window = new Window(header, 0, 0, textRows);
             window.headerColor = ConsoleColor.Yellow;
 

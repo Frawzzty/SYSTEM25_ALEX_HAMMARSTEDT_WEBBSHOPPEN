@@ -255,5 +255,16 @@ namespace WebShop
         }
 
 
+        public static List<DateOnly> GetDates(int daysAmount)
+        {
+            List<DateOnly> dates = new List<DateOnly>();
+
+            for (int i = 0; i < daysAmount; i++)
+            {
+                dates.Add(DateOnly.FromDateTime(DateTime.Now).AddDays(-i));
+            }
+            return dates;
+        }
+
     }
 }

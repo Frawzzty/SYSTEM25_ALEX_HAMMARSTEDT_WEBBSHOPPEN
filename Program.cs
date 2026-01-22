@@ -16,9 +16,9 @@ namespace WebShop
 
         static async Task Main(string[] args)
         {
-            //CustomerServices.UpdateCustomerer(new Customer(), Enums.UpdateCustomer.Update_Name);
-            // Console.ReadKey();
 
+            //Helpers.GetDates(7);
+            
 
             //BEFORE START
             //Crashes at launch likley unallowed IP adress.
@@ -43,7 +43,7 @@ namespace WebShop
                 else
                 {
                     auth = true;
-                    Settings.SetCurrentCustomer(1);
+                    Settings.SetCurrentCustomer(2);
                 }
 
                     
