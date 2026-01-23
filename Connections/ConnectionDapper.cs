@@ -11,12 +11,7 @@ namespace WebShop.Connections
     {
         public static string GetConnectionString()
         {
-            var config = new ConfigurationBuilder()
-                .AddUserSecrets<Program>()
-                .Build();
-
-            var connStr = config["MySettings:ConnectionStringDapper"];
-
+            var connStr = Settings.GetDbConnectionString();
             return connStr;
         }
     }

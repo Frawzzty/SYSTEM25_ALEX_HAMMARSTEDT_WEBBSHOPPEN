@@ -171,11 +171,6 @@ namespace WebShop.Menus
 
                             break;
 
-                        case Enums.MenuAdminCustomer.Order_History:
-                            
-
-                            break;
-
                         case Enums.MenuAdminCustomer.Set_Role:
                             CustomerServices.UpdateCusomterRole();
 

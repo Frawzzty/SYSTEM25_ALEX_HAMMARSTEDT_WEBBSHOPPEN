@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.Connections;
 using WebShop.Enums;
 using WebShop.Models;
 using WebShop.Modles;
@@ -131,7 +132,7 @@ namespace WebShop.DbServices
                         await db.SaveChangesAsync();
 
                         sucess = true;
-                        MongoDbServices.AddUserActionAsync(new UserAction(customer.Id, UserActions.Customer_Added, customer.Email));
+                        await MongoDbServices.AddUserActionAsync(new UserAction(customer.Id, UserActions.Customer_Added, customer.Email));
 
 
                     }
@@ -148,7 +149,7 @@ namespace WebShop.DbServices
 
         }
 
-        public static async void DeleteCustomer()
+        public static void DeleteCustomer()
         {
             List<Customer> customers = GetAllCustomers();
             PrintCustomers(customers);
@@ -169,7 +170,7 @@ namespace WebShop.DbServices
                         try
                         {
                             db.Remove(selectedCustomer);
-                            await db.SaveChangesAsync();
+                            db.SaveChanges();
                             return;
                         }
                         catch (Exception ex)
@@ -191,7 +192,12 @@ namespace WebShop.DbServices
             }
         }
 
-        public static void UpdateCustomer()
+        public static async Task DeactivateUser()
+        {
+
+        }
+
+        public static async Task UpdateCustomer()
         {
             List<Customer> customers = GetAllCustomers();
             PrintCustomers(customers);
@@ -216,7 +222,7 @@ namespace WebShop.DbServices
                     string input = Console.ReadKey(true).KeyChar.ToString();
                     if(int.TryParse(input, out int number) && number <= Enum.GetNames(typeof(Enums.UpdateCustomer)).Length) //Check number is less than enum menu length
                     {
-                        UpdateCustomerHandler(selectedCustomer, (Enums.UpdateCustomer)number);
+                        await UpdateCustomerHandlerAsync(selectedCustomer, (Enums.UpdateCustomer)number);
                     }
                     else
                     {
@@ -229,9 +235,10 @@ namespace WebShop.DbServices
         }
 
 
-        public static void UpdateCustomerHandler(Customer existingCustomer, Enums.UpdateCustomer enumOption)
+        public static async Task UpdateCustomerHandlerAsync(Customer existingCustomer, Enums.UpdateCustomer enumOption)
         {
-            Console.Write("Enter new" + enumOption.ToString().Replace("Update_", " ") + ": ");
+            //Let user know what to input
+            Console.Write("Enter new" + enumOption.ToString().Replace("Update_", " ") + ": "); 
             string input = Console.ReadLine();
 
             if (!string.IsNullOrWhiteSpace(input))
@@ -240,11 +247,15 @@ namespace WebShop.DbServices
                 {
                     try
                     {
-                        UserAction userAction = new UserAction() { CustomerId = Settings.GetCurrentCustomerId(), Action = Enums.UserActions.Product.ToString() };
+                        UserAction userAction = new UserAction() { //For mongoLog
+                            CustomerId = Settings.GetCurrentCustomerId(), 
+                            Action = Enums.UserActions.Product.ToString() 
+                        };
+
                         switch (enumOption)
                         {
                             case Enums.UpdateCustomer.Update_Name:
-                                userAction.Details = $"{enumOption}: {existingCustomer.Name} : {input}";
+                                userAction.Details = $"{enumOption}: {existingCustomer.Name} : {input}"; //For mongoLog
                                 existingCustomer.Name = input;
                                 break;
 
@@ -275,9 +286,11 @@ namespace WebShop.DbServices
                         }
 
                         db.Update(existingCustomer);
-                        db.SaveChanges();
 
-                        MongoDbServices.AddUserActionAsync(userAction);
+                        //await db.SaveChangesAsync();
+                        //await MongoDbServices.AddUserActionAsync(userAction);
+
+                        await Helpers.SaveDBAndLogMongoAsync(db, userAction);
                     }
                     catch (Exception ex)
                     {
@@ -329,7 +342,7 @@ namespace WebShop.DbServices
             }
         }
 
-        public static bool validateCustomerDetails(Customer customer)
+        private static bool validateCustomerDetails(Customer customer)
         {
             bool isValid = true;
 
@@ -348,5 +361,8 @@ namespace WebShop.DbServices
 
             return isValid;
         }
+
     }
+
+    
 }

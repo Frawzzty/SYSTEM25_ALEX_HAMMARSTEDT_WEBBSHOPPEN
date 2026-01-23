@@ -17,7 +17,7 @@ namespace WebShop.Windows
     internal class WindowLoginRegister
     {
 
-        public static async Task<bool> Authenticate()
+        public static async Task<bool> AuthenticateAsync()
         {
             string email = "";
             string password = "";

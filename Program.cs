@@ -18,43 +18,35 @@ namespace WebShop
         {
 
             //Helpers.GetDates(7);
-            
+            //Testing.WindowTesting();
 
             //BEFORE START
-            //Crashes at launch likley unallowed IP adress.
+            //Crashes at launch likley IP adress no whitelisted.
             //CHECK VPN is OFF;
             //CHECK DB STRINGS;
 
-
-            //Testing.WindowTesting();
-
-            //Console.CursorVisible = false;
-            //Settings.SetCurrentCustomer(WindowCustomer.SelectCustomer());
             Console.Clear();
-
 
             while (true)
             {
                 bool auth = false;
-                if (Settings.GetDebugStatus())
+                if (Settings.GetDebugStatus()) //IF debug enabled skip login screen
                 {
                     auth = true;
                     Settings.SetCurrentCustomer(2);
                 }
                 else 
                 {
-                    auth = await WindowLoginRegister.Authenticate(); //Login or Register
+                    auth = await WindowLoginRegister.AuthenticateAsync(); //Login or Register
                 }
 
                     
-                if (auth) 
+                if (auth)  //If auth scuess
                 {
                     MenuHome.MenuHomeMain();
                 }
 
             }
-
-            Console.WriteLine("Byyyye, thanks for moooney! <3 \n\n\n");
 
         }
     }

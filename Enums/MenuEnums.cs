@@ -61,7 +61,6 @@ namespace WebShop.Enums
     {
         Add_Customer = 1,
         Update_Customer,
-        Order_History,
         Delete_Customer,
         Set_Role,
         

@@ -25,11 +25,7 @@ namespace WebShop.Connections
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder()
-                .AddUserSecrets<Program>()
-                .Build();
-
-            var connStr = config["MySettings:ConnectionStringLocal"];
+            var connStr = Settings.GetDbConnectionString();
 
             optionsBuilder.UseSqlServer(connStr);
         }

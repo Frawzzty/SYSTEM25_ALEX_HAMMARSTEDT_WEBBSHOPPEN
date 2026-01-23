@@ -5,9 +5,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShop.Connections;
 using WebShop.DbServices;
 using WebShop.Enums;
+using WebShop.Models;
 using WebShop.Modles;
+using WebShop.Services;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WebShop
@@ -235,10 +238,11 @@ namespace WebShop
         /// </summary>
         public static void DrawMenuEnum(Enum menuEnum, string menuHeader)
         {
-            Type myEnum = menuEnum.GetType(); //Get what enum was inserted as parameter
+            var myEnum = menuEnum.GetType(); //Get what enum was inserted as parameter
             string menuText = "";
-            foreach (int i in Enum.GetValues(myEnum)) //Join the each enum value (button) and each enum name into one string. Used in displaying the menu window.
+            foreach (int i in Enum.GetValues(myEnum)) 
             {
+                //Join the each enum value (button) and each enum name into one string. Used in displaying the menu window.
                 menuText += "[" + i + "] " + Enum.GetName(myEnum, i).Replace('_', ' ') + "  ";
             }
 
@@ -257,8 +261,11 @@ namespace WebShop
             window.Draw(ConsoleColor.Yellow);
         }
 
-
-        public static List<DateOnly> GetDates(int daysAmount)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>List with dates, including Today. daysAmount to Today</returns>
+        public static List<DateOnly> GetXDates(int daysAmount)
         {
             List<DateOnly> dates = new List<DateOnly>();
 
@@ -267,6 +274,12 @@ namespace WebShop
                 dates.Add(DateOnly.FromDateTime(DateTime.Now).AddDays(-i));
             }
             return dates;
+        }
+
+        public static async Task SaveDBAndLogMongoAsync(WebShopContext db, UserAction userAction)
+        {
+            await db.SaveChangesAsync();
+            await MongoDbServices.AddUserActionAsync(userAction);
         }
 
     }

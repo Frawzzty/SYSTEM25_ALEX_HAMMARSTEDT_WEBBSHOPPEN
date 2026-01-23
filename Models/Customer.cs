@@ -24,14 +24,6 @@ namespace WebShop.Modles
         public ICollection<Order> Orders { get; set; } = new List<Order>();
 
         public Customer() {}
-        public Customer(string name, string email, string street, string city, string country)
-        {
-            Name =      Helpers.FirtUpperCaseRestLower(name);
-            Email =     email.ToLower();
-            Street =    Helpers.FirtUpperCaseRestLower(street);
-            City =      Helpers.FirtUpperCaseRestLower(city);
-            Country =   Helpers.FirtUpperCaseRestLower(country);
-        }
 
         public Customer(string name, string street, string city, string country, string email, string password)
         {
@@ -45,3 +37,4 @@ namespace WebShop.Modles
         }
     }
 }
+ 

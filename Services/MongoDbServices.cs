@@ -29,8 +29,7 @@ namespace WebShop.Services
         {
             if (Settings.GetMongoLoggingStatus()) //Only logg if enabled
             {
-                var userActionCollection = GetUserActionCollection();
-                await userActionCollection.InsertOneAsync(userAction);
+                await GetUserActionCollection().InsertOneAsync(userAction);
             }
         }
         

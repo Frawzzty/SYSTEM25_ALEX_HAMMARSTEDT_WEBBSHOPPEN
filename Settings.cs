@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -12,7 +13,9 @@ namespace WebShop
     internal class Settings
     {
         private static bool mongoLoggingEnabled = false;
-        private static bool debugEnabled = true;
+        private static bool debugEnabled = false;
+
+        private static bool isUsingAzureDb = true;
 
         private static int currentCustomerId = -1; //No user can have id -1
         public static Customer GetCurrentCustomer()
@@ -42,5 +45,17 @@ namespace WebShop
             return debugEnabled;
         }
 
+        public static string GetDbConnectionString()
+        {
+            var config = new ConfigurationBuilder()
+            .AddUserSecrets<Program>()
+            .Build();
+
+            //Return Azure or Local db
+            return isUsingAzureDb == true ?  
+                config["MySettings:ConnectionStringAzure"]
+                : config["MySettings:ConnectionStringLocal"];
+
+        }
     }
 }
