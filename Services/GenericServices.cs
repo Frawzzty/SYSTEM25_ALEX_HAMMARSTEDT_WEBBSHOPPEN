@@ -84,6 +84,7 @@ namespace WebShop.Services
                 catch (Exception ex) 
                 { 
                     Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.InnerException);
                     Helpers.MsgLeavingAnyKey();
                 }
 

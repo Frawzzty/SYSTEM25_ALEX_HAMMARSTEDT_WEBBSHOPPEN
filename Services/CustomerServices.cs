@@ -168,7 +168,7 @@ namespace WebShop.DbServices
                         try
                         {
                             db.Remove(selectedCustomer);
-                            db.SaveChanges();
+                            //db.SaveChanges(); //Set Product.isDeleted instead. 
                             return;
                         }
                         catch (Exception ex)

@@ -26,8 +26,8 @@ namespace WebShop.Windows
 
             bool isAuthenticated = false;
 
-            bool isActive = true;
-            while (isActive)
+            bool isLopping = true;
+            while (isLopping)
             {
 
                 DrawLoginWindow(email, password, message);
@@ -56,7 +56,7 @@ namespace WebShop.Windows
                         if (TryLogin(email, password))
                         {
                             isAuthenticated = true;
-                            isActive = false;
+                            isLopping = false;
                         }
                         else
                         {
@@ -67,8 +67,11 @@ namespace WebShop.Windows
 
                     case "4": 
                         //Create user
-                        message = await CustomerServices.RegisterCustomerAsync() == true ? "Registred successfully" : "Registration failed";
-                            break;
+                        message = 
+                            await CustomerServices.RegisterCustomerAsync() == true ? 
+                            "Registred successfully" : 
+                            "Registration failed";
+                        break;
 
                     case "9":  
                         //Exit
@@ -87,13 +90,13 @@ namespace WebShop.Windows
             List<string> windowText = new List<string>() {
                 "",
                 $"[1] Email: {email}",
-                $"[2] Password: {password}",
+                $"[2] Password: {new string('*', password.Length)}",
                 $"",
                 $"[3] Login",
                 $"[4] Register",
                 $"",
                 $"[9] Exit",
-                "",
+                $"",
                 message};
 
             var window = new Window("Login / Register", 1, 1, windowText);
@@ -103,7 +106,7 @@ namespace WebShop.Windows
         }
 
 
-        private static bool TryLogin(string inputEmail, string inputPassowrd)
+        private static bool TryLogin(string email, string password)
         {
 
             bool logginSuccess = false;
@@ -113,8 +116,7 @@ namespace WebShop.Windows
 
                 var customers = db.Customers.ToList();
                 var customer = customers
-                    .Where(c => c.Email == inputEmail 
-                    && c.Password == inputPassowrd)
+                    .Where(c => c.Email == email && c.Password == password)
                     .SingleOrDefault();
 
                 stopWatch.Stop();

@@ -375,11 +375,10 @@ namespace WebShop.Services
                 Console.Write("Enter new" + enumOption.ToString().Replace("Update_", " ") + ": ");
             }
             
-            string input = Console.ReadLine();
+            string input = Console.ReadLine().Trim();
 
             if (!string.IsNullOrWhiteSpace(input))
             {
-                input = input.Trim();
 
                 using (var db = new Connections.WebShopContext())
                 {
