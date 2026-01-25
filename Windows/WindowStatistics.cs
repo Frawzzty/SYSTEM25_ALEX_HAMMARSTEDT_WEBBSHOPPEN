@@ -356,6 +356,9 @@ namespace WebShop.Windows
                 {
                     textRows.Add((group.Count() + "x").PadRight(15) + group.Key);
                 }
+
+                if (textRows.Count == 0)
+                    textRows.Add(" ");
             }
 
             string header = "Most common passwords";

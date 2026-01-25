@@ -139,7 +139,7 @@ namespace WebShop.DbServices
 
             foreach (var cartItem in cartItems)
             {
-                totalValue += ProductServices.GetProductCurrentUnitPrice(cartItem.Product);
+                totalValue += ProductServices.GetProductCurrentUnitPrice(cartItem.Product) * cartItem.UnitAmount;
             }
             return totalValue;
         }

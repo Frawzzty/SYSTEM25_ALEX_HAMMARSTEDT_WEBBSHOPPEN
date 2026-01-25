@@ -33,7 +33,7 @@ namespace WebShop
                 if (Settings.GetDebugStatus()) //IF debug enabled skip login screen
                 {
                     auth = true;
-                    Settings.SetCurrentCustomer(2);
+                    Settings.SetCurrentCustomer(1);
                 }
                 else 
                 {

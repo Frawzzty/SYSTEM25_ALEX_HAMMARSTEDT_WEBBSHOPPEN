@@ -153,11 +153,9 @@ namespace WebShop.Services
             //Get Total Revenue
             string sql = @$"
                 SELECT 
-                    SUM(OD.SubTotal)
+                    SUM(O.SubTotal)
                 FROM 
-                    OrderDetails OD
-                JOIN 
-                    Orders O ON OD.OrderId = O.ID";
+                    Orders O";
 
             decimal revenue = 0;
             using (var connection = new SqlConnection(connString))
@@ -178,11 +176,9 @@ namespace WebShop.Services
             //Get Total Revenue
             string sql = @$"
                 SELECT 
-                    SUM(OD.SubTotal)
+                    SUM(O.SubTotal)
                 FROM 
-                    OrderDetails OD
-                JOIN 
-                    Orders O ON OD.OrderId = O.ID
+                    Orders O
                 WHERE
                     O.OrderDate >= '{startDate}' 
                     AND 
