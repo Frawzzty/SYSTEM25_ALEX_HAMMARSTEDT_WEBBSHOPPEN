@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebShop.Connections;
 using WebShop.Migrations;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.Windows
@@ -93,7 +93,7 @@ namespace WebShop.Windows
             DateTime endDate = DateTime.Now;
             DateTime startDate = endDate.AddHours(-1);
             
-            decimal value = DapperServices.GetShopRevenueL30D(startDate, endDate);
+            decimal value = DapperServices.GetShopRevenueBetweenDates(startDate, endDate);
             
             List<string> textRows = new List<string>() { (value.ToString() + " SEK" )};
 
@@ -304,8 +304,10 @@ namespace WebShop.Windows
         private static Window WindowLast7Days()
         {
             List<DateOnly> dates = Helpers.GetXDates(7);
-
             List<string> textRows = new List<string>();
+
+            decimal dailyAvrage = 0;
+
             using (var db = new Connections.WebShopContext())
             {
                 var orders = db.Orders
@@ -320,15 +322,10 @@ namespace WebShop.Windows
                         .Where(g => g.OrderDate < date.AddDays(1).ToDateTime(TimeOnly.MinValue));
 
                     decimal subTotal = selectedOrders.Sum(o => o.SubTotal);
-                    if (subTotal > 0)
-                    {
-                        textRows.Add(date.ToString().PadRight(12) + subTotal.ToString("N0"));
-                    }
-                    else
-                    {
-                        textRows.Add(date.ToString().PadRight(12) + "0");
-                    }
-                    
+     
+                    textRows.Add(date.ToString().PadRight(12) + subTotal.ToString("N0"));
+
+                    dailyAvrage += subTotal;
                 }
 
                 if (textRows.Count == 0)
@@ -336,7 +333,8 @@ namespace WebShop.Windows
 
             }
 
-            string header = "Revenue Last 7 Days";
+            dailyAvrage = dailyAvrage / 7;
+            string header = "Revenue Last 7 Days - Daily AVG: " + dailyAvrage.ToString("N0");
             var window = new Window(header, 0, 0, textRows);
             window.headerColor = ConsoleColor.Yellow;
 

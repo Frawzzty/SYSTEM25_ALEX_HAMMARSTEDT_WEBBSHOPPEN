@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebShop.DbServices;
 using WebShop.Enums;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 using WebShop.Windows;
 using static System.Runtime.InteropServices.JavaScript.JSType;

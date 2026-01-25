@@ -1,15 +1,16 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dapper;
-using WebShop.Modles;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System.Windows.Markup;
 using WebShop.Migrations;
+using WebShop.Models;
 
 namespace WebShop.Services
 {
@@ -44,6 +45,17 @@ namespace WebShop.Services
             }
 
             return products;
+        }
+
+        public static void GetCustomerSalesData()
+        {
+            //Where most customers live?
+            //Most popular category per region?
+            //Most popular category per user?
+
+            //Total users?
+            //Male / Female users in different areas?
+            //Male female category interest?
         }
 
 
@@ -109,7 +121,7 @@ namespace WebShop.Services
             {
                 int productId = product.Id;
 
-                //Get Total Revenue
+                //Get Units sold 30day window
                 string sql = @$"
                 SELECT 
                     SUM(OD.UnitAmount)
@@ -160,7 +172,7 @@ namespace WebShop.Services
         }
 
         
-        public static decimal GetShopRevenueL30D(DateTime startDate, DateTime endDate) //date.now
+        public static decimal GetShopRevenueBetweenDates(DateTime startDate, DateTime endDate) //date.now
         {
 
             //Get Total Revenue
@@ -174,15 +186,19 @@ namespace WebShop.Services
                 WHERE
                     O.OrderDate >= '{startDate}' 
                     AND 
-                    O.OrderDate <= '{endDate}'";
+                    O.OrderDate <= '{endDate}'"; //SYSTEM SETTINGS can messup date conversion in sql
 
+            
             decimal total = 0;
             using (var connection = new SqlConnection(connString))
             {
                 //Query singel, only return cell
-                var shopRevenue = connection.QuerySingle<decimal?>(sql); //Make nullable, will crash if returns null.
+                var shopRevenue = connection.QuerySingle<decimal?>(sql); //Make nullable, will crash if returns null. //Crash?
 
-                total = shopRevenue != null ? shopRevenue.Value : 0;
+                if(shopRevenue != null)
+                    total = shopRevenue != null ? shopRevenue.Value : 0;
+                else 
+                    total = 0;
             }
 
             return total;

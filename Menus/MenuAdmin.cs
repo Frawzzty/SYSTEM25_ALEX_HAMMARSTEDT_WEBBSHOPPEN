@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using WebShop.DbServices;
 using WebShop.Enums;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 using WebShop.Windows;
 

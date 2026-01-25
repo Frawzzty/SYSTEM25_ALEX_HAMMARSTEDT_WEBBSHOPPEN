@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using WebShop.Connections;
 using WebShop.Enums;
 using WebShop.Models;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.DbServices
@@ -129,12 +129,10 @@ namespace WebShop.DbServices
                     try
                     {
                         db.Customers.Add(customer);
-                        await db.SaveChangesAsync();
-
                         sucess = true;
-                        await MongoDbServices.AddUserActionAsync(new UserAction(customer.Id, UserActions.Customer_Added, customer.Email));
 
-
+                        await Helpers.SaveDBAndLogMongoAsync(db, new UserAction(customer.Id, UserActions.Customer_Added, customer.Email));
+                        return sucess;
                     }
                     catch (Exception ex)
                     {
@@ -222,7 +220,7 @@ namespace WebShop.DbServices
                     string input = Console.ReadKey(true).KeyChar.ToString();
                     if(int.TryParse(input, out int number) && number <= Enum.GetNames(typeof(Enums.UpdateCustomer)).Length) //Check number is less than enum menu length
                     {
-                        await UpdateCustomerHandlerAsync(selectedCustomer, (Enums.UpdateCustomer)number);
+                        UpdateCustomerHandlerAsync(selectedCustomer, (Enums.UpdateCustomer)number);
                     }
                     else
                     {

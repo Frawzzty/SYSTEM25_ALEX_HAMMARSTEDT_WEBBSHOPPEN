@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using WebShop.Connections;
 using WebShop.Enums;
 using WebShop.Models;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.DbServices

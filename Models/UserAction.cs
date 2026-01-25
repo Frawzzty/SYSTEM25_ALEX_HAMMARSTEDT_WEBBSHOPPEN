@@ -16,7 +16,7 @@ namespace WebShop.Models
         public string Action { get; set; }
         public string Details { get; set; }
         public DateTime DateTime { get; set; } = DateTime.Now; //IN utc? 1h behind
-
+        public long TimeElapsedMS { get; set; }
 
         public UserAction()
         {
@@ -34,6 +34,14 @@ namespace WebShop.Models
             CustomerId = customerId;
             Action = action.ToString().Replace('_', ' ');
             Details = details;
+        }
+
+        public UserAction(int customerId, Enums.UserActions action, string details, long timeElapsedMS)
+        {
+            CustomerId = customerId;
+            Action = action.ToString().Replace('_', ' ');
+            Details = details;
+            TimeElapsedMS = timeElapsedMS;
         }
 
 

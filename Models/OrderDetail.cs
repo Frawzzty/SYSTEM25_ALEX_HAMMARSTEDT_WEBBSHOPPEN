@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebShop.Modles
+namespace WebShop.Models
 {
     internal class OrderDetail
     {

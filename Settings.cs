@@ -6,16 +6,21 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.DbServices;
-using WebShop.Modles;
+using WebShop.Models;
 
 namespace WebShop
 {
     internal class Settings
     {
-        private static bool mongoLoggingEnabled = false;
+        private static bool mongoDbLoggingEnabled = true;
+
+        //Switch between Azure DB and Local DB. //FALSE == LOCAL
+        private static bool isUsingAzureDb = false;
+
+        //Auto login if TRUE - Check customerID input in Program.cs
         private static bool debugEnabled = false;
 
-        private static bool isUsingAzureDb = true;
+
 
         private static int currentCustomerId = -1; //No user can have id -1
         public static Customer GetCurrentCustomer()
@@ -36,7 +41,7 @@ namespace WebShop
 
         public static bool GetMongoLoggingStatus()
         {
-            return mongoLoggingEnabled;
+            return mongoDbLoggingEnabled;
         }
 
 

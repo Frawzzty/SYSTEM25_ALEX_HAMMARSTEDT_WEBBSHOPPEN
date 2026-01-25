@@ -3,13 +3,14 @@ using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Models;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.Windows
@@ -108,23 +109,25 @@ namespace WebShop.Windows
             bool logginSuccess = false;
             using (var db = new Connections.WebShopContext())
             {
+                Stopwatch stopWatch = Stopwatch.StartNew();
+
                 var customers = db.Customers.ToList();
-                var customer = customers.Where(c => c.Email == inputEmail).SingleOrDefault(); //Unique email per customer
+                var customer = customers
+                    .Where(c => c.Email == inputEmail 
+                    && c.Password == inputPassowrd)
+                    .SingleOrDefault();
 
-                if (customer != null) 
+                stopWatch.Stop();
+
+                if (customer != null)
                 {
-                    if(customer.Password == inputPassowrd)
-                    {
-                        logginSuccess = true;
-                        Settings.SetCurrentCustomer(customer.Id);
+                    logginSuccess = true;
+                    Settings.SetCurrentCustomer(customer.Id);
 
-                        
-                        MongoDbServices.AddUserActionAsync(new UserAction(customer.Id, UserActions.Logged_In, "Admin: " + customer.IsAdmin));
-                    }
-
+                    MongoDbServices.AddUserActionAsync(new UserAction(customer.Id, UserActions.Logged_In, "Admin: " + customer.IsAdmin, stopWatch.ElapsedMilliseconds));
                 }
             }
-            
+
             return logginSuccess;
 
         }

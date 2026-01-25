@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.DbServices;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.Windows

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.DbServices;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.Windows
@@ -18,7 +18,7 @@ namespace WebShop.Windows
         {
             //Sort products? Revenu or volume sold.
 
-            products = products.Where(p => p.StockAmount > 0).Take(windowCount).ToList(); //Limit List count to amount of windows
+            products = products.Take(windowCount).ToList(); //Limit List count to amount of windows
 
             int windowLeftPos = 1;
             int windowTopPos = 12;

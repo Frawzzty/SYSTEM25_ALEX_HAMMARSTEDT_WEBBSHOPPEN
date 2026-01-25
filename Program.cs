@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Menus;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 using WebShop.Windows;
 

@@ -13,7 +13,7 @@ using System.Transactions;
 using WebShop.Connections;
 using WebShop.Migrations;
 using WebShop.Models;
-using WebShop.Modles;
+using WebShop.Models;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WebShop.Services

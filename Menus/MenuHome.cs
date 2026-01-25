@@ -10,8 +10,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.DbServices;
-using WebShop.Enums;
-using WebShop.Modles;
 using WebShop.Services;
 using WebShop.Windows;
 
@@ -21,21 +19,21 @@ namespace WebShop.Menus
     {
         public static void MenuHomeMain()
         {
-            List<Product> productsOnSale = new List<Product>();
+            List<Models.Product> productsOnSale = new List<Models.Product>();
             string menuHeader = "Home";
             bool loop = true;
             while (loop)
             {
                 //Draw menu and Home screen
-                Helpers.DrawMenuEnum(new MenuHomeMain(), menuHeader);
+                Helpers.DrawMenuEnum(new Enums.MenuHomeMain(), menuHeader);
                 WindowHome.DrawHome(); 
 
                 //Draw product windows
-                productsOnSale = ProductServices.GetProductsOnSale();
+                productsOnSale = ProductServices.GetProductsOnSale().Where(p => p.StockAmount > 0).ToList();
                 List<string> saleActionKeys = Helpers.GetActionKeys().Take(4).ToList(); //Get actions keys for prodcut windows. Take(x) to limit how many windows are drawn.
                 WindowSaleProduct.DrawProductWindows(productsOnSale, saleActionKeys.Count, saleActionKeys);
 
-                //Inputs
+                //Menu Inputs
                 string input = Console.ReadKey(true).KeyChar.ToString().ToUpper();
                 int actionKeyIndex = Helpers.GetActionKeyIndex(input); //Check if input was a valid key for prodcut windows
                 

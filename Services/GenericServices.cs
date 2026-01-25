@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using WebShop.Modles;
+using WebShop.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebShop.Services

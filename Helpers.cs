@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ using WebShop.Connections;
 using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Models;
-using WebShop.Modles;
+using WebShop.Models;
 using WebShop.Services;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -165,7 +166,7 @@ namespace WebShop
         }
 
         /// <summary>
-        /// Checks if a string is valid 
+        /// Checks if a string is valid. //Used in other method. Maybe not neccecary
         /// </summary>
         /// <returns>Returns 1 for True, Returns 0 for False</returns>
         public static int ValidateString(string text)
@@ -278,7 +279,11 @@ namespace WebShop
 
         public static async Task SaveDBAndLogMongoAsync(WebShopContext db, UserAction userAction)
         {
+            Stopwatch stopWatch = Stopwatch.StartNew();
             await db.SaveChangesAsync();
+            stopWatch.Stop();
+            userAction.TimeElapsedMS = stopWatch.ElapsedMilliseconds;
+
             await MongoDbServices.AddUserActionAsync(userAction);
         }
 
