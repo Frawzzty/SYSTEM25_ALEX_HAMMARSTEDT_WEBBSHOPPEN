@@ -13,12 +13,29 @@ namespace WebShop.Menus
 {
     internal class MenuOrderHistory
     {
-        public static void MenuOrderHistoryMain()
+        /// <summary>
+        /// If no customer parameter, defaults to current customer
+        /// </summary>
+        /// <param name="customerId"></param>
+        public static void MenuOrderHistoryMain(int customerId = -1)
         {
+            Customer customer;
+            if (customerId == -1)
+            {
+                customer = Settings.GetCurrentCustomer();
+            }
+            else
+            {
+                customer = CustomerServices.GetCustomerById(customerId);
+            }
+                
+            if(customer == null)
+            {
+                Console.WriteLine("Customer ID invalid: " + customerId);
+                return;
+            }
 
-            Customer customer = Settings.GetCurrentCustomer();
 
-            
             int orderIndex = 0;
             int orderCount = customer.Orders.Count;
             string menuText = "Order History ";
@@ -78,11 +95,6 @@ namespace WebShop.Menus
                             }
                             break;
 
-                        case 3:
-                            PrintOrders(customer.Id);
-                            Console.ReadKey();
-                            break;
-
                         case 9:
                             loop = false;
 
@@ -90,39 +102,6 @@ namespace WebShop.Menus
                     }
                 }
                 Console.Clear();
-            }
-        }
-
-
-        private static void PrintOrders(int customerId)
-        {
-            List<Order> orders = OrderServices.GetCustomerOrders(customerId);
-            foreach (var order in orders) 
-            {
-                Console.WriteLine("Order ID: " + order.Id);
-                Console.WriteLine();
-                Console.WriteLine("Customer ID: " + order.CustomerId);
-                Console.WriteLine("Name: " + order.Name);
-                Console.WriteLine();
-                Console.WriteLine("Street: " + order.Street);
-                Console.WriteLine("City: " + order.City);
-                Console.WriteLine("Country: " + order.Country);
-                Console.WriteLine("Shipping Method: " + order.ShippingMethod);
-                Console.WriteLine();
-                Console.WriteLine("Payment Method:" + order.PaymentMethod);
-                Console.WriteLine("Subtotal: " + order.SubTotal);
-                Console.WriteLine();
-                Console.WriteLine("Order Date: " + order.OrderDate);
-                Console.WriteLine();
-                Console.WriteLine();
-
-                foreach(var orderDetail in order.OrderDetails)
-                {
-                    Console.WriteLine((string)(orderDetail.UnitAmount + "x " + orderDetail.Product.Name + " - " + orderDetail.SubTotal + " SEK"));
-                }
-                Console.WriteLine();
-                Console.WriteLine("------------------------------");
-
             }
         }
 

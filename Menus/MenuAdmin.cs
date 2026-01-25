@@ -171,6 +171,16 @@ namespace WebShop.Menus
 
                             break;
 
+                        case Enums.MenuAdminCustomer.Order_History:
+                            Console.Write("Select Customer ID: ");
+                            
+                            if(int.TryParse(Console.ReadLine(), out int id))
+                            {
+                                Menus.MenuOrderHistory.MenuOrderHistoryMain(id);
+                            }
+
+                            break;
+
                         case Enums.MenuAdminCustomer.Set_Role:
                             CustomerServices.UpdateCusomterRole();
 
