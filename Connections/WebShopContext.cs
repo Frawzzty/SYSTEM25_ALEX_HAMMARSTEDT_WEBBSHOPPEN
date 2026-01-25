@@ -43,8 +43,8 @@ namespace WebShop.Connections
             
 
             modelBuilder.Entity<Customer>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
+                .HasIndex(u => u.Email)
+                .IsUnique();
         }
         
     }
