@@ -23,7 +23,6 @@ namespace WebShop.Enums
         Added_To_Cart,
         Remove_From_Cart,
         Pruchase,
-        Pruchase_Failed,
         Customer_Added,
         Customer_Removed,
         Customer_Updated,

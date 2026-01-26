@@ -28,45 +28,40 @@ namespace WebShop.Windows
             int topPos = 5;
 
 
+            //1st Revenue windows
             Window WinTotalRevenue = WindowTotalRevenue();
             Window WinRevenueLastHour = WindowRevenueLastHour();
 
             List<Window> windowsRevenue = new List<Window>() { WinTotalRevenue, WinRevenueLastHour };
             Window.DrawWindowsInRow(windowsRevenue, 1, topPos, 1);
 
-
+            //2nd Product insights
             Window WinProdcutsRevenue = WindowBestSellers(1);
             Window WinProdcutsUnitsSold = WindowBestSellers(0);
 
             List<Window> windowRowProducts = new List<Window>() { WinProdcutsRevenue, WinProdcutsUnitsSold };
             Window.DrawWindowsInRow(windowRowProducts, 1, topPos += (Window.GetWindowVerticalLength(WinTotalRevenue) + 1), 1);
 
+            //3rd Geo insights
             Window WinCountryRevenue = WindowBestLocation(1);
             Window WinCityRevenue = WindowBestLocation(0);
 
             List<Window> windowRowLocation = new List<Window>() { WinCountryRevenue, WinCityRevenue };
             Window.DrawWindowsInRow(windowRowLocation, 1, topPos += Window.GetWindowVerticalLength(WinProdcutsRevenue) + 1, 1);
 
-            //Category breakdown
+            //4th Category insights
             Window WinCategoryRevenue = WindowBestCategoryRevenue();
             Window WinCategoryUnitsSold = WindowBestCategoryUnitsSold();
             List<Window> windowRowCategory = new List<Window>() { WinCategoryRevenue, WinCategoryUnitsSold };
 
             Window.DrawWindowsInRow(windowRowCategory, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
 
-
+            //5th
             Window WinLast7Days = WindowLast7Days();
             Window WinPasswords = WindowPasswords();
             List<Window> WindowDailyBreakdow = new List<Window>() { WinLast7Days, WinPasswords };
 
             Window.DrawWindowsInRow(WindowDailyBreakdow, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
-
-            
-
-
-            //Shipping method popularity?
-
-            //Monthly Revenue breakdown?
 
 
         }

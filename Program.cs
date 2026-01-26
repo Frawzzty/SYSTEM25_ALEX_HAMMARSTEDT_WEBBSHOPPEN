@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using WebShop.DbServices;
 using WebShop.Enums;
@@ -16,38 +17,32 @@ namespace WebShop
 
         static async Task Main(string[] args)
         {
-
-            //Helpers.GetDates(7);
-            //Testing.WindowTesting();
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("sv-SE"); //Resolves Dapper issues. (Wrong date foramting depeinging on keyboard lang settings etc)
 
             //BEFORE START
-            //Crashes at launch likley IP adress no whitelisted.
-            //CHECK VPN is OFF;
-            //CHECK DB STRINGS;
-
-            Console.Clear();
+            //IF Crash at launch: IP adress likely not whitelisted. main DB and or MongoDB
+                //CHECK DB STRINGS in user secrets;
+                //CHECK VPN is OFF / check ipadress is whitelisted
 
             while (true)
             {
                 bool auth = false;
-                if (Settings.GetDebugStatus()) //IF debug enabled skip login screen
+                if (Settings.isDebugEnabled()) //IF debug enabled skip login screen
                 {
                     auth = true;
-                    Settings.SetCurrentCustomer(1);
+                    Settings.SetCurrentCustomer(1); //Enter custmer ID with Admin privileges
                 }
                 else 
                 {
                     auth = await WindowLoginRegister.AuthenticateAsync(); //Login or Register
                 }
 
-                    
-                if (auth)  //If auth scuess
+                if (auth)
                 {
                     MenuHome.MenuHomeMain();
                 }
 
             }
-
         }
     }
 } 

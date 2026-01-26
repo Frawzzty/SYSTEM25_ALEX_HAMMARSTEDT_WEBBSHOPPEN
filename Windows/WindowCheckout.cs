@@ -16,13 +16,13 @@ namespace WebShop.Windows
 
             int topPos = 5; //Start below menu window
 
-            //CartWindow
+            //Cart - Window
             List<string> CartItemsText = Helpers.GetCartItmesText(CartItemServices.GetCartItemsByCustomerId(Settings.GetCurrentCustomerId()));
             var windowCartItems = new Window("Cart", 1, topPos, CartItemsText);
             windowCartItems.Draw(ConsoleColor.Green);
 
 
-            //Shipping info Window
+            //Shipping info - Window
             List<string> shippingDetails = new List<string> {
                 "Name:    " + order.Name,
                 "Street:  " + order.Street,
@@ -31,6 +31,7 @@ namespace WebShop.Windows
                 " ",
                 "Method:  " + order.ShippingMethod,
             };
+
             topPos += CartItemsText.Count + 2;
             var windowShippingDetails = new Window("Shipping", 1, topPos, shippingDetails);
             
@@ -40,7 +41,7 @@ namespace WebShop.Windows
                 windowShippingDetails.Draw(ConsoleColor.Red);
 
 
-            //Payment info Window
+            //Payment info - Window
             List<string> paymentDetails = new List<string> {
                 "Method:  " + order.PaymentMethod,
                 " ",
@@ -51,15 +52,13 @@ namespace WebShop.Windows
             topPos += shippingDetails.Count + 2;
             var windowPaymentDetails = new Window("Payment", 1, topPos, paymentDetails);
             
+
             if (!string.IsNullOrWhiteSpace(order.PaymentMethod))
                 windowPaymentDetails.Draw(ConsoleColor.Green);
             else
                 windowPaymentDetails.Draw(ConsoleColor.Red);
 
 
-
         }
-
-
     }
 }

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using WebShop.Migrations;
-using WebShop.Models;
+
 
 namespace WebShop.Services
 {
@@ -22,9 +22,9 @@ namespace WebShop.Services
         /// <summary>
         /// Works, but does not include EF navigation property... >:(
         /// </summary>
-        public static List<Product> GetProductsByString(string searchTerm)
+        public static List<Models.Product> GetProductsByString(string searchTerm)
         {
-            List<Product> products = new List<Product>();
+            List<Models.Product> products = new List<Models.Product>();
 
             string sql = @$"
                 SELECT DISTINCT 
@@ -41,7 +41,7 @@ namespace WebShop.Services
 
             using (var connection = new SqlConnection(connString))
             {
-                products = connection.Query<Product>(sql).ToList();
+                products = connection.Query<Models.Product>(sql).ToList();
             }
 
             return products;
@@ -59,7 +59,7 @@ namespace WebShop.Services
         }
 
 
-        public static decimal GetProductTotalRevenu(Product product)
+        public static decimal GetProductTotalRevenu(Models.Product product)
         {
             decimal total = 0;
             if (product != null)
@@ -84,7 +84,7 @@ namespace WebShop.Services
             return total;
         }
 
-        public static decimal GetProductTotalUnitsSold(Product product)
+        public static decimal GetProductTotalUnitsSold(Models.Product product)
         {
             decimal total = 0;
             if (product != null)
@@ -112,7 +112,7 @@ namespace WebShop.Services
         /// <summary>
         /// Gets product revenue in a lookback window of 30 days. (endDate minus 30 days)
         /// </summary>
-        public static decimal GetProductTotalUnitsSoldL30D(Product product, DateTime endDate)
+        public static decimal GetProductTotalUnitsSoldL30D(Models.Product product, DateTime endDate)
         {
             decimal total = 0;
             DateTime startDate = endDate.AddDays(-30);

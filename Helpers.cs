@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -277,6 +278,13 @@ namespace WebShop
             return dates;
         }
 
+
+        /// <summary>
+        /// Stop watch included for DB time
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="userAction"></param>
+        /// <returns></returns>
         public static async Task SaveDBAndLogMongoAsync(WebShopContext db, UserAction userAction)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -287,5 +295,14 @@ namespace WebShop
             await MongoDbServices.AddUserActionAsync(userAction);
         }
 
+
+        public static long SaveDbChangesTime(WebShopContext db)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            db.SaveChanges();
+            stopwatch.Stop();
+
+            return stopwatch.ElapsedMilliseconds;
+        }
     }
 }

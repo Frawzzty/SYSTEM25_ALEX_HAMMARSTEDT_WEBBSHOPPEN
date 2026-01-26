@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebShop.Models;
+
 
 namespace WebShop.Services
 {
@@ -13,7 +13,7 @@ namespace WebShop.Services
     {
         
         //Get UserAction Collection
-        public static IMongoCollection<UserAction> GetUserActionCollection()
+        public static IMongoCollection<Models.UserAction> GetUserActionCollection()
         {
             var client = Connections.ConnectionMongoDb.GetClient();
 
@@ -25,9 +25,9 @@ namespace WebShop.Services
 
 
         //Add UserAction
-        public static async Task AddUserActionAsync(UserAction userAction)
+        public static async Task AddUserActionAsync(Models.UserAction userAction)
         {
-            if (Settings.GetMongoLoggingStatus()) //Only logg if enabled
+            if (Settings.isMongoLoggingEnabled()) //Only logg if enabled
             {
                 await GetUserActionCollection().InsertOneAsync(userAction);
             }

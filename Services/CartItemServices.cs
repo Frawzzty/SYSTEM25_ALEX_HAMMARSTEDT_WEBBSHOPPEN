@@ -4,13 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.Connections;
 using WebShop.Enums;
-using WebShop.Models;
-using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.DbServices
@@ -19,9 +18,9 @@ namespace WebShop.DbServices
     {
 
         //GetCartItems
-        public static List<CartItem> GetCartItemsByCustomerId(int customerId)
+        public static List<Models.CartItem> GetCartItemsByCustomerId(int customerId)
         {
-            List<CartItem> cartItems;
+            List<Models.CartItem> cartItems;
             using (var db = new WebShopContext())
             {
                 cartItems = db.CartItems.Include(ci => ci.Customer).Include(ci => ci.Product).Where(ci => ci.CustomerId == customerId).ToList();
@@ -30,12 +29,12 @@ namespace WebShop.DbServices
         }
 
 
-        public static async void AddCartItem(int productId, int customerId)
+        public static async Task AddCartItem(int productId, int customerId)
         {
-            CartItem cartItem = null;
+            Models.CartItem cartItem = null;
 
             // Check if cart item exists in customer cart
-            Customer customer = CustomerServices.GetCustomerById(customerId);
+            Models.Customer customer = CustomerServices.GetCustomerById(customerId);
             foreach (var item in customer.CartItems)
             {
                 if (productId == item.ProductId)
@@ -59,15 +58,16 @@ namespace WebShop.DbServices
                     else
                     {
                         // create new cartitem
-                        cartItem = new CartItem(customerId, productId, 1);
+                        cartItem = new Models.CartItem(customerId, productId, 1);
                         db.Add(cartItem);
 
-
                     }
-                    ProductServices.UpdateProductStock(productId, -1); //remove 1 from stock
-                    db.SaveChanges();
 
-                    UserAction userAction = new Models.UserAction(customerId, Enums.UserActions.Added_To_Cart, "Product ID: " + cartItem.ProductId);
+                    //remove 1 from stock
+                    ProductServices.UpdateProductStock(productId, -1);
+
+                    Models.UserAction userAction = new Models.UserAction(customerId, Enums.UserActions.Added_To_Cart, "Product ID: " + cartItem.ProductId);
+                    userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
                     await MongoDbServices.AddUserActionAsync(userAction);
                 }
                 catch (Exception ex) 
@@ -82,7 +82,7 @@ namespace WebShop.DbServices
 
 
         //Increase / decrease cartItem unitAmount
-        public static bool UpdateCartItem(CartItem cartItem, int value)
+        public static bool UpdateCartItem(Models.CartItem cartItem, int value)
         {
             bool isRemoved = false;
 
@@ -93,20 +93,40 @@ namespace WebShop.DbServices
 
                 using (var db = new WebShopContext())
                 {
-                    if (cartItem.UnitAmount > 0)
+                    try
                     {
+                        Models.UserAction userAction = new Models.UserAction();
+                        if (cartItem.UnitAmount > 0)
+                        {
 
-                        db.Update(cartItem);
+                            db.Update(cartItem);
+                            db.SaveChanges();
+                        }
+                        else
+                        {
+
+                            db.Remove(cartItem);
+
+                            isRemoved = true;
+
+                            //Saving to DB & Mongo logging
+                            userAction.CustomerId = cartItem.CustomerId;
+                            userAction.Action = UserActions.Remove_From_Cart.ToString().Replace("_", " ");
+                            userAction.Details = "ProductID: " + cartItem.ProductId;
+
+                            userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
+                            MongoDbServices.AddUserActionAsync(userAction);
+                        }
                     }
-                    else
+                    catch
                     {
-                        db.Remove(cartItem);
-                        isRemoved = true;
+                        Console.WriteLine("Something went wrong when reducing item count\n" +
+                            "Any key to continue");
+                        Console.ReadKey(true);
                     }
 
-                    db.SaveChanges();
                 }
-                //Update stock
+                //Update Prodcut Stock in DB
                 if (value < 0)
                 {
                     ProductServices.UpdateProductStock(cartItem.ProductId, Math.Abs(value)); //Add 1 to stock.
@@ -123,7 +143,7 @@ namespace WebShop.DbServices
 
         public static void PrintCartItems(int customerId)
         {
-            List<CartItem> cartItems = GetCartItemsByCustomerId(customerId);
+            List<Models.CartItem> cartItems = GetCartItemsByCustomerId(customerId);
 
             foreach (var cartItem in cartItems)
             {
@@ -134,7 +154,7 @@ namespace WebShop.DbServices
 
         public static decimal GetCartValue(int customerId)
         {
-            List<CartItem> cartItems = GetCartItemsByCustomerId(customerId);
+            List<Models.CartItem> cartItems = GetCartItemsByCustomerId(customerId);
             decimal totalValue = 0;
 
             foreach (var cartItem in cartItems)
@@ -146,7 +166,7 @@ namespace WebShop.DbServices
 
    
         //REMOVE?
-        public static void DeleteCartItems(List<CartItem> cartItems)
+        public static void DeleteCartItems(List<Models.CartItem> cartItems)
         {
 
             using (var db = new WebShopContext())
@@ -173,7 +193,7 @@ namespace WebShop.DbServices
         /// <summary>
         /// Method does not save changes.
         /// </summary>
-        public static void DeleteCartItems(List<CartItem> cartItems, WebShopContext db)
+        public static void DeleteCartItems(List<Models.CartItem> cartItems, WebShopContext db)
         {
             try
             {

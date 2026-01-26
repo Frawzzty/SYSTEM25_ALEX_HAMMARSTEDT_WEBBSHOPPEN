@@ -13,7 +13,7 @@ namespace WebShop.Windows
 {
     internal class WindowCart
     {
-        public static void ShowCartWindow(int customerId)
+        public static void CartWindow(int customerId)
         {
             Customer customer = CustomerServices.GetCustomerById(customerId); //Get current active customer
             List<CartItem> cartItems = CartItemServices.GetCartItemsByCustomerId(customerId);
@@ -59,6 +59,8 @@ namespace WebShop.Windows
         }
 
 
+
+        
         private static List<string> GetCartItmesText(List<CartItem> cartItems)
         {
             List<string> cartText = new List<string>();

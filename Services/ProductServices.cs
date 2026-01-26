@@ -211,9 +211,10 @@ namespace WebShop.Services
                         try
                         {
                             db.Products.Add(newProduct);
-                            db.SaveChanges();
-
+                            
+                            //Saving & MongoDB logging
                             UserAction userAction = new UserAction(Settings.GetCurrentCustomerId(), Enums.UserActions.Product, "Added product Id: " + newProduct.Id);
+                            userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
                             MongoDbServices.AddUserActionAsync(userAction);
                         }
                         catch (Exception ex)
@@ -338,6 +339,7 @@ namespace WebShop.Services
             Product product = products.Where(item => item.Id == id).SingleOrDefault();
 
             Console.Clear();
+
             if (product != null)
             {
                 bool isActive = true;
@@ -366,6 +368,7 @@ namespace WebShop.Services
 
         public static async Task UpdateProductHandler(Product existingProduct, Enums.UpdateProduct enumOption)
         {
+            //Ask for input
             if(enumOption == Enums.UpdateProduct.Update_Is_On_Sale) //If bool
             {
                 Console.Write($"{enumOption.ToString().Replace("Update_", " ")} [Y] or [N]");
@@ -451,7 +454,7 @@ namespace WebShop.Services
 
 
                         db.Update(existingProduct);
-                        db.SaveChanges();
+                        userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
                         //await myTransaction.CommitAsync();
 
                         await MongoDbServices.AddUserActionAsync(userAction);

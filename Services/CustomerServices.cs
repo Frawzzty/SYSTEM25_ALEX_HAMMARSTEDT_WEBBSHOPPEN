@@ -168,7 +168,9 @@ namespace WebShop.DbServices
                         try
                         {
                             db.Remove(selectedCustomer);
-                            //db.SaveChanges(); //Set Product.isDeleted instead. 
+                            UserAction userAction = new UserAction(selectedCustomer.Id, UserActions.Customer_Removed, $"CustomerID : {Settings.GetCurrentCustomerId()} - Deleted customerID: {selectedCustomer.Id}");
+                            userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
+                            MongoDbServices.AddUserActionAsync(userAction);
                             return;
                         }
                         catch (Exception ex)
@@ -190,7 +192,7 @@ namespace WebShop.DbServices
             }
         }
 
-        public static async Task DeactivateUser()
+        public static async Task DeactivateUser() //Deactivate user instead of delete
         {
 
         }
@@ -233,7 +235,7 @@ namespace WebShop.DbServices
         }
 
 
-        public static async Task UpdateCustomerHandlerAsync(Customer existingCustomer, Enums.UpdateCustomer enumOption)
+        private static async Task UpdateCustomerHandlerAsync(Customer existingCustomer, Enums.UpdateCustomer enumOption)
         {
             //Let user know what to input
             Console.Write("Enter new" + enumOption.ToString().Replace("Update_", " ") + ": "); 
@@ -285,10 +287,7 @@ namespace WebShop.DbServices
 
                         db.Update(existingCustomer);
 
-                        //await db.SaveChangesAsync();
-                        //await MongoDbServices.AddUserActionAsync(userAction);
-
-                        await Helpers.SaveDBAndLogMongoAsync(db, userAction);
+                        await Helpers.SaveDBAndLogMongoAsync(db, userAction); //Saves DB and sends Loggs to MongoDB
                     }
                     catch (Exception ex)
                     {
@@ -328,7 +327,10 @@ namespace WebShop.DbServices
                     try
                     {
                         db.Update(selectedCustomer);
-                        db.SaveChanges();
+
+                        UserAction userAction = new UserAction(selectedCustomer.Id, UserActions.Customer_Updated,"Set admin role to: " + selectedCustomer.IsAdmin);
+                        userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
+                        MongoDbServices.AddUserActionAsync(userAction);
                     }
                     catch (Exception ex)
                     {

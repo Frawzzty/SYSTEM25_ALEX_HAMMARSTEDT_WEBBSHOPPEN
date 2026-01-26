@@ -12,13 +12,13 @@ namespace WebShop
 {
     internal class Settings
     {
-        private static bool mongoDbLoggingEnabled = false;
+        private static bool isMongoDbLoggingEnabled = true;
 
         //Switch between Azure DB and Local DB. //FALSE == LOCAL
         private static bool isUsingAzureDb = false;
 
         //Auto login if TRUE - Check customerID input in Program.cs
-        private static bool debugEnabled = true;
+        private static bool isUsingDebug = false;
 
 
 
@@ -39,15 +39,14 @@ namespace WebShop
 
 
 
-        public static bool GetMongoLoggingStatus()
+        public static bool isMongoLoggingEnabled()
         {
-            return mongoDbLoggingEnabled;
+            return isMongoDbLoggingEnabled;
         }
 
-
-        public static bool GetDebugStatus()
+        public static bool isDebugEnabled()
         {
-            return debugEnabled;
+            return isUsingDebug;
         }
 
         public static string GetDbConnectionString()
@@ -58,9 +57,24 @@ namespace WebShop
 
             //Return Azure or Local db
             return isUsingAzureDb == true ?  
-                config["MySettings:ConnectionStringAzure"]
-                : config["MySettings:ConnectionStringLocal"];
+                config["MySettings:ConnectionStringAzure"] : config["MySettings:ConnectionStringLocal"];
 
+        }
+
+
+        //SHOP SETTINGS
+
+        //For News Feed Window
+        public static List<string> GetNewsFeedText()
+        {
+            List<string> newsFeedTextRows = new List<string>()
+            {
+                "* Winter Sale is now Active", 
+                "* Up to 50% off", 
+                "* Newly restocked"
+            };
+
+            return newsFeedTextRows;
         }
     }
 }

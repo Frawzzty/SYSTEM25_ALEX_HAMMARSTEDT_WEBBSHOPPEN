@@ -26,13 +26,12 @@ namespace WebShop.Windows
             windowWelcome.Draw(ConsoleColor.Blue);
 
 
-
             //Newsfeed window vars
             int leftPosNewsFeed = Helpers.GetMaxHorizontalLength(welcomeWindowList) + 6; // +6 for borders
             string headerNewsFeed = "News"; int newsFeedTopPos = 5;
 
             //News feed
-            List<string> newsFeedWindowList = new List<string> { "* Winter Sale is now Active", "* Up to 50% off", "* Newly restocked" };
+            List<string> newsFeedWindowList = Settings.GetNewsFeedText();
             var windowNewsFeed = new Window(headerNewsFeed, leftPosNewsFeed, newsFeedTopPos, newsFeedWindowList);
             windowNewsFeed.Draw(ConsoleColor.Yellow);
 

@@ -37,26 +37,27 @@ namespace WebShop.Windows
                     products = item as List<Product>;
                 }
 
-                //Select only items in stock
+                //Make sure selected items are in stock
                 products = products.Where(p => p.StockAmount > 0).ToList();
 
-                //Used in menu graphics:  Get max page count based on how many products to display
+                //Calculate how many pages there are
                 int maxPage = (products.Count() + amountProductsPerPage - 1) / amountProductsPerPage;
                 
 
-                //Get products to disaply on current page
+                //Put products to display in a separte list
                 List<Product> productsCurrentPage = new List<Product>();
                 int productStartIndex = amountProductsPerPage * currentPage;
                 for (int i = 0; i < amountProductsPerPage; i++)
                 {
                     int productIndex = productStartIndex + i - amountProductsPerPage; //Overcomplicated it?
 
-                    //Prevents out of bounds
+                    //Prevent out of bounds
                     if (productIndex < products.Count())
                     {
                         productsCurrentPage.Add(products[productIndex]);
                     }
                 }
+
 
                 //Draw graphics
                 Helpers.DrawMenuText("Store - Browse " + currentPage + " / " + (maxPage > 0 ? maxPage : 1), "[Q] Previous [E] Next - [9] Back");
@@ -72,6 +73,7 @@ namespace WebShop.Windows
                     var windowNoProducts = new Window("Products", leftPos, topPos, new List<string> { "No products found" });
                     windowNoProducts.Draw(ConsoleColor.Red);
                 }
+
 
                 //Handle Inputs
                 string key = Console.ReadKey(true).KeyChar.ToString().ToUpper();
@@ -124,7 +126,6 @@ namespace WebShop.Windows
             //Draw windows
             Window.DrawWindowsInRow(windows, leftPos, topPos, 1);
         }
-
 
     }
 }

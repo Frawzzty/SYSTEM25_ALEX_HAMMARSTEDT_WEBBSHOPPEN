@@ -30,66 +30,7 @@ namespace WebShop.Services
         }
         
 
-        /// <summary>
-        /// Validate order is ready for purchase
-        /// </summary>
-        /// <returns>True if all columns are filled in. Does not check for ID</returns>
-        public static bool ValidateOrderForPurchase(Order order)
-        {
-            bool isReady = false;
-
-            List<int> checkList = new List<int>();
-            if (order != null)
-            {
-                if (order.CustomerId > 0)
-                {
-                    checkList.Add(1);
-                }
-                else
-                {
-                    checkList.Add(0);
-                }
-
-                checkList.Add(Helpers.ValidateString(order.Name));
-                checkList.Add(Helpers.ValidateString(order.PaymentMethod));
-                checkList.Add(Helpers.ValidateString(order.ShippingMethod));
-                checkList.Add(Helpers.ValidateString(order.Street));
-                checkList.Add(Helpers.ValidateString(order.City));
-                checkList.Add(Helpers.ValidateString(order.Country));
-
-                if (order.SubTotal > 0)
-                {
-                    checkList.Add(1);
-                }
-                else
-                {
-                    checkList.Add(0);
-                }
-
-                if (order.OrderDate != null)
-                {
-                    checkList.Add(1);
-                }
-                else
-                {
-                    checkList.Add(0);
-                }
-
-                int total = 0;
-                foreach(int item in checkList)
-                {
-                    if (item == 1)
-                        total++;
-                }
-
-
-                if(total == checkList.Count)
-                    isReady = true;
-            }
-
-            return isReady;
-        }
-
+    
         public static bool ValidateOrderForPurchase2(Order order)
         {
             bool isValidCustomerDetails = true;
@@ -156,11 +97,11 @@ namespace WebShop.Services
 
                     //Clear cart. Use current db context so it stays on the same transaction chain
                     CartItemServices.DeleteCartItems(cartItems, db);
+                    UserAction userAction = new Models.UserAction(order.Customer.Id, Enums.UserActions.Pruchase, ("Order ID: " + order.Id));
+                    userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
 
-                    await db.SaveChangesAsync();
-                    await myTransaction.CommitAsync();
-
-                    await MongoDbServices.AddUserActionAsync(new Models.UserAction(order.Customer.Id, Enums.UserActions.Pruchase, ("Order ID: " + order.Id)));
+                    await myTransaction.CommitAsync(); //Roll back if everyting did not go through.
+                    await MongoDbServices.AddUserActionAsync(userAction);
                 }
                 catch (Exception ex)
                 {

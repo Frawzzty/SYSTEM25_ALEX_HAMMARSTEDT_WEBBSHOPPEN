@@ -23,7 +23,7 @@ namespace WebShop.Menus
             {
                 //Graphics
                 Helpers.DrawMenuEnum(new MenuCartMain(), menuHeader);
-                WindowCart.ShowCartWindow(Settings.GetCurrentCustomerId());
+                WindowCart.CartWindow(Settings.GetCurrentCustomerId());
 
                 string input = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
