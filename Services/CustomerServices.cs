@@ -346,17 +346,18 @@ namespace WebShop.DbServices
         {
             bool isValid = true;
 
-            if(string.IsNullOrWhiteSpace(customer.Name))        return false;
+            if(string.IsNullOrWhiteSpace(customer.Name))                        return false;
 
-            if (string.IsNullOrWhiteSpace(customer.Email))      return false;
+            if (string.IsNullOrWhiteSpace(customer.Email))                      return false;
+            if (!customer.Email.Contains("@") || !customer.Email.Contains(".")) return false;
 
-            if (string.IsNullOrWhiteSpace(customer.Street))     return false;
+            if (string.IsNullOrWhiteSpace(customer.Street))                     return false;
 
-            if (string.IsNullOrWhiteSpace(customer.City))       return false;
+            if (string.IsNullOrWhiteSpace(customer.City))                       return false;
 
-            if (string.IsNullOrWhiteSpace(customer.Country))    return false;
+            if (string.IsNullOrWhiteSpace(customer.Country))                    return false;
 
-            if (string.IsNullOrWhiteSpace(customer.Password))   return false;
+            if (string.IsNullOrWhiteSpace(customer.Password))                   return false;
 
 
             return isValid;

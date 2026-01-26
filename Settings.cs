@@ -12,7 +12,7 @@ namespace WebShop
 {
     internal class Settings
     {
-        private static bool isMongoDbLoggingEnabled = true;
+        private static bool isMongoDbLoggingEnabled = false;
 
         //Switch between Azure DB and Local DB. //FALSE == LOCAL
         private static bool isUsingAzureDb = false;

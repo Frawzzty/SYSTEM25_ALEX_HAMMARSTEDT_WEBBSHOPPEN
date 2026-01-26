@@ -213,7 +213,7 @@ namespace WebShop.Services
                             db.Products.Add(newProduct);
                             
                             //Saving & MongoDB logging
-                            UserAction userAction = new UserAction(Settings.GetCurrentCustomerId(), Enums.UserActions.Product, "Added product Id: " + newProduct.Id);
+                            UserAction userAction = new UserAction(Settings.GetCurrentCustomerId(), Enums.UserActions.Product, "Added product: " + newProduct.Name);
                             userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
                             MongoDbServices.AddUserActionAsync(userAction);
                         }
@@ -371,7 +371,7 @@ namespace WebShop.Services
             //Ask for input
             if(enumOption == Enums.UpdateProduct.Update_Is_On_Sale) //If bool
             {
-                Console.Write($"{enumOption.ToString().Replace("Update_", " ")} [Y] or [N]");
+                Console.Write($"{enumOption.ToString().Replace("Update_", " ")} [Y] or [N]: ");
             }
             else //If string
             {

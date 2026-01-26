@@ -69,7 +69,7 @@ namespace WebShop.Services
                 try
                 {
                     db.Orders.Add(order);
-                    await db.SaveChangesAsync(); //Save first so OrderId gets generated
+                    db.SaveChanges(); //Save first so OrderId gets generated
 
                     var cartItems = CartItemServices.GetCartItemsByCustomerId(order.CustomerId);
 
