@@ -67,7 +67,7 @@ namespace WebShop.DbServices
                     ProductServices.UpdateProductStock(productId, -1);
 
                     Models.UserAction userAction = new Models.UserAction(customerId, Enums.UserActions.Added_To_Cart, "Product ID: " + cartItem.ProductId);
-                    userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
+                    userAction.TimeElapsedMS = Helpers.GetDbSaveChangesTime(db);
                     await MongoDbServices.AddUserActionAsync(userAction);
                 }
                 catch (Exception ex) 
@@ -114,7 +114,7 @@ namespace WebShop.DbServices
                             userAction.Action = UserActions.Remove_From_Cart.ToString().Replace("_", " ");
                             userAction.Details = "ProductID: " + cartItem.ProductId;
 
-                            userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
+                            userAction.TimeElapsedMS = Helpers.GetDbSaveChangesTime(db);
                             MongoDbServices.AddUserActionAsync(userAction);
                         }
                     }

@@ -222,7 +222,7 @@ namespace WebShop.Services
                             
                             //Saving & MongoDB logging
                             UserAction userAction = new UserAction(Settings.GetCurrentCustomerId(), Enums.UserActions.Product, "Added product: " + newProduct.Name);
-                            userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
+                            userAction.TimeElapsedMS = Helpers.GetDbSaveChangesTime(db);
                             MongoDbServices.AddUserActionAsync(userAction);
                         }
                         catch (Exception ex)
@@ -393,7 +393,6 @@ namespace WebShop.Services
 
                 using (var db = new Connections.WebShopContext())
                 {
-                    //var myTransaction = await db.Database.BeginTransactionAsync(); //Start transaction
                     try
                     {
                         UserAction userAction = new UserAction() { CustomerId = Settings.GetCurrentCustomerId(), Action = Enums.UserActions.Product.ToString()};
@@ -435,7 +434,7 @@ namespace WebShop.Services
 
                                 break;
 
-                            case Enums.UpdateProduct.Update_Is_On_Sale:
+                            case Enums.UpdateProduct.Update_Is_On_Sale: //BOOL
                                 if(input.ToUpper() == "Y")
                                 {
                                     userAction.Details = $"{enumOption}: {existingProduct.IsOnSale} : {"Added to Sale"}";
@@ -462,19 +461,16 @@ namespace WebShop.Services
 
 
                         db.Update(existingProduct);
-                        userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
-                        //await myTransaction.CommitAsync();
+                        userAction.TimeElapsedMS = Helpers.GetDbSaveChangesTime(db);
 
                         await MongoDbServices.AddUserActionAsync(userAction);
                     }
                     catch (Exception ex)
                     {
-                        //await myTransaction.RollbackAsync();
                         Console.WriteLine("Could not update " + enumOption.ToString().Replace("Update_", " ") + "\n");
                         Console.WriteLine(ex.Message);
                         Console.ReadKey(true);
 
-                        
                     }
                 }
             }

@@ -102,8 +102,8 @@ namespace WebShop
             return windowSize;
         }
 
-        //Returns List used when creating windows
-        public static List<string> GetProductTextShortForWindow(Product product, string actionText, string actionKey)
+        //Returns List with text, used when creating windows
+        public static List<string> GetProductTextShort(Product product, string actionText, string actionKey)
         {
             List<string> productWindowTexts = new List<string>();
             productWindowTexts.Add(product.Name);
@@ -121,7 +121,8 @@ namespace WebShop
             return productWindowTexts;
         }
 
-        public static List<string> GetProductTexLongForWindow(Product product, string actionText, string actionKey)
+        //Returns List with text, used when creating windows
+        public static List<string> GetProductTextLong(Product product, string actionText, string actionKey)
         {
             List<string> productWindowTexts = new List<string>();
             productWindowTexts.Add(product.Category.Name + " / " + product.SupplierName);
@@ -143,6 +144,7 @@ namespace WebShop
 
             return productWindowTexts;
         }
+
 
         public static List<string> GetCartItmesText(List<CartItem> cartItems)
         {
@@ -166,28 +168,12 @@ namespace WebShop
             return cartText;
         }
 
-        /// <summary>
-        /// Checks if a string is valid. //Used in other method. Maybe not neccecary
-        /// </summary>
-        /// <returns>Returns 1 for True, Returns 0 for False</returns>
-        public static int ValidateString(string text)
-        {
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
         public static void ViewMoreWindow(Product product)
         {
             //Window settings
             string addToCartKey = "B";
             string windowHeader = "Selected product";
-            List<string> productText = Helpers.GetProductTexLongForWindow(product, "Add To Cart", addToCartKey);
+            List<string> productText = Helpers.GetProductTextLong(product, "Add To Cart", addToCartKey);
 
             //Window
             var productWindow = new Window(windowHeader, 1, 13, productText); //Fix, Postion too hardcoded?
@@ -282,9 +268,6 @@ namespace WebShop
         /// <summary>
         /// Stop watch included for DB time
         /// </summary>
-        /// <param name="db"></param>
-        /// <param name="userAction"></param>
-        /// <returns></returns>
         public static async Task SaveDBAndLogMongoAsync(WebShopContext db, UserAction userAction)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -295,8 +278,10 @@ namespace WebShop
             await MongoDbServices.AddUserActionAsync(userAction);
         }
 
-
-        public static long SaveDbChangesTime(WebShopContext db)
+        /// <summary>
+        /// Saves DB and returns the time it took to complete in MS
+        /// </summary>
+        public static long GetDbSaveChangesTime(WebShopContext db)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             db.SaveChanges();

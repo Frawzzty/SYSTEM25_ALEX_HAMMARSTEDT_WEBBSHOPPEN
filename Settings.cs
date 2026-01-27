@@ -1,12 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 using WebShop.DbServices;
-using WebShop.Models;
 
 namespace WebShop
 {
@@ -18,12 +11,12 @@ namespace WebShop
         private static bool isUsingAzureDb = true;
 
         //Auto login if TRUE - Check customerID input in Program.cs
-        private static bool isUsingDebug = true;
+        private static bool isUsingDebug = false;
 
 
 
         private static int currentCustomerId = -1; //No user can have id -1
-        public static Customer GetCurrentCustomer()
+        public static Models.Customer GetCurrentCustomer()
         {
             return CustomerServices.GetCustomerById(currentCustomerId);
         }

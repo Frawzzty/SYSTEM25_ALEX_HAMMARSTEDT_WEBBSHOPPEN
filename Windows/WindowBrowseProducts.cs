@@ -115,7 +115,7 @@ namespace WebShop.Windows
             foreach (Product product in products) 
             {
                 string header = product.Category.Name;
-                List<string> textRows = Helpers.GetProductTextShortForWindow(product, actionText, Helpers.GetActionKeys()[i]);
+                List<string> textRows = Helpers.GetProductTextShort(product, actionText, Helpers.GetActionKeys()[i]);
 
                 Window window = new Window(header, 0, 0, textRows);
                 window.headerColor = ConsoleColor.Red;

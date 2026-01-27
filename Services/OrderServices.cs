@@ -98,7 +98,7 @@ namespace WebShop.Services
                     //Clear cart. Use current db context so it stays on the same transaction chain
                     CartItemServices.DeleteCartItems(cartItems, db);
                     UserAction userAction = new Models.UserAction(order.Customer.Id, Enums.UserActions.Pruchase, ("Order ID: " + order.Id));
-                    userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
+                    userAction.TimeElapsedMS = Helpers.GetDbSaveChangesTime(db);
 
                     await myTransaction.CommitAsync(); //Roll back if everyting did not go through.
                     await MongoDbServices.AddUserActionAsync(userAction);

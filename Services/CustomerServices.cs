@@ -178,7 +178,7 @@ namespace WebShop.DbServices
                         {
                             db.Remove(selectedCustomer);
                             UserAction userAction = new UserAction(selectedCustomer.Id, UserActions.Customer_Removed, $"CustomerID : {Settings.GetCurrentCustomerId()} - Deleted customerID: {selectedCustomer.Id}");
-                            userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
+                            userAction.TimeElapsedMS = Helpers.GetDbSaveChangesTime(db);
                             MongoDbServices.AddUserActionAsync(userAction);
                             return;
                         }
@@ -338,7 +338,7 @@ namespace WebShop.DbServices
                         db.Update(selectedCustomer);
 
                         UserAction userAction = new UserAction(selectedCustomer.Id, UserActions.Customer_Updated,"Set admin role to: " + selectedCustomer.IsAdmin);
-                        userAction.TimeElapsedMS = Helpers.SaveDbChangesTime(db);
+                        userAction.TimeElapsedMS = Helpers.GetDbSaveChangesTime(db);
                         MongoDbServices.AddUserActionAsync(userAction);
                     }
                     catch (Exception ex)
