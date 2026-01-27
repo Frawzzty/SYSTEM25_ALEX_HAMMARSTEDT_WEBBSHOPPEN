@@ -1,12 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.IdentityModel.Tokens;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using WebShop.DbServices;
-using WebShop.Enums;
+﻿using System.Globalization;
 using WebShop.Menus;
-using WebShop.Models;
-using WebShop.Services;
 using WebShop.Windows;
 
 namespace WebShop
@@ -18,6 +11,8 @@ namespace WebShop
         static async Task Main(string[] args)
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("sv-SE"); //Resolves Dapper issues. (Wrong date foramting depeinging on keyboard lang settings etc)
+
+            //Testing.WindowTesting();
 
             //BEFORE START
             //IF Crash at launch: IP adress likely not whitelisted. main DB and or MongoDB

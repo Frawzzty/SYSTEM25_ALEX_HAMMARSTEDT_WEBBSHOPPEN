@@ -13,7 +13,6 @@ using System.Transactions;
 using WebShop.Connections;
 using WebShop.Migrations;
 using WebShop.Models;
-using WebShop.Models;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WebShop.Services
@@ -86,7 +85,9 @@ namespace WebShop.Services
             return products;
         }
 
-
+        /// <summary>
+        /// Get prodcuts that contains the string input, Name, Desciption, SupplyerName or Category Name.
+        /// </summary>
         public static List<Product> GetProductsByString(string searchTerm)
         {
             List<Product> products = new List<Product>();
@@ -110,7 +111,7 @@ namespace WebShop.Services
         {
             if(!products.IsNullOrEmpty())
             {
-                int cellpadding = 3; //Spacing between columns
+                int columnPadding = 3; //Spacing between columns
 
                 string headerId =           "ID";
                 string headerName =         "Name";
@@ -123,19 +124,20 @@ namespace WebShop.Services
                 string headerStockAmount =  "StockAmount";
                 //Set paddings
                 
-                int padId =             Helpers.GetHeaderMaxPadding(headerId, products.Max(item => item.Id.ToString().Length), cellpadding);
-                int padName =           Helpers.GetHeaderMaxPadding(headerName, products.Max(item => item.Name.Length), cellpadding);
-                int padDescription =    Helpers.GetHeaderMaxPadding(headerDescription, products.Max(item => item.Description.Length), cellpadding);
-                int padCategoryId =     Helpers.GetHeaderMaxPadding(headerCategoryId, products.Max(item => item.CategoryId.ToString().Length), cellpadding);
-                int padSupplierName =   Helpers.GetHeaderMaxPadding(headerSupplierName, products.Max(item => item.SupplierName.Length), cellpadding);
-                int padUnitPrice =      Helpers.GetHeaderMaxPadding(headerUnitPrice, products.Max(item => item.UnitPrice.ToString().Length), cellpadding);
-                int padUnitSalePrice =  Helpers.GetHeaderMaxPadding(headerUnitSalePrice, products.Max(item => item.UnitSalePrice.ToString().Length), cellpadding);
-                int padOnSale =         Helpers.GetHeaderMaxPadding(headerOnSale, products.Max(item => item.IsOnSale.ToString().Length), cellpadding);
-                int padStockAmount =    Helpers.GetHeaderMaxPadding(headerStockAmount, products.Max(item => item.StockAmount.ToString().Length), cellpadding);
+                int padId =             Helpers.GetHeaderMaxPadding(headerId, products. Max(item => item.Id.ToString().Length), columnPadding);
+                int padName =           Helpers.GetHeaderMaxPadding(headerName, products.Max(item => item.Name.Length), columnPadding);
+                int padDescription =    Helpers.GetHeaderMaxPadding(headerDescription, products.Max(item => item.Description.Length), columnPadding);
+                int padCategoryId =     Helpers.GetHeaderMaxPadding(headerCategoryId, products.Max(item => item.CategoryId.ToString().Length), columnPadding);
+                int padSupplierName =   Helpers.GetHeaderMaxPadding(headerSupplierName, products.Max(item => item.SupplierName.Length), columnPadding);
+                int padUnitPrice =      Helpers.GetHeaderMaxPadding(headerUnitPrice, products.Max(item => item.UnitPrice.ToString().Length), columnPadding);
+                int padUnitSalePrice =  Helpers.GetHeaderMaxPadding(headerUnitSalePrice, products.Max(item => item.UnitSalePrice.ToString().Length), columnPadding);
+                int padOnSale =         Helpers.GetHeaderMaxPadding(headerOnSale, products.Max(item => item.IsOnSale.ToString().Length), columnPadding);
+                int padStockAmount =    Helpers.GetHeaderMaxPadding(headerStockAmount, products.Max(item => item.StockAmount.ToString().Length), columnPadding);
 
                 //Draw Headers
                 //Console.SetCursorPosition(1, Console.GetCursorPosition().Top);
-                Helpers.WriteLineInColor(ConsoleColor.Blue,
+                Console.BackgroundColor = ConsoleColor.Red;
+                Helpers.WriteLineInColor(ConsoleColor.White,
                     headerId.PadRight(padId) +
                     headerName.PadRight(padName) +
                     headerDescription.PadRight(padDescription) +
@@ -146,22 +148,28 @@ namespace WebShop.Services
                     headerOnSale.PadRight(padOnSale) +
                     headerStockAmount.PadRight(padStockAmount)
                     );
+                Console.BackgroundColor = ConsoleColor.Black;
 
                 //Draw Rows
+                int rowIndex = 0;
                 foreach (var product in products)
                 {
-                    //Console.SetCursorPosition(1, Console.GetCursorPosition().Top);
-                    Console.WriteLine(
-                        product.Id.ToString().PadRight(padId) + 
-                        product.Name.PadRight(padName) +
-                        product.Description.PadRight(padDescription) +
-                        product.CategoryId.ToString().PadRight(padCategoryId) +
-                        product.SupplierName.PadRight(padSupplierName) +
-                        product.UnitPrice.ToString().PadRight(padUnitPrice) +
-                        product.UnitSalePrice.ToString().PadRight(padUnitSalePrice) +
-                        product.IsOnSale.ToString().PadRight(padOnSale) +
-                        product.StockAmount.ToString().PadRight(padStockAmount)
-                        );
+                    if (rowIndex % 2 == 0)
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                    
+                        Console.WriteLine(
+                            product.Id.ToString().PadRight(padId) +
+                            product.Name.PadRight(padName) +
+                            product.Description.PadRight(padDescription) +
+                            product.CategoryId.ToString().PadRight(padCategoryId) +
+                            product.SupplierName.PadRight(padSupplierName) +
+                            product.UnitPrice.ToString().PadRight(padUnitPrice) +
+                            product.UnitSalePrice.ToString().PadRight(padUnitSalePrice) +
+                            product.IsOnSale.ToString().PadRight(padOnSale) +
+                            product.StockAmount.ToString().PadRight(padStockAmount)
+                            );
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    rowIndex++;
                 }
             }
             else

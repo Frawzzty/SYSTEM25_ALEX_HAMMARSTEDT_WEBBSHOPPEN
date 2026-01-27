@@ -28,37 +28,37 @@ namespace WebShop.Windows
             int topPos = 5;
 
 
-            //1st Revenue windows
-            Window WinTotalRevenue = WindowTotalRevenue();
-            Window WinRevenueLastHour = WindowRevenueLastHour();
+            //1st ROW Revenue windows
+            Window WinTotalRevenue = GetWindowTotalRevenue();
+            Window WinRevenueLastHour = GetWindowRevenueLastHour();
 
             List<Window> windowsRevenue = new List<Window>() { WinTotalRevenue, WinRevenueLastHour };
             Window.DrawWindowsInRow(windowsRevenue, 1, topPos, 1);
 
-            //2nd Product insights
-            Window WinProdcutsRevenue = WindowBestSellers(1);
-            Window WinProdcutsUnitsSold = WindowBestSellers(0);
+            //2nd ROW Product insights
+            Window WinProdcutsRevenue = GetWindowBestSellers(1);
+            Window WinProdcutsUnitsSold = GetWindowBestSellers(0);
 
             List<Window> windowRowProducts = new List<Window>() { WinProdcutsRevenue, WinProdcutsUnitsSold };
             Window.DrawWindowsInRow(windowRowProducts, 1, topPos += (Window.GetWindowVerticalLength(WinTotalRevenue) + 1), 1);
 
-            //3rd Geo insights
-            Window WinCountryRevenue = WindowBestLocation(1);
-            Window WinCityRevenue = WindowBestLocation(0);
+            //3rd ROW Geo insights
+            Window WinCountryRevenue = GetWindowBestLocation(1);
+            Window WinCityRevenue = GetWindowBestLocation(0);
 
             List<Window> windowRowLocation = new List<Window>() { WinCountryRevenue, WinCityRevenue };
             Window.DrawWindowsInRow(windowRowLocation, 1, topPos += Window.GetWindowVerticalLength(WinProdcutsRevenue) + 1, 1);
 
-            //4th Category insights
-            Window WinCategoryRevenue = WindowBestCategoryRevenue();
-            Window WinCategoryUnitsSold = WindowBestCategoryUnitsSold();
+            //4th ROW Category insights
+            Window WinCategoryRevenue = GetWindowBestCategoryRevenue();
+            Window WinCategoryUnitsSold = GetWindowBestCategoryUnitsSold();
             List<Window> windowRowCategory = new List<Window>() { WinCategoryRevenue, WinCategoryUnitsSold };
 
             Window.DrawWindowsInRow(windowRowCategory, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
 
-            //5th
-            Window WinLast7Days = WindowLast7Days();
-            Window WinPasswords = WindowPasswords();
+            //5th ROW
+            Window WinLast7Days = GetWindowLast7Days();
+            Window WinPasswords = GetWindowPasswords();
             List<Window> WindowDailyBreakdow = new List<Window>() { WinLast7Days, WinPasswords };
 
             Window.DrawWindowsInRow(WindowDailyBreakdow, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
@@ -68,7 +68,7 @@ namespace WebShop.Windows
 
 
         // WINDOWS
-        private static Window WindowTotalRevenue()
+        private static Window GetWindowTotalRevenue()
         {
             string header = "Total Revenue";
 
@@ -81,7 +81,7 @@ namespace WebShop.Windows
             return window;
         }
 
-        private static Window WindowRevenueLastHour()
+        private static Window GetWindowRevenueLastHour()
         {
             string header = "Total Revenue -1 Hour";
 
@@ -100,7 +100,7 @@ namespace WebShop.Windows
 
         ///<summary> int table == 1; Orders by revenue else units sold</summary>
         /// <returns>Windows horizontal length</returns>
-        private static Window WindowBestSellers(int table)
+        private static Window GetWindowBestSellers(int table)
         {
             var orderDetails = OrderDetailServices.GetAllOrderDetails();
             var groups = orderDetails //Group by product ID. And order by revenue
@@ -162,7 +162,7 @@ namespace WebShop.Windows
 
         /// <summary> int table == 1; Country table else City table </summary>
         /// <returns>Windows horizontal length</returns>
-        private static Window WindowBestLocation(int table)
+        private static Window GetWindowBestLocation(int table)
         {
 
             var orderDetails = OrderDetailServices.GetAllOrderDetails();
@@ -238,7 +238,7 @@ namespace WebShop.Windows
 
 
 
-        private static Window WindowBestCategoryRevenue()
+        private static Window GetWindowBestCategoryRevenue()
         {
 
             List<string> textRows = new List<string>();
@@ -267,7 +267,7 @@ namespace WebShop.Windows
             return window;
         }
 
-        private static Window WindowBestCategoryUnitsSold()
+        private static Window GetWindowBestCategoryUnitsSold()
         {
 
             List<string> textRows = new List<string>();
@@ -296,7 +296,7 @@ namespace WebShop.Windows
             return window;
         }
 
-        private static Window WindowLast7Days()
+        private static Window GetWindowLast7Days()
         {
             List<DateOnly> dates = Helpers.GetXDates(7);
             List<string> textRows = new List<string>();
@@ -324,8 +324,7 @@ namespace WebShop.Windows
                 }
 
                 if (textRows.Count == 0)
-                    textRows.Add(" ");
-
+                    textRows.Add("Table empty");
             }
 
             dailyAvrage = dailyAvrage / 7;
@@ -336,7 +335,7 @@ namespace WebShop.Windows
             return window;
         }
 
-        private static Window WindowPasswords()
+        private static Window GetWindowPasswords()
         {
             List<string> textRows = new List<string>();
 
@@ -353,7 +352,7 @@ namespace WebShop.Windows
                 }
 
                 if (textRows.Count == 0)
-                    textRows.Add(" ");
+                    textRows.Add("Table empty");
             }
 
             string header = "Most common passwords";

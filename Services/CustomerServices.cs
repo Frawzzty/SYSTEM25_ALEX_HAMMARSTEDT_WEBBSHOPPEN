@@ -60,7 +60,8 @@ namespace WebShop.DbServices
                 int padCountry = Helpers.GetHeaderMaxPadding(headerCountry, customers.Max(item => item.Country.Length), 3);
                 int padIsAdmin = Helpers.GetHeaderMaxPadding(headerIsAdmin, customers.Max(item => item.IsAdmin.ToString().Length), 3);
 
-                Helpers.WriteLineInColor(ConsoleColor.Blue,
+                Console.BackgroundColor = ConsoleColor.Red;
+                Helpers.WriteLineInColor(ConsoleColor.White,
                     "  " + // Move everything 1 step to the right
                     headerId.PadRight(padId) +
                     headerName.PadRight(padName) +
@@ -70,9 +71,14 @@ namespace WebShop.DbServices
                     headerCountry.PadRight(padCountry) +
                     headerIsAdmin.PadRight(padIsAdmin)
                 );
+                Console.BackgroundColor = ConsoleColor.Black;
 
+                int rowIndex = 0;
                 foreach (var customer in customers)
                 {
+                    if (rowIndex % 2 == 0)
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+
                     Console.WriteLine("  " + //Move everything 1 step to the right
                         customer.Id.ToString().PadRight(padId) +
                         customer.Name.PadRight(padName) +
@@ -81,6 +87,9 @@ namespace WebShop.DbServices
                         customer.City.PadRight(padCity) +
                         customer.Country.PadRight(padCountry) +
                         customer.IsAdmin.ToString().PadRight(padIsAdmin));
+
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    rowIndex++;
                 }
             }
             else

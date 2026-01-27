@@ -12,13 +12,13 @@ namespace WebShop
 {
     internal class Settings
     {
-        private static bool isMongoDbLoggingEnabled = false;
+        private static bool isMongoDbLoggingEnabled = true;
 
         //Switch between Azure DB and Local DB. //FALSE == LOCAL
-        private static bool isUsingAzureDb = false;
+        private static bool isUsingAzureDb = true;
 
         //Auto login if TRUE - Check customerID input in Program.cs
-        private static bool isUsingDebug = false;
+        private static bool isUsingDebug = true;
 
 
 

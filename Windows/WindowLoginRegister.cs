@@ -100,9 +100,7 @@ namespace WebShop.Windows
                 message};
 
             var window = new Window("Login / Register", 1, 1, windowText);
-            window.headerColor = ConsoleColor.Yellow;
-
-            window.Draw();
+            window.Draw(ConsoleColor.Yellow);
         }
 
 

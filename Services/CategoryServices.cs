@@ -35,10 +35,19 @@ namespace WebShop.Services
 
         public static void PrintCategories(List<Category> categories)
         {
-            Helpers.WriteLineInColor(ConsoleColor.Blue, "ID\tCategoryName");
+            Console.BackgroundColor = ConsoleColor.Red;
+            Helpers.WriteLineInColor(ConsoleColor.White, "ID".PadRight(8) + "CategoryName".PadRight(13));
+            Console.BackgroundColor = ConsoleColor.Black;
+            int rowIndex = 0;
             foreach (var category in categories) 
             {
-                Console.WriteLine(category.Id + "\t" + category.Name); 
+                if (rowIndex % 2 == 0)
+                    Console.BackgroundColor = ConsoleColor.DarkGray;
+
+                Console.WriteLine(category.Id.ToString().PadRight(8)+ category.Name.PadRight(13));
+
+                Console.BackgroundColor = ConsoleColor.Black;
+                rowIndex++;
             }
         }
 

@@ -61,8 +61,9 @@ namespace WebShop.Menus
                             break;
 
                         case Enums.MenuHomeMain.Admin:
-                            if(Settings.GetCurrentCustomer().IsAdmin)
+                            if (Settings.GetCurrentCustomer().IsAdmin)
                                 Menus.MenuAdmin.MenuAdminMain();
+                            
                             break;
 
                         case Enums.MenuHomeMain.Exit:

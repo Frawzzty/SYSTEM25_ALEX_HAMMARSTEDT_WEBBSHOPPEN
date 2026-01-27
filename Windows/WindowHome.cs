@@ -16,25 +16,23 @@ namespace WebShop.Windows
         public static void DrawHome()
         {
             //Welcome window vars
-            int leftPosWelcome = 1;
-            string headerWelcome = "The Clothing Store";  int welcomeTopPos = 5;
+            int leftPos = 1;
+            int topPos = 5;
+
             Customer customer = CustomerServices.GetCustomerById(Settings.GetCurrentCustomerId()); //Get current active customer
 
             //Store welcome message
-            List<string> welcomeWindowList = new List<string> { $"Welcome {customer.Name}", "We sell the best clothes!", new string(' ', 41) }; //Also add som epmpty string to make it take up more space.
-            var windowWelcome = new Window(headerWelcome, leftPosWelcome, welcomeTopPos, welcomeWindowList);
-            windowWelcome.Draw(ConsoleColor.Blue);
-
-
-            //Newsfeed window vars
-            int leftPosNewsFeed = Helpers.GetMaxHorizontalLength(welcomeWindowList) + 6; // +6 for borders
-            string headerNewsFeed = "News"; int newsFeedTopPos = 5;
+            List<string> welcomeWindowList = new List<string> { $"Welcome {customer.Name}", "We sell the best clothes!", new string(' ', 41) }; //Also add some spaces to make it take up more space.
+            var windowWelcome = new Window("The Clothing Store", 0,0, welcomeWindowList);
+            windowWelcome.headerColor = ConsoleColor.Blue;
 
             //News feed
-            List<string> newsFeedWindowList = Settings.GetNewsFeedText();
-            var windowNewsFeed = new Window(headerNewsFeed, leftPosNewsFeed, newsFeedTopPos, newsFeedWindowList);
-            windowNewsFeed.Draw(ConsoleColor.Yellow);
+            var windowNewsFeed = new Window("News", 0, 0, Settings.GetNewsFeedText());
+            windowNewsFeed.headerColor = ConsoleColor.Yellow;
 
+            //Draw Window
+            List<Window> welcomeAndNewsFeed = new List<Window>() {windowWelcome, windowNewsFeed};
+            Window.DrawWindowsInRow(welcomeAndNewsFeed, leftPos, topPos, 1);
         }
     }
 }
