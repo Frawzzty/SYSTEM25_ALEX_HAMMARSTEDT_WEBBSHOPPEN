@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace WebShop.Models
     {
         public int Id { get; set; }
 
+        //[Range(0, 120)]
+        //[MaxLength(50)]
         public string Name { get; set; }
         public string Email { get; set; }
         public string Street { get; set; }
