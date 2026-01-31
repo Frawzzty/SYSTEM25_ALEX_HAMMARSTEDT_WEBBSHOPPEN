@@ -114,7 +114,7 @@ namespace WebShop.Services
                         try
                         {
                             db.Remove(selectedItem);
-                            db.SaveChanges(); //WIll crash if deleting category with products
+                            db.SaveChanges();
                             success = true;
                         }
                         catch
