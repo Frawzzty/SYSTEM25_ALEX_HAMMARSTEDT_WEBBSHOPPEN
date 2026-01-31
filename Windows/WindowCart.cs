@@ -1,13 +1,5 @@
-﻿using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebShop.DbServices;
-using WebShop.Enums;
+﻿using WebShop.DbServices;
 using WebShop.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WebShop.Windows
 {

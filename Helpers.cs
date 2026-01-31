@@ -1,19 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using WebShop.Connections;
 using WebShop.DbServices;
-using WebShop.Enums;
-using WebShop.Models;
 using WebShop.Models;
 using WebShop.Services;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WebShop
 {

@@ -1,15 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using WebShop.DbServices;
 using WebShop.Enums;
-using WebShop.Models;
 using WebShop.Models;
 using WebShop.Services;
 

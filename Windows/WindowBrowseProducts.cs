@@ -1,11 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebShop.DbServices;
-using WebShop.Models;
+﻿using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.Windows
@@ -40,21 +33,25 @@ namespace WebShop.Windows
                 //Make sure selected items are in stock
                 products = products.Where(p => p.StockAmount > 0).ToList();
 
-                //Calculate how many pages there are
+                //Calculate how many pages there are (For scrolling products)
                 int maxPage = (products.Count() + amountProductsPerPage - 1) / amountProductsPerPage;
                 
 
                 //Put products to display in a separte list
                 List<Product> productsCurrentPage = new List<Product>();
-                int productStartIndex = amountProductsPerPage * currentPage;
+                int productStartIndex = amountProductsPerPage * currentPage;            //Makes sure it selects the correct product indexs for the current page
                 for (int i = 0; i < amountProductsPerPage; i++)
                 {
-                    int productIndex = productStartIndex + i - amountProductsPerPage; //Overcomplicated it?
+                    int productIndex = productStartIndex + i - amountProductsPerPage;   //Makes sure it selects the correct product indexs for the current page
 
                     //Prevent out of bounds
                     if (productIndex < products.Count())
                     {
                         productsCurrentPage.Add(products[productIndex]);
+                    }
+                    else
+                    {
+                        break; //Out of bounds, leave loop
                     }
                 }
 
@@ -123,7 +120,7 @@ namespace WebShop.Windows
                 windows.Add(window);
                 i++;
             }
-            //Draw windows
+            //Draw windows in-line
             Window.DrawWindowsInRow(windows, leftPos, topPos, 1);
         }
 

@@ -10,7 +10,7 @@ namespace WebShop
         //Switch between Azure DB and Local DB. //FALSE == LOCAL
         private static bool isUsingAzureDb = true;
 
-        //Auto login if TRUE - Check customerID input in Program.cs
+        //Auto login - If true Check customerID input in Program.cs
         private static bool isUsingDebug = false;
 
 

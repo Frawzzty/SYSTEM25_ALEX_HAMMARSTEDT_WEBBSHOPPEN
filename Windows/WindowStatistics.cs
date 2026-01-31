@@ -1,15 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using WebShop.Connections;
-using WebShop.Migrations;
-using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.Windows
@@ -40,28 +30,28 @@ namespace WebShop.Windows
             Window WinProdcutsUnitsSold = GetWindowBestSellers(0);
 
             List<Window> windowRowProducts = new List<Window>() { WinProdcutsRevenue, WinProdcutsUnitsSold };
-            Window.DrawWindowsInRow(windowRowProducts, 1, topPos += (Window.GetWindowVerticalLength(WinTotalRevenue) + 1), 1);
+            Window.DrawWindowsInRow(windowRowProducts, 1, topPos += (Window.GetWindowVerticalLength(WinTotalRevenue) + 1), 1); //Draw windows in-line
 
             //3rd ROW Geo insights
             Window WinCountryRevenue = GetWindowBestLocation(1);
             Window WinCityRevenue = GetWindowBestLocation(0);
 
             List<Window> windowRowLocation = new List<Window>() { WinCountryRevenue, WinCityRevenue };
-            Window.DrawWindowsInRow(windowRowLocation, 1, topPos += Window.GetWindowVerticalLength(WinProdcutsRevenue) + 1, 1);
+            Window.DrawWindowsInRow(windowRowLocation, 1, topPos += Window.GetWindowVerticalLength(WinProdcutsRevenue) + 1, 1); //Draw windows in-line
 
             //4th ROW Category insights
             Window WinCategoryRevenue = GetWindowBestCategoryRevenue();
             Window WinCategoryUnitsSold = GetWindowBestCategoryUnitsSold();
             List<Window> windowRowCategory = new List<Window>() { WinCategoryRevenue, WinCategoryUnitsSold };
 
-            Window.DrawWindowsInRow(windowRowCategory, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
+            Window.DrawWindowsInRow(windowRowCategory, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1); //Draw windows in-line
 
             //5th ROW
             Window WinLast7Days = GetWindowLast7Days();
             Window WinPasswords = GetWindowPasswords();
             List<Window> WindowDailyBreakdow = new List<Window>() { WinLast7Days, WinPasswords };
 
-            Window.DrawWindowsInRow(WindowDailyBreakdow, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1);
+            Window.DrawWindowsInRow(WindowDailyBreakdow, 1, topPos += Window.GetWindowVerticalLength(WinCategoryRevenue) + 1, 1); //Draw windows in-line
 
 
         }
@@ -166,7 +156,7 @@ namespace WebShop.Windows
         {
 
             var orderDetails = OrderDetailServices.GetAllOrderDetails();
-            IOrderedEnumerable<IGrouping<string, OrderDetail>> groups;
+            IOrderedEnumerable<IGrouping<string, Models.OrderDetail>> groups;
 
             string header = "";
             if (table == 1)
@@ -194,7 +184,7 @@ namespace WebShop.Windows
             int padCountry = 0;
             int padCity = 0;
             //Get padding for to columns
-            if (orderDetails.Count > 0)
+            if (orderDetails.Count > 0) //Lamda selection will crash if list count is 0
             {
                 padUnitsSold = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.UnitAmount.ToString().Length)), 4);
                 padRevenue = Helpers.GetHeaderMaxPadding(" ", groupsLimited.Max(group => group.Max(od => od.SubTotal.ToString().Length)), 2);

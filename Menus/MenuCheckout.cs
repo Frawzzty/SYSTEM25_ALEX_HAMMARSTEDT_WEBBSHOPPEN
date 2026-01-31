@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebShop.DbServices;
+﻿using WebShop.DbServices;
 using WebShop.Enums;
 using WebShop.Models;
 using WebShop.Services;
 using WebShop.Windows;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebShop.Menus
 {

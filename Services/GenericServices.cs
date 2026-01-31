@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using WebShop.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
+﻿
 namespace WebShop.Services
 {
     internal class GenericServices
@@ -22,15 +13,15 @@ namespace WebShop.Services
             bool isSucess = false;
 
             //Transaction?
-            if(item is Product product)
+            if(item is Models.Product product)
             {
                 product.Name = newName;
             }
-            else if (item is Category category)
+            else if (item is Models.Category category)
             {
                 category.Name = newName;
             }
-            else if (item is Product customer)
+            else if (item is Models.Product customer)
             {
                 customer.Name = newName;
             }

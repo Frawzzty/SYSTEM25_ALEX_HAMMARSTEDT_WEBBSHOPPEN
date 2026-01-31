@@ -10,7 +10,7 @@ namespace WebShop
 
         static async Task Main(string[] args)
         {
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("sv-SE"); //Resolves Dapper issues. (Wrong date foramting depeinging on keyboard lang settings etc)
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("sv-SE"); //Resolves Dapper issues. (Wrong date foramting depending on keyboard lang settings etc)
 
             //Testing.WindowTesting();
 
@@ -19,21 +19,26 @@ namespace WebShop
                 //CHECK DB STRINGS in user secrets;
                 //CHECK VPN is OFF / check ipadress is whitelisted
 
+            //IF first time user, can disable admin menu lock in MenuHome.MenuHomeMain() //Approx Row 64
+
             while (true)
             {
                 bool auth = false;
-                if (Settings.isDebugEnabled()) //IF debug enabled skip login screen
+                //IF debug enabled skip login screen
+                if (Settings.isDebugEnabled()) 
                 {
                     auth = true;
                     Settings.SetCurrentCustomer(1); //Enter custmer ID with Admin privileges
                 }
-                else 
+                //Login or Register
+                else
                 {
-                    auth = await WindowLoginRegister.AuthenticateAsync(); //Login or Register
+                    auth = await WindowLoginRegister.AuthenticateAsync(); 
                 }
 
                 if (auth)
                 {
+                    //Context: Menus are used for navigation. Menues Load Windows.cs instances
                     MenuHome.MenuHomeMain();
                 }
 

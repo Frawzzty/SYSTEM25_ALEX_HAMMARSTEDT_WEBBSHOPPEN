@@ -1,16 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using WebShop.DbServices;
-using WebShop.Services;
+﻿using WebShop.Services;
 using WebShop.Windows;
 
 namespace WebShop.Menus
@@ -19,17 +7,17 @@ namespace WebShop.Menus
     {
         public static void MenuHomeMain()
         {
-            List<Models.Product> productsOnSale = new List<Models.Product>();
             string menuHeader = "Home";
             bool loop = true;
+
             while (loop)
             {
                 //Draw menu and Home screen
                 Helpers.DrawMenuEnum(new Enums.MenuHomeMain(), menuHeader);
-                WindowHome.DrawHome(); 
+                WindowHome.DrawHome();
 
                 //Draw product windows
-                productsOnSale = ProductServices.GetProductsOnSale().Where(p => p.StockAmount > 0).ToList();
+                List<Models.Product> productsOnSale = ProductServices.GetProductsOnSale().Where(p => p.StockAmount > 0).ToList();
                 List<string> saleActionKeys = Helpers.GetActionKeys().Take(4).ToList(); //Get actions keys for prodcut windows. Take(x) to limit how many windows are drawn.
                 WindowSaleProduct.DrawProductWindows(productsOnSale, saleActionKeys.Count, saleActionKeys);
 
@@ -61,7 +49,7 @@ namespace WebShop.Menus
                             break;
 
                         case Enums.MenuHomeMain.Admin:
-                            if (Settings.GetCurrentCustomer().IsAdmin)
+                            if (Settings.GetCurrentCustomer().IsAdmin) //Admin lock
                                 Menus.MenuAdmin.MenuAdminMain();
                             
                             break;

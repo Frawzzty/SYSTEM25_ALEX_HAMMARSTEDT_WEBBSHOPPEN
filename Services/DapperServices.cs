@@ -1,15 +1,5 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Markup;
-using WebShop.Migrations;
 
 
 namespace WebShop.Services
@@ -19,8 +9,10 @@ namespace WebShop.Services
         private static string connString = Connections.ConnectionDapper.GetConnectionString();
 
 
+
+
         /// <summary>
-        /// Works, but does not include EF navigation property... >:(
+        /// Works, but does not include EF navigation property.
         /// </summary>
         public static List<Models.Product> GetProductsByString(string searchTerm)
         {
@@ -46,6 +38,66 @@ namespace WebShop.Services
 
             return products;
         }
+
+        public static decimal GetShopRevenueBetweenDates(DateTime startDate, DateTime endDate) //date.now
+        {
+
+            //Get Total Revenue
+            string sql = @$"
+                SELECT 
+                    SUM(O.SubTotal)
+                FROM 
+                    Orders O
+                WHERE
+                    O.OrderDate >= '{startDate}' 
+                    AND 
+                    O.OrderDate <= '{endDate}'"; //SYSTEM SETTINGS can messup date conversion in sql
+
+
+            decimal total = 0;
+            using (var connection = new SqlConnection(connString))
+            {
+                //Query singel, only return cell
+                var shopRevenue = connection.QuerySingle<decimal?>(sql); //Make nullable, will crash if returns null. //Crash?
+
+                if (shopRevenue != null)
+                    total = shopRevenue != null ? shopRevenue.Value : 0;
+                else
+                    total = 0;
+            }
+
+            return total;
+        }
+
+        /// <summary>
+        /// Get shops lifetime revenue
+        /// </summary>
+        public static decimal GetShopRevenueTotal()
+        {
+
+            //Get Total Revenue
+            string sql = @$"
+                SELECT 
+                    SUM(O.SubTotal)
+                FROM 
+                    Orders O";
+
+            decimal revenue = 0;
+            using (var connection = new SqlConnection(connString))
+            {
+                //Query singel, only return cell
+                var shopRevenue = connection.QuerySingle<decimal?>(sql); //Make nullable, will crash if returns null.
+
+                revenue = shopRevenue != null ? shopRevenue.Value : 0;
+            }
+
+            return revenue;
+        }
+
+
+
+
+
 
         public static void GetCustomerSalesData()
         {
@@ -141,62 +193,6 @@ namespace WebShop.Services
                     total = connection.Query<decimal>(sql).FirstOrDefault();
                 }
             }
-            return total;
-        }
-
-        /// <summary>
-        /// Get shops lifetime revenue
-        /// </summary>
-        public static decimal GetShopRevenueTotal()
-        {
-
-            //Get Total Revenue
-            string sql = @$"
-                SELECT 
-                    SUM(O.SubTotal)
-                FROM 
-                    Orders O";
-
-            decimal revenue = 0;
-            using (var connection = new SqlConnection(connString))
-            {
-                //Query singel, only return cell
-                var shopRevenue = connection.QuerySingle<decimal?>(sql); //Make nullable, will crash if returns null.
-
-                revenue = shopRevenue != null ? shopRevenue.Value : 0;
-            }
-
-            return revenue;
-        }
-
-        
-        public static decimal GetShopRevenueBetweenDates(DateTime startDate, DateTime endDate) //date.now
-        {
-
-            //Get Total Revenue
-            string sql = @$"
-                SELECT 
-                    SUM(O.SubTotal)
-                FROM 
-                    Orders O
-                WHERE
-                    O.OrderDate >= '{startDate}' 
-                    AND 
-                    O.OrderDate <= '{endDate}'"; //SYSTEM SETTINGS can messup date conversion in sql
-
-            
-            decimal total = 0;
-            using (var connection = new SqlConnection(connString))
-            {
-                //Query singel, only return cell
-                var shopRevenue = connection.QuerySingle<decimal?>(sql); //Make nullable, will crash if returns null. //Crash?
-
-                if(shopRevenue != null)
-                    total = shopRevenue != null ? shopRevenue.Value : 0;
-                else 
-                    total = 0;
-            }
-
             return total;
         }
 

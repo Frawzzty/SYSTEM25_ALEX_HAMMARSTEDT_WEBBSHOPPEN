@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebShop
+﻿namespace WebShop
 {
     internal class Testing
     {
 
         public static void WindowTesting()
         {
-            var window1 = new Window("Heaaasdasdasd", 1, 1, new List<string>()
+            var window1 = new Window("TestTest", 1, 1, new List<string>()
             {
                 "J",
                 " ",
@@ -20,7 +14,7 @@ namespace WebShop
             });
             window1.headerColor = ConsoleColor.Red;
 
-            var window2 = new Window("Haar", 1, 1, new List<string>()
+            var window2 = new Window("Test", 1, 1, new List<string>()
             {
                 "Ja",
                 "Jaaaaaag",
@@ -29,7 +23,7 @@ namespace WebShop
             });
             window2.headerColor = ConsoleColor.Green;
 
-            var window3 = new Window("Headeasdasdasr", 1, 1, new List<string>()
+            var window3 = new Window("TESTtestTest", 1, 1, new List<string>()
             {
                 "Ja",
                 "Jaaaaaag",

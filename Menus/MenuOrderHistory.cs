@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebShop.DbServices;
-using WebShop.Enums;
+﻿using WebShop.DbServices;
 using WebShop.Models;
 using WebShop.Services;
-using WebShop.Windows;
 
 namespace WebShop.Menus
 {

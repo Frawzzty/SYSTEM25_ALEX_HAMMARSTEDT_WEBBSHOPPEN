@@ -1,19 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
-using WebShop.Connections;
-using WebShop.Migrations;
 using WebShop.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WebShop.Services
 {
